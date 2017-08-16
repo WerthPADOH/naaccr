@@ -7,9 +7,13 @@ Maintainer: Nathan Werth <nwerth@pa.gov>
 Description: Functions for reading cancer record files which follow a format
     defined by the North American Association of Central Cancer Registries
     (NAACCR).
+Imports:
+  data.table (>= 1.10.4),
+  readr      (>= 1.1.1)
 Suggests:
-  httr     (>= 1.2.1),
-  jsonlite (>= 1.5)
+  httr       (>= 1.2.1),
+  jsonlite   (>= 1.5),
+  magrittr   (>= 1.5)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
