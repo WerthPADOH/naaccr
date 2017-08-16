@@ -49,6 +49,7 @@ items <- paste0('rest/naaccr/', versions) %>%
   lapply(rbindlist) %>%
   setNames(versions) %>%
   rbindlist(idcol = 'naaccr_version')
+items[, naaccr_version := as.integer(naaccr_version)]
 
 # Item information -------------------------------------------------------------
 item_info_lookup <- matrix(
@@ -101,7 +102,7 @@ ensure_field_values <- function(field_list,
 items[
   ,
   item_listing := url_paths <- sprintf(
-      'rest/naaccr/%s/item/%d',
+      'rest/naaccr/%d/item/%d',
       .BY$naaccr_version,
       item
     ) %>%
