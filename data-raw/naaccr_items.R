@@ -18,15 +18,5 @@ naaccr_items <- naaccr_info_from_api[
   )
 ]
 
-# Add which record types include each item -------------------------------------
-naaccr_items[
-  naaccr_version == 16L,
-  record_type := cut(
-    end_col,
-    breaks         = c(0L, 3339L, 5564L, 22824L),
-    labels         = c('I', 'C', 'A'),
-    ordered_result = TRUE
-  )
-]
 
 devtools::use_data(naaccr_items, internal = TRUE, overwrite = TRUE)
