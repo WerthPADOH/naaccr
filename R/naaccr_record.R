@@ -1,6 +1,6 @@
 #' NAACCR record table class
 #' Subclass of \code{data.frame} for working with NAACCR records
-#' @param input Either a string with a file name (containing no \code{\n}
+#' @param input Either a string with a file name (containing no \code{\\n}
 #'   character), a \code{\link[base]{connection}} object, or the text records
 #'   themselves as a character vector.
 #' @param ... Arguments of the form \code{tag = value}, where \code{tag} is a
@@ -28,18 +28,23 @@ naaccr_record <- function(input, ..., naaccr_version = NULL) {
 #' @param x An R object.
 #' @param ... Additional arguments passed to or from methods.
 #' @return An object of class \code{\link{naaccr_record}}
+#' @seealso \code{\link{naaccr_record}}
 #' @export
 as.naaccr_record <- function(x, ...) {
   UseMethod('as.naaccr_record')
 }
 
 
+#' @rdname as.naaccr_record
+#' @export
 as.naaccr_record.list <- function(x, ...) {
   x_df <- as.data.frame(x, stringsAsFactors = FALSE)
   as.naaccr_record(x_df)
 }
 
 
+#' @rdname as.naaccr_record
+#' @export
 as.naaccr_record.data.frame <- function(x, ...) {
   latest_items <- naaccr_items[naaccr_version == max(naaccr_version)]
   normalized_names <- gsub('[^a-z0-9]+', ' ', tolower(names(x)))
