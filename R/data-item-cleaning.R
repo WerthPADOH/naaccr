@@ -7,7 +7,7 @@
 #' @param age \code{Age_at_Diagnosis} values.
 #' @return An integer vector, with \code{NA} for unknown ages.
 #' @export
-clean_age_at_diagnosis <- function(age) {
+clean_age <- function(age) {
   age <- as.integer(age)
   age[age < 0L | age > 120L] <- NA
   age
