@@ -58,6 +58,44 @@ as.naaccr_record.data.frame <- function(x, ...) {
     j     = missing_columns,
     value = rep(NA_character_, nrow(record))
   )
+
+  record[, ':='(
+    # Patient
+    Age_at_Diagnosis          = clean_age(Age_at_Diagnosis),
+    # Location
+    Addr_at_DX_City           = clean_address_city(Addr_at_DX_City),
+    Addr_Current_City         = clean_address_city(Addr_Current_City),
+    Follow_Up_Contact_City    = clean_address_city(Follow_Up_Contact_City),
+    Addr_at_DX_Postal_Code    = clean_postal(Addr_at_DX_Postal_Code),
+    Addr_Current_Postal_Code  = clean_postal(Addr_Current_Postal_Code),
+    Follow_Up_Contact_Postal  = clean_postal(Follow_Up_Contact_Postal),
+    Addr_at_DX_No_Street      = clean_address_number_and_street(Addr_at_DX_No_Street),
+    Addr_Current_No_Street    = clean_address_number_and_street(Addr_Current_No_Street),
+    Census_Block_Grp_1970_90  = clean_census_block(Census_Block_Grp_1970_90),
+    Census_Block_Group_2000   = clean_census_block(Census_Block_Group_2000),
+    Census_Block_Group_2010   = clean_census_block(Census_Block_Group_2010),
+    Census_Tract_1970_80_90   = clean_census_tract(Census_Tract_1970_80_90),
+    Census_Tract_2000         = clean_census_tract(Census_Tract_2000),
+    Census_Tract_2010         = clean_census_tract(Census_Tract_2010),
+    # Secondary to diagnosis
+    Comorbid_Complication_1   = clean_icd_9_cm(Comorbid_Complication_1),
+    Comorbid_Complication_2   = clean_icd_9_cm(Comorbid_Complication_2),
+    Comorbid_Complication_3   = clean_icd_9_cm(Comorbid_Complication_3),
+    Comorbid_Complication_4   = clean_icd_9_cm(Comorbid_Complication_4),
+    Comorbid_Complication_5   = clean_icd_9_cm(Comorbid_Complication_5),
+    Comorbid_Complication_6   = clean_icd_9_cm(Comorbid_Complication_6),
+    Comorbid_Complication_7   = clean_icd_9_cm(Comorbid_Complication_7),
+    Comorbid_Complication_8   = clean_icd_9_cm(Comorbid_Complication_8),
+    Comorbid_Complication_9   = clean_icd_9_cm(Comorbid_Complication_9),
+    Comorbid_Complication_10  = clean_icd_9_cm(Comorbid_Complication_10),
+    # Facility
+    Archive_FIN               = clean_facility_id(Archive_FIN),
+    Following_Registry        = clean_facility_id(Following_Registry),
+    Institution_Referred_From = clean_facility_id(Institution_Referred_From),
+    Institution_Referred_To   = clean_facility_id(Institution_Referred_To),
+    Reporting_Facility        = clean_facility_id(Reporting_Facility)
+  )]
+
   class(record) <- c('naaccr_record', class(record))
   record
 }

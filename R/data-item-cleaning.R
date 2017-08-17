@@ -38,7 +38,7 @@ clean_address_number_and_street <- function(location) {
 #' @param postal A character vector of postal codes.
 #' @return A character vector, with \code{NA} for unknown postal codes.
 #' @export
-clean_address_number_and_street <- function(postal) {
+clean_postal <- function(postal) {
   postal[postal %in% c('888888888', '999999999', '999999')] <- NA
   postal
 }
@@ -73,7 +73,7 @@ clean_census_tract <- function(tract) {
 #' @return \code{code}, but with values of \code{NA} instead of \code{"00000"}.
 #' @export
 clean_icd_9_cm <- function(code) {
-  code[code == '00000'] <- NA
+  code[code %in% c('', '00000')] <- NA
   code
 }
 
@@ -83,7 +83,7 @@ clean_icd_9_cm <- function(code) {
 #' @return \code{fin}, but with values of \code{NA} for codes meaning not
 #'   reported or unkown.
 #' @export
-clean_registry_fin <- function(fin) {
+clean_facility_id <- function(fin) {
   fin[fin %in% c('0000000000', '0099999999')] <- NA
   fin
 }
