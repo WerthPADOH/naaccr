@@ -15,6 +15,7 @@ naaccr_items <- naaccr_info_from_api[
     end_col,
     alignment,
     padding_char,
+    width         = end_col - start_col + 1L,
     r_name        = gsub('\\W+', '_', name),
     matching_name = gsub('[^a-z0-9]', ' ', tolower(name))
   )
