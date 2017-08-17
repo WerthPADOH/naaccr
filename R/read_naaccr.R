@@ -1,5 +1,5 @@
 #' Create a connection specified in one of several ways
-#' @param input Either a string with a file name (containing no \code{\n}
+#' @param input Either a string with a file name (containing no \code{\\n}
 #'   character), a \code{\link[base]{connection}} object, or the text records
 #'   themselves as a character vector.
 #' @return A \code{connection} object
@@ -26,7 +26,7 @@ as.connection <- function(input) {
 
 
 #' Read records from a NAACCR file
-#' @param input Either a string with a file name (containing no \code{\n}
+#' @param input Either a string with a file name (containing no \code{\\n}
 #'   character), a \code{\link[base]{connection}} object, or the text records
 #'   themselves as a character vector.
 #' @param naaccr_version An integer specifying which NAACCR format should be
