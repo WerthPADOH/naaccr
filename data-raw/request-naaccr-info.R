@@ -111,7 +111,7 @@ items[
   ,
   by = 'naaccr_version'
 ]
-naaccr_items <- items[
+naaccr_info_from_api <- items[
   ,
   item_listing %>%
     lapply(arrange_item_details) %>%
@@ -123,4 +123,4 @@ naaccr_items <- items[
   order(naaccr_version, item)
 ]
 
-devtools::use_data(naaccr_items, internal = TRUE, overwrite = TRUE)
+save(naaccr_info_from_api, file = 'data-raw/naaccr_info_from_api.RData')
