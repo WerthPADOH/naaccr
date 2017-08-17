@@ -26,6 +26,12 @@ as.connection <- function(input) {
 
 
 #' Read records from a NAACCR file
+#' @param input Either a string with a file name (containing no \code{\n}
+#'   character), a \code{\link[base]{connection}} object, or the text records
+#'   themselves as a character vector.
+#' @param naaccr_version An integer specifying which NAACCR format should be
+#'   used to parse the records.
+#' @return A \code{data.frame} of the records.
 #' @import readr
 #' @import data.table
 read_naaccr <- function(input, naaccr_version = NULL) {
