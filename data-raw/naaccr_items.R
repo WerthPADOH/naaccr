@@ -14,9 +14,9 @@ naaccr_items <- naaccr_info_from_api[
     start_col,
     end_col,
     alignment,
-    padding_char
+    padding_char,
+    r_name = gsub('\\W+', '_', name)
   )
 ]
-
 
 devtools::use_data(naaccr_items, internal = TRUE, overwrite = TRUE)

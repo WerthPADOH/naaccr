@@ -61,7 +61,7 @@ read_naaccr <- function(input, naaccr_version = NULL) {
     readr::fwf_positions(
       start     = start_col,
       end       = end_col,
-      col_names = gsub('\\W+', '_', name)
+      col_names = r_name
     )
   ]
   pushBack(input, line1)
