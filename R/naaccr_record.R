@@ -41,7 +41,18 @@ as.naaccr_record.list <- function(x, ...) {
 
 
 as.naaccr_record.data.frame <- function(x, ...) {
-  nr <- x
-  class(nr) <- c('naaccr_record', class(x))
-  nr
+  latest_items <- naaccr_items[naaccr_version == max(naaccr_version)]
+  normalized_names <- gsub('[^a-z0-9]+', ' ', tolower(names(x)))
+  matched_items    <- latest_items[normalized_names, on = 'matching_name']
+  record <- as.data.table(x)
+  setnames(record, matched_items[['r_name']])
+  missing_columns <- setdiff(latest_items[['r_name']], names(record))
+  set(
+    record,
+    i     = NULL,
+    j     = missing_columns,
+    value = rep(NA_character_, nrow(record))
+  )
+  class(record) <- c('naaccr_record', class(record))
+  record
 }
