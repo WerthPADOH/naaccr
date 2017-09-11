@@ -2,7 +2,7 @@
 #' @param input Either a string with a file name (containing no \code{\\n}
 #'   character), a \code{\link[base]{connection}} object, or the text records
 #'   themselves as a character vector.
-#' @return A \code{connection} object
+#' @return An open \code{connection} object
 #' @seealso
 #'   \code{\link[base]{connections}},
 #'   \code{\link[base]{textConnections}}
@@ -18,7 +18,7 @@ as.connection <- function(input) {
   if (!inherits(input, 'connection')) {
     stop("'input' must be a filepath, a connection, or a character vector")
   }
-  if (!isOpen(input, 'rt')) {
+  if (!isOpen(input, 'read')) {
     open(input, 'rt')
   }
   input
