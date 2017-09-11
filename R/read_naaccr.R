@@ -34,6 +34,7 @@ as.connection <- function(input) {
 #' @return A \code{data.frame} of the records.
 #' @import readr
 #' @import data.table
+#' @import stringi
 read_naaccr <- function(input, naaccr_version = NULL) {
   input <- as.connection(input)
   on.exit(
@@ -43,19 +44,21 @@ read_naaccr <- function(input, naaccr_version = NULL) {
   if (is.null(naaccr_version)) {
     naaccr_version <- max(naaccr_items[['naaccr_version']])
   }
-  # NAACCR record types differ in line length
-  line1 <- readLines(input, 1L)
-  line_length <- nchar(line1)
   lookup_key <- list(naaccr_version)
   input_items <- naaccr_items[
     lookup_key,
     on = 'naaccr_version'
   ][
-    end_col <= line_length
-  ][
     order(start_col)
   ]
-
+  # Read all record types as the longest type, with padding
+  record_lines <- readLines(input)
+  line_lengths <- nchar(record_lines)
+  record_lines <- stringi::stri_pad_right(
+    record_lines,
+    width = max(line_lengths) - line_lengths
+  )
+  record_lines <- stringi::stri_join(record_lines, collapse = "\n")
   col_positions <- input_items[
     start_col > cummax(data.table::shift(end_col, fill = 0L)),
     readr::fwf_positions(
@@ -64,9 +67,8 @@ read_naaccr <- function(input, naaccr_version = NULL) {
       col_names = r_name
     )
   ]
-  pushBack(line1, input)
   readr::read_fwf(
-    file          = input,
+    file          = record_lines,
     col_positions = col_positions,
     col_types     = readr::cols(.default = readr::col_character()),
     na            = ''
