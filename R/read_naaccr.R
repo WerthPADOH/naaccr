@@ -36,11 +36,13 @@ as.connection <- function(input) {
 #' @import data.table
 #' @import stringi
 read_naaccr <- function(input, naaccr_version = NULL) {
-  input <- as.connection(input)
-  on.exit(
-    if (isOpen(input)) close(input),
-    add = TRUE
-  )
+  if (!inherits(input, "connection")) {
+    input <- as.connection(input)
+    on.exit(
+      if (isOpen(input)) close(input),
+      add = TRUE
+    )
+  }
   if (is.null(naaccr_version)) {
     naaccr_version <- max(naaccr_items[['naaccr_version']])
   }
