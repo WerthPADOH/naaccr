@@ -64,7 +64,7 @@ read_naaccr <- function(input, naaccr_version = NULL) {
       col_names = r_name
     )
   ]
-  pushBack(input, line1)
+  pushBack(line1, input)
   readr::read_fwf(
     file          = input,
     col_positions = col_positions,
