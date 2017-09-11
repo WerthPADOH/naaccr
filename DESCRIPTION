@@ -9,7 +9,6 @@ Description: Functions for reading cancer record files which follow a format
     (NAACCR).
 Imports:
   data.table (>= 1.10.4),
-  readr      (>= 1.1.1),
   stringi    (>= 1.1.5)
 Suggests:
   httr       (>= 1.2.1),
