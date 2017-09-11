@@ -64,7 +64,7 @@ clean_census_block <- function(block) {
 clean_census_tract <- function(tract) {
   is_tract <- data.table::between(tract, '000100', '949999')
   is_bna   <- data.table::between(tract, '950100', '998999')
-  block[!is_tract & !is_bna] <- NA
+  tract[!is_tract & !is_bna] <- NA
 }
 
 
