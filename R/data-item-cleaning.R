@@ -8,8 +8,8 @@
 #' @return An integer vector, with \code{NA} for unknown ages.
 #' @export
 clean_age <- function(age) {
-  age <- as.integer(age)
-  age[age < 0L | age > 120L] <- NA
+  age_int <- as.integer(age)
+  age[age_int < 0L | age_int > 120L] <- NA
   age
 }
 
