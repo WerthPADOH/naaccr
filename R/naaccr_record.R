@@ -96,6 +96,7 @@ as.naaccr_record.data.frame <- function(x, ...) {
     Reporting_Facility        = clean_facility_id(Reporting_Facility)
   )]
 
+  record <- setDF(record)
   class(record) <- c('naaccr_record', class(record))
   record
 }
