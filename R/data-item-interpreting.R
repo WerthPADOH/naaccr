@@ -11,6 +11,7 @@ interpret_boolean <- function(flag) {
 }
 
 
+#' Interpret NAACCR-formatted dates
 #' @param date_literal Character vector of dates in the standard NAACCR format:
 #'   \code{"YYYYMMDD"}.
 #' @return An object of class \code{POSIXlt}. This allows incomplete dates to
