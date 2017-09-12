@@ -59,6 +59,33 @@ as.naaccr_record.data.frame <- function(x, ...) {
     value = rep(NA_character_, nrow(record))
   )
 
+  type_columns <- split(item_types[["name"]], item_types[["type"]])
+  set(
+    record,
+    j     = type_columns[["integer"]],
+    value = lapply(
+      record[, type_columns[["integer"]], with = FALSE],
+      as.integer
+    )
+  )
+  set(
+    record,
+    j     = type_columns[["numeric"]],
+    value = lapply(
+      record[, type_columns[["numeric"]], with = FALSE],
+      as.numeric
+    )
+  )
+  set(
+    record,
+    j     = type_columns[["Date"]],
+    value = lapply(
+      record[, type_columns[["Date"]], with = FALSE],
+      as.Date,
+      format = "%Y%m%d"
+    )
+  )
+
   record[, ':='(
     # Patient
     age_at_diagnosis          = clean_age(age_at_diagnosis),

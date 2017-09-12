@@ -21,4 +21,6 @@ naaccr_items <- naaccr_info_from_api[
   )
 ]
 
-devtools::use_data(naaccr_items, internal = TRUE, overwrite = TRUE)
+item_types <- fread("data-raw/item_interpreting_info.csv")
+
+devtools::use_data(naaccr_items, item_types, internal = TRUE, overwrite = TRUE)
