@@ -4,7 +4,7 @@
 library(data.table)
 
 
-load('data-raw/naaccr_info_from_api.RData')
+naaccr_info_from_api <- fread('data-raw/naaccr_info_from_api.csv')
 naaccr_items <- naaccr_info_from_api[
   ,
   list(
