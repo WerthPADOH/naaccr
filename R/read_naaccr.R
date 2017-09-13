@@ -53,9 +53,11 @@ parse_records <- function(records, start_cols, end_cols, col_names = NULL) {
 #'   themselves as a character vector.
 #' @param naaccr_version An integer specifying which NAACCR format should be
 #'   used to parse the records.
-#' @return A \code{data.frame} of the records.
+#' @return A \code{data.frame} of the records. The columns included depend on
+#'   the NAACCR record format version. All columns are character vectors.
 #' @import data.table
 #' @import stringi
+#' @export
 read_naaccr <- function(input, naaccr_version = NULL) {
   if (!inherits(input, "connection")) {
     input <- as.connection(input)
