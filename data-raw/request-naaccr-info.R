@@ -123,4 +123,21 @@ naaccr_info_from_api <- items[
   order(naaccr_version, item)
 ]
 
-save(naaccr_info_from_api, file = 'data-raw/naaccr_info_from_api.RData')
+naaccr_info_from_api[, alignment := tolower(alignment)]
+
+write.csv(
+  naaccr_info_from_api[, list(
+    naaccr_version,
+    item,
+    name,
+    start_col,
+    end_col,
+    alignment,
+    padding_char
+  )],
+  file         = "data-raw/naaccr_info_from_api.csv",
+  row.names    = FALSE,
+  quote        = TRUE,
+  na           = "na",
+  fileEncoding = "UTF-8"
+)
