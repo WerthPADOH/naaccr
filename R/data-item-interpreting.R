@@ -24,10 +24,10 @@ interpret_boolean <- function(flag) {
 #'   data.table::month(y)
 #'   data.table::mday(y)
 naaccr_date <- function(date_literal) {
-  d <- strptime(date_string, format = '%Y%m%d')
-  year_part  <- as.integer(substr(date_string, 1L, 4L))
-  month_part <- as.integer(substr(date_string, 5L, 6L))
-  day_part   <- as.integer(substr(date_string, 7L, 8L))
+  d <- strptime(date_literal, format = '%Y%m%d')
+  year_part  <- as.integer(substr(date_literal, 1L, 4L))
+  month_part <- as.integer(substr(date_literal, 5L, 6L))
+  day_part   <- as.integer(substr(date_literal, 7L, 8L))
   is_incomplete <- is.na(d)
   d$year[is_incomplete] <- year_part[ is_incomplete] - 1900L
   d$mon[ is_incomplete] <- month_part[is_incomplete] - 1L

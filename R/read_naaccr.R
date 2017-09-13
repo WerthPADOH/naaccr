@@ -72,9 +72,9 @@ read_naaccr <- function(input, naaccr_version = NULL) {
     lookup_key,
     on = 'naaccr_version'
   ][
-    order(start_col)
-  ][
-    start_col > cummax(data.table::shift(end_col, fill = 0L))
+    order(start_col),
+    .SD[.N],
+    by = "end_col"
   ]
   # Read all record types as the longest type, with padding
   record_lines <- readLines(input)
