@@ -62,6 +62,32 @@ parse_records <- function(record_lines,
 }
 
 
+#' Updated field names to newest version
+#' @param old_names Character vector column names from any NAACCR version.
+#' @return A character vector the same length as \code{old_names} of the names
+#'   from the most recent NAACCR format.
+#' @import data.table
+#' @noRd
+name_recent <- function(old_names) {
+  named_items <- naaccr_items[
+    list(r_name = old_names),
+    list(item = item[[1L]]),
+    on      = "r_name",
+    nomatch = NA,
+    by      = .EACHI
+  ]
+
+  naaccr_items[
+    naaccr_version == max(naaccr_version)
+  ][
+    list(item = named_items[["item"]]),
+    r_name,
+    on      = "item",
+    nomatch = NA
+  ]
+}
+
+
 #' Read records from a NAACCR file
 #' @param input Either a string with a file name (containing no \code{\\n}
 #'   character), a \code{\link[base]{connection}} object, or the text records
@@ -96,10 +122,12 @@ read_naaccr <- function(input, naaccr_version = NULL) {
     record_lines,
     width = max(line_lengths) - line_lengths
   )
-  parse_records(
-    records    = record_lines,
-    start_cols = input_items[["start_col"]],
-    end_cols   = input_items[["end_col"]],
-    col_names  = input_items[["r_name"]]
+  records <- parse_records(
+    record_lines = record_lines,
+    start_cols   = input_items[["start_col"]],
+    end_cols     = input_items[["end_col"]],
+    col_names    = input_items[["item"]]
   )
+  setnames(records, name_recent(names(records)))
+  records
 }
