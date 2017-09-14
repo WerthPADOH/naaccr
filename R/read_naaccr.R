@@ -25,7 +25,22 @@ as.connection <- function(input) {
 }
 
 
-parse_records <- function(records, start_cols, end_cols, col_names = NULL) {
+#' Split record lines into fields
+#' @param record_lines Character vector of entire NAACCR record lines.
+#' @param start_cols   Integer vector of the first index of fields in the
+#'   records. Must be the same length as \code{end_cols}.
+#' @param end_cols     Integer vector of the last index of fields in the
+#'   records. Must be the same length as \code{start_cols}.
+#' @param col_names    Character vector of field names.  Must be the same length
+#'   as \code{start_cols}.
+#' @return A \code{data.frame} with the columns specified by \code{start_cols},
+#'   \code{end_cols}, and \code{col_names}. All columns are character vectors,
+#'   and values of just spaces in the records are replaced with \code{NA}.
+#' @noRd
+parse_records <- function(record_lines,
+                          start_cols,
+                          end_cols,
+                          col_names = NULL) {
   if (length(start_cols) != length(end_cols)) {
     stop("start_cols and end_cols must be the same length")
   }
@@ -36,7 +51,7 @@ parse_records <- function(records, start_cols, end_cols, col_names = NULL) {
     starts = start_cols,
     ends   = end_cols,
     FUN = function(starts, ends) {
-      values <- stringi::stri_sub(records, starts, ends)
+      values <- stringi::stri_sub(record_lines, starts, ends)
       stringi::stri_subset_regex(values, "^\\s+") <- NA
       values
     },
