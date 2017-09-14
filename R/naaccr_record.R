@@ -1,5 +1,13 @@
-#' NAACCR record table class
-#' Subclass of \code{data.frame} for working with NAACCR records
+#' Analysis-ready NAACCR records
+#'
+#' Subclass of \code{data.frame} for doing analysis with NAACCR records.
+#'
+#' While \code{\link{read_naaccr}} creates a \code{data.frame} of only NAACCR
+#' fields as \code{character} columns, \code{naaccr_record} creates a
+#' \code{data.frame} ready for analysis: columns are of appropriate classes,
+#' coded values are replaced with factors, and unknowns are replaced with
+#' \code{NA}.
+#'
 #' @param input Either a string with a file name (containing no \code{\\n}
 #'   character), a \code{\link[base]{connection}} object, or the text records
 #'   themselves as a character vector.
