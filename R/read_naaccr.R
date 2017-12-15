@@ -58,7 +58,7 @@ parse_records <- function(record_lines,
     SIMPLIFY = FALSE
   )
   names(item_matrix) <- col_names
-  as.data.frame(item_matrix, stringsAsFactors = FALSE)
+  as.data.table(item_matrix, stringsAsFactors = FALSE)
 }
 
 
@@ -128,6 +128,7 @@ read_naaccr <- function(input, naaccr_version = NULL) {
     end_cols     = input_items[["end_col"]],
     col_names    = input_items[["item"]]
   )
+  setDT(records)
   setnames(records, name_recent(names(records)))
   records
 }
