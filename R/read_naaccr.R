@@ -62,29 +62,24 @@ parse_records <- function(record_lines,
 }
 
 
-#' Updated field names to newest version
-#' @param old_names Character vector column names from any NAACCR version.
-#' @return A character vector the same length as \code{old_names} of the names
-#'   from the most recent NAACCR format.
+#' Get the latest field names for item numbers
+#' @param item_numbers Integer vector of NAACCR item numbers
+#' @return A character vector the same length as \code{item_numbers} of the
+#'   names from the most recent NAACCR format.
 #' @import data.table
 #' @noRd
-name_recent <- function(old_names) {
+name_recent <- function(item_numbers) {
   named_items <- naaccr_items[
-    list(r_name = old_names),
-    list(item = item[[1L]]),
+    naaccr_version == max(naaccr_version)
+  ][
+    list(item = as.integer(item_numbers)),
+    list(r_name),
     on      = "r_name",
     nomatch = NA,
     by      = .EACHI
   ]
 
-  naaccr_items[
-    naaccr_version == max(naaccr_version)
-  ][
-    list(item = named_items[["item"]]),
-    r_name,
-    on      = "item",
-    nomatch = NA
-  ]
+  named_items[["r_name"]]
 }
 
 
