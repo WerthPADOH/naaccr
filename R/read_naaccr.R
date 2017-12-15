@@ -126,7 +126,7 @@ read_naaccr <- function(input, naaccr_version = NULL) {
     record_lines = record_lines,
     start_cols   = input_items[["start_col"]],
     end_cols     = input_items[["end_col"]],
-    col_names    = input_items[["item"]]
+    col_names    = as.character(input_items[["item"]])
   )
   setDT(records)
   setnames(records, name_recent(names(records)))
