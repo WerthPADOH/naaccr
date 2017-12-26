@@ -74,7 +74,7 @@ name_recent <- function(item_numbers) {
   ][
     list(item = as.integer(item_numbers)),
     list(r_name),
-    on      = "r_name",
+    on      = "item",
     nomatch = NA,
     by      = .EACHI
   ]
