@@ -71,11 +71,12 @@ safe_set <- function(x, i = NULL, j, value) {
 
 
 #' @rdname as.naaccr_record
+#' @import data.table
 #' @export
 as.naaccr_record.data.frame <- function(x, ...) {
   latest_items <- naaccr_items[naaccr_version == max(naaccr_version)]
   normalized_names <- gsub('[^a-z0-9]+', ' ', tolower(names(x)))
-  matched_items    <- latest_items[normalized_names, on = 'matching_name']
+  matched_items    <- latest_items[list(normalized_names), on = 'matching_name']
   record <- as.data.table(x)
   setnames(record, matched_items[['r_name']])
   missing_columns <- setdiff(latest_items[['r_name']], names(record))

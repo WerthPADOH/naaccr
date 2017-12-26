@@ -36,6 +36,8 @@ as.connection <- function(input) {
 #' @return A \code{data.frame} with the columns specified by \code{start_cols},
 #'   \code{end_cols}, and \code{col_names}. All columns are character vectors,
 #'   and values of just spaces in the records are replaced with \code{NA}.
+#' @import stringi
+#' @import data.table
 #' @noRd
 parse_records <- function(record_lines,
                           start_cols,
@@ -105,14 +107,13 @@ read_naaccr <- function(input, naaccr_version = NULL) {
   if (is.null(naaccr_version)) {
     naaccr_version <- max(naaccr_items[['naaccr_version']])
   }
-  lookup_key <- list(naaccr_version)
   input_items <- naaccr_items[
-    lookup_key,
+    list(naaccr_version),
     on = 'naaccr_version'
   ]
   # Read all record types as the longest type, with padding
   record_lines <- readLines(input)
-  line_lengths <- nchar(record_lines)
+  line_lengths <- stringi::stri_width(record_lines)
   record_lines <- stringi::stri_pad_right(
     record_lines,
     width = max(line_lengths) - line_lengths
