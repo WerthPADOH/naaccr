@@ -10,27 +10,13 @@ test_that("naaccr_record returns a 'naaccr_record', 'data.frame' object", {
   expect_true(inherits(nr, "data.frame"))
 })
 
-test_that("name_recent updates field names", {
-
-
-  get_latest_name <- function(item_number) {
-    naaccr:::naaccr_items[
-      naaccr_version == max(naaccr_version)
-    ][
-      list(item = item_number),
-      r_name,
-      on      = "item",
-      nomatch = NA
-    ]
-  }
-
-
+test_that("name_recent gets the right names from item numbers", {
   expect_identical(
-    naaccr:::name_recent("occupation_code_census"),
-    get_latest_name(270)
+    naaccr:::name_recent("270"),
+    "census_occ_code_1970_2000"
   )
   expect_identical(
-    naaccr:::name_recent("rx_date_rad_ended_flag"),
-    get_latest_name(3221)
+    naaccr:::name_recent("3221"),
+    "rx_date_radiation_ended_flag"
   )
 })
