@@ -51,6 +51,25 @@ as.naaccr_record.list <- function(x, ...) {
 }
 
 
+#' Assignment by reference if needed
+#'
+#' Only attempt to apply \code{set} on a \code{data.table} if something will
+#' actually be set.
+#'
+#' @param x,i,j,value Passed onto \code{\link[data.table]{set}}.
+#' @return \code{x} is modified by reference and returned invisibly.
+#' @import data.table
+#' @noRd
+safe_set <- function(x, i = NULL, j, value) {
+  is_non_empty_i <- is.null(i) | length(i) > 0
+  is_non_empty_j <- length(j) > 0
+  if (is_non_empty_i && is_non_empty_j) {
+    set(x, i, j, value)
+  }
+  invisible(x)
+}
+
+
 #' @rdname as.naaccr_record
 #' @export
 as.naaccr_record.data.frame <- function(x, ...) {
@@ -60,15 +79,10 @@ as.naaccr_record.data.frame <- function(x, ...) {
   record <- as.data.table(x)
   setnames(record, matched_items[['r_name']])
   missing_columns <- setdiff(latest_items[['r_name']], names(record))
-  set(
-    record,
-    i     = NULL,
-    j     = missing_columns,
-    value = rep(NA_character_, nrow(record))
-  )
+  safe_set(record, j = missing_columns, value = NA_character_)
 
   type_columns <- split(item_types[["name"]], item_types[["type"]])
-  set(
+  safe_set(
     record,
     j     = type_columns[["integer"]],
     value = lapply(
@@ -76,7 +90,7 @@ as.naaccr_record.data.frame <- function(x, ...) {
       as.integer
     )
   )
-  set(
+  safe_set(
     record,
     j     = type_columns[["numeric"]],
     value = lapply(
@@ -84,7 +98,7 @@ as.naaccr_record.data.frame <- function(x, ...) {
       as.numeric
     )
   )
-  set(
+  safe_set(
     record,
     j     = type_columns[["Date"]],
     value = lapply(
