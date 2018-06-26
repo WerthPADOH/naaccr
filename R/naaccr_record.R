@@ -14,15 +14,13 @@
 #' @param ... Arguments of the form \code{tag = value}, where \code{tag} is a
 #'   valid NAACCR data item name and \code{value} is the vector of the item's
 #'   values.
-#' @param naaccr_version An integer specifying which NAACCR format should be
+#' @param version An integer specifying which NAACCR format should be
 #'   used to parse the records. Only used if \code{input} is given.
+#' @return A \code{data.frame} with columns named using the NAACCR XML scheme.
 #' @export
-naaccr_record <- function(input, ..., naaccr_version = NULL) {
-  if (is.null(naaccr_version)) {
-    naaccr_version <- max(naaccr_items[['naaccr_version']])
-  }
+naaccr_record <- function(input, ..., version = NULL) {
   input_data <- if (!missing(input)) {
-    read_naaccr(input, naaccr_version)
+    read_naaccr(input, version)
   } else {
     character_values <- lapply(list(...), as.character)
     as.data.frame(character_values, stringsAsFactors = FALSE)

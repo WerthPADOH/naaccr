@@ -89,14 +89,14 @@ name_recent <- function(item_numbers) {
 #' @param input Either a string with a file name (containing no \code{\\n}
 #'   character), a \code{\link[base]{connection}} object, or the text records
 #'   themselves as a character vector.
-#' @param naaccr_version An integer specifying which NAACCR format should be
-#'   used to parse the records.
+#' @param version An integer specifying which NAACCR format should be used to
+#'   parse the records.
 #' @return A \code{data.frame} of the records. The columns included depend on
 #'   the NAACCR record format version. All columns are character vectors.
 #' @import data.table
 #' @import stringi
 #' @export
-read_naaccr <- function(input, naaccr_version = NULL) {
+read_naaccr <- function(input, version = NULL) {
   if (!inherits(input, "connection")) {
     input <- as.connection(input)
     on.exit(
@@ -104,11 +104,15 @@ read_naaccr <- function(input, naaccr_version = NULL) {
       add = TRUE
     )
   }
-  if (is.null(naaccr_version)) {
-    naaccr_version <- max(naaccr_items[['naaccr_version']])
+  if (is.null(version)) {
+    version <- max(naaccr_items[['naaccr_version']])
+  }
+  if (length(version) > 1L) {
+    version <- version[[1L]]
+    warning("Only using first value of version")
   }
   input_items <- naaccr_items[
-    list(naaccr_version),
+    list(naaccr_version = version),
     on = 'naaccr_version'
   ]
   # Read all record types as the longest type, with padding
