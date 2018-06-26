@@ -75,11 +75,10 @@ safe_set <- function(x, i = NULL, j, value) {
 #' @export
 as.naaccr_record.data.frame <- function(x, ...) {
   latest_items <- naaccr_items[naaccr_version == max(naaccr_version)]
-  normalized_names <- gsub('[^a-z0-9]+', ' ', tolower(names(x)))
-  matched_items    <- latest_items[list(normalized_names), on = 'matching_name']
+  matched_items <- latest_items[list(names(x)), on = 'xml_name']
   record <- as.data.table(x)
-  setnames(record, matched_items[['r_name']])
-  missing_columns <- setdiff(latest_items[['r_name']], names(record))
+  setnames(record, matched_items[['xml_name']])
+  missing_columns <- setdiff(latest_items[['xml_name']], names(record))
   safe_set(record, j = missing_columns, value = NA_character_)
 
   type_columns <- split(item_types[["name"]], item_types[["type"]])
@@ -111,39 +110,39 @@ as.naaccr_record.data.frame <- function(x, ...) {
 
   record[, ':='(
     # Patient
-    age_at_diagnosis          = clean_age(age_at_diagnosis),
+    ageAtDiagnosis          = clean_age(ageAtDiagnosis),
     # Location
-    addr_at_dx_city           = clean_address_city(addr_at_dx_city),
-    addr_current_city         = clean_address_city(addr_current_city),
-    follow_up_contact_city    = clean_address_city(follow_up_contact_city),
-    addr_at_dx_postal_code    = clean_postal(addr_at_dx_postal_code),
-    addr_current_postal_code  = clean_postal(addr_current_postal_code),
-    follow_up_contact_postal  = clean_postal(follow_up_contact_postal),
-    addr_at_dx_no_street      = clean_address_number_and_street(addr_at_dx_no_street),
-    addr_current_no_street    = clean_address_number_and_street(addr_current_no_street),
-    census_block_grp_1970_90  = clean_census_block(census_block_grp_1970_90),
-    census_block_group_2000   = clean_census_block(census_block_group_2000),
-    census_block_group_2010   = clean_census_block(census_block_group_2010),
-    census_tract_1970_80_90   = clean_census_tract(census_tract_1970_80_90),
-    census_tract_2000         = clean_census_tract(census_tract_2000),
-    census_tract_2010         = clean_census_tract(census_tract_2010),
+    addrAtDxCity            = clean_address_city(addrAtDxCity),
+    addrCurrentCity         = clean_address_city(addrCurrentCity),
+    followUpContactCity     = clean_address_city(followUpContactCity),
+    addrAtDxPostalCode      = clean_postal(addrAtDxPostalCode),
+    addrCurrentPostalCode   = clean_postal(addrCurrentPostalCode),
+    followUpContactPostal   = clean_postal(followUpContactPostal),
+    addrAtDxNoStreet        = clean_address_number_and_street(addrAtDxNoStreet),
+    addrCurrentNoStreet     = clean_address_number_and_street(addrCurrentNoStreet),
+    censusBlockGrp197090    = clean_census_block(censusBlockGrp197090),
+    censusBlockGroup2000    = clean_census_block(censusBlockGroup2000),
+    censusBlockGroup2010    = clean_census_block(censusBlockGroup2010),
+    censusTract19708090     = clean_census_tract(censusTract19708090),
+    censusTract2000         = clean_census_tract(censusTract2000),
+    censusTract2010         = clean_census_tract(censusTract2010),
     # secondary to diagnosis
-    comorbid_complication_1   = clean_icd_9_cm(comorbid_complication_1),
-    comorbid_complication_2   = clean_icd_9_cm(comorbid_complication_2),
-    comorbid_complication_3   = clean_icd_9_cm(comorbid_complication_3),
-    comorbid_complication_4   = clean_icd_9_cm(comorbid_complication_4),
-    comorbid_complication_5   = clean_icd_9_cm(comorbid_complication_5),
-    comorbid_complication_6   = clean_icd_9_cm(comorbid_complication_6),
-    comorbid_complication_7   = clean_icd_9_cm(comorbid_complication_7),
-    comorbid_complication_8   = clean_icd_9_cm(comorbid_complication_8),
-    comorbid_complication_9   = clean_icd_9_cm(comorbid_complication_9),
-    comorbid_complication_10  = clean_icd_9_cm(comorbid_complication_10),
+    comorbidComplication1   = clean_icd_9_cm(comorbidComplication1),
+    comorbidComplication2   = clean_icd_9_cm(comorbidComplication2),
+    comorbidComplication3   = clean_icd_9_cm(comorbidComplication3),
+    comorbidComplication4   = clean_icd_9_cm(comorbidComplication4),
+    comorbidComplication5   = clean_icd_9_cm(comorbidComplication5),
+    comorbidComplication6   = clean_icd_9_cm(comorbidComplication6),
+    comorbidComplication7   = clean_icd_9_cm(comorbidComplication7),
+    comorbidComplication8   = clean_icd_9_cm(comorbidComplication8),
+    comorbidComplication9   = clean_icd_9_cm(comorbidComplication9),
+    comorbidComplication10  = clean_icd_9_cm(comorbidComplication10),
     # facility
-    archive_fin               = clean_facility_id(archive_fin),
-    following_registry        = clean_facility_id(following_registry),
-    institution_referred_from = clean_facility_id(institution_referred_from),
-    institution_referred_to   = clean_facility_id(institution_referred_to),
-    reporting_facility        = clean_facility_id(reporting_facility)
+    archiveFin              = clean_facility_id(archiveFin),
+    followingRegistry       = clean_facility_id(followingRegistry),
+    institutionReferredFrom = clean_facility_id(institutionReferredFrom),
+    institutionReferredTo   = clean_facility_id(institutionReferredTo),
+    reportingFacility       = clean_facility_id(reportingFacility)
   )]
 
   record <- setDF(record)

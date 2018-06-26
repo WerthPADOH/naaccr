@@ -75,13 +75,13 @@ name_recent <- function(item_numbers) {
     naaccr_version == max(naaccr_version)
   ][
     list(item = as.integer(item_numbers)),
-    list(r_name),
+    list(xml_name),
     on      = "item",
     nomatch = NA,
     by      = .EACHI
   ]
 
-  named_items[["r_name"]]
+  named_items[["xml_name"]]
 }
 
 

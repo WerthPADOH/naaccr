@@ -13,10 +13,10 @@ test_that("naaccr_record returns a 'naaccr_record', 'data.frame' object", {
 test_that("name_recent gets the right names from item numbers", {
   expect_identical(
     naaccr:::name_recent("270"),
-    "census_occ_code_1970_2000"
+    "censusOccCode19702000"
   )
   expect_identical(
     naaccr:::name_recent("3221"),
-    "rx_date_radiation_ended_flag"
+    "rxDateRadiationEndedFlag"
   )
 })
