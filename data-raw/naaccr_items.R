@@ -15,9 +15,27 @@ naaccr_items <- naaccr_info_from_api[
     end_col,
     alignment,
     padding_char,
-    r_name        = gsub('\\W+', '_', name),
-    matching_name = gsub('[^a-z0-9]+', ' ', tolower(name))
+    width = end_col - start_col + 1L
   )
 ]
+item_types <- fread("data-raw/item_interpreting_info.csv")
+naaccr_xml_info <- fread(
+  input  = "data-raw/naaccr-xml-items-180.csv",
+  sep    = ",",
+  header = TRUE,
+  col.names = c(
+    "item", "name", "start_col", "width", "record_types", "xml_name",
+    "xml_parent"
+  ),
+  colClasses = c(
+    "integer", "character", "integer", "integer", "character", "character",
+    "character"
+  )
+)
+naaccr_items[
+  naaccr_xml_info,
+  on = "item",
+  xml_name := xml_name
+]
 
-devtools::use_data(naaccr_items, internal = TRUE, overwrite = TRUE)
+devtools::use_data(naaccr_items, item_types, internal = TRUE, overwrite = TRUE)
