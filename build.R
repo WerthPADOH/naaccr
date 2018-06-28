@@ -14,6 +14,7 @@ source_subprocess <- function(source_file, ...) {
 # reliable enough to include in an automated build.
 source_subprocess("data-raw/naaccr_items.R")
 source_subprocess("data-raw/create-country_codes.R")
+source_subprocess("data-raw/create-occupation_codes.R")
 sys_data_files <- list.files("data-raw/sys-data", full.names  = TRUE)
 sys_objects <- new.env()
 for (sdf in sys_data_files) {
