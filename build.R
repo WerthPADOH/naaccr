@@ -1,5 +1,6 @@
 # Rebuild the package from scratch
 library(devtools)
+library(testthat)
 
 
 # Internal data ----------------------------------------------------------------
@@ -12,3 +13,12 @@ item_types   <- readRDS("data-raw/item_types.rds")
 devtools::use_data(naaccr_items, item_types, internal = TRUE, overwrite = TRUE)
 
 # Tests ------------------------------------------------------------------------
+results <- devtools::test()
+results_df <- as.data.frame(results)
+if (any(results_df[["failed"]] > 0 | results_df[["error"]] > 0)) {
+  stop("Testing failed")
+}
+
+# Build ------------------------------------------------------------------------
+devtools::document()
+devtools::build(binary = TRUE)
