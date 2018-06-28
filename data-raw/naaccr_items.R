@@ -38,4 +38,5 @@ naaccr_items[
   xml_name := xml_name
 ]
 
-devtools::use_data(naaccr_items, item_types, internal = TRUE, overwrite = TRUE)
+saveRDS(naaccr_items, file = "data-raw/naaccr_items.rds")
+saveRDS(item_types, file = "data-raw/item_types.rds")
