@@ -13,10 +13,12 @@ source_subprocess <- function(source_file, ...) {
 # "data-raw/naaccr_info_from_api.csv". Because of our proxy, the script is not
 # reliable enough to include in an automated build.
 source_subprocess("data-raw/naaccr_items.R")
-source_subprocess("data-raw/create-country_codes.R")
-naaccr_items <- readRDS("data-raw/naaccr_items.rds")
-item_types   <- readRDS("data-raw/item_types.rds")
-devtools::use_data(naaccr_items, item_types, internal = TRUE, overwrite = TRUE)
+sys_data_files <- list.files("data-raw/sys-data", full.names  = TRUE)
+sys_objects <- new.env()
+for (sdf in sys_data_files) {
+  load(sdf, envir = sys_objects)
+}
+save(list = names(sys_objects), envir = sys_objects, file = "R/sysdata.rda")
 
 # Tests ------------------------------------------------------------------------
 results <- devtools::test()

@@ -38,5 +38,4 @@ naaccr_items[
   xml_name := xml_name
 ]
 
-saveRDS(naaccr_items, file = "data-raw/naaccr_items.rds")
-saveRDS(item_types, file = "data-raw/item_types.rds")
+save(naaccr_items, item_types, file = "data-raw/sys-data/naaccr_items.RData")
