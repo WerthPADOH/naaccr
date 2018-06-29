@@ -1,0 +1,5 @@
+"code","label","description"
+"0","conclusive term","Conclusive term"
+"1","ambiguous term only","Ambiguous term only"
+"2","ambiguous term followed by conclusive term","Ambiguous term followed by conclusive term"
+"9","unknown term","Unknown term"
