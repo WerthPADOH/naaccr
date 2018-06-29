@@ -1,11 +1,11 @@
 #' Create a connection specified in one of several ways
 #' @param input Either a string with a file name (containing no \code{\\n}
-#'   character), a \code{\link[base]{connection}} object, or the text records
-#'   themselves as a character vector.
+#'   character), a \code{\link[base]{connection}} object, or the
+#'   text records themselves as a character vector.
 #' @return An open \code{connection} object
 #' @seealso
-#'   \code{\link[base]{connections}},
-#'   \code{\link[base]{textConnections}}
+#'   \code{\link[base]{connection}},
+#'   \code{\link[base]{textConnection}}
 as.connection <- function(input) {
   # Based on logic in utils::read.table
   if (is.character(input)) {

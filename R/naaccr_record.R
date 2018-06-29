@@ -9,8 +9,8 @@
 #' \code{NA}.
 #'
 #' @param input Either a string with a file name (containing no \code{\\n}
-#'   character), a \code{\link[base]{connection}} object, or the text records
-#'   themselves as a character vector.
+#'   character), a \code{\link[base]{connection}} object, or the
+#'   text records themselves as a character vector.
 #' @param ... Arguments of the form \code{tag = value}, where \code{tag} is a
 #'   valid NAACCR data item name and \code{value} is the vector of the item's
 #'   values.
