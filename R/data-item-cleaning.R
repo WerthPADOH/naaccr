@@ -65,6 +65,17 @@ clean_census_tract <- function(tract) {
   is_tract <- data.table::between(tract, '000100', '949999')
   is_bna   <- data.table::between(tract, '950100', '998999')
   tract[!is_tract & !is_bna] <- NA
+  tract
+}
+
+
+#' Clean county FIPS codes
+#' @param tract A character vector of county FIPS codes.
+#' @return A character vector, with \code{NA} for unknown counties.
+#' @export
+clean_county_fips <- function(county) {
+  stri_subset_regex(county, "^\\d{3}$", negate = TRUE) <- NA
+  county
 }
 
 
@@ -74,6 +85,17 @@ clean_census_tract <- function(tract) {
 #' @export
 clean_icd_9_cm <- function(code) {
   code[code %in% c('', '00000')] <- NA
+  code
+}
+
+
+#' Clean cause of death codes
+#' @param code A character vector of ICD-7, ICD-8, ICD-9, and/or ICD-10 codes.
+#' @return \code{code}, but with values of \code{"00000"}, \code{"7777"}, and
+#'   \code{"7797"} replaced with \code{NA}.
+#' @export
+clean_cause_of_death <- function(code) {
+  code[stri_trim_both(code) %in% c('', '0000', '7777', '7797')] <- NA
   code
 }
 
@@ -98,4 +120,16 @@ clean_multiplicity_counter <- function(count) {
   count_int <- as.integer(count)
   count[count_int < 0L | count_int > 87L] <- NA
   count
+}
+
+
+#' Clean physician identification numbers
+#' @param physician A character vector of medical license number or
+#'   facility-generated codes.
+#' @return \code{physician}, but with values of \code{NA} for codes meaning not
+#'   reported or unkown.
+#' @export
+clean_physician_id <- function(physician) {
+  physician[physician %in% c('00000000', '99999999')] <- NA
+  physician
 }

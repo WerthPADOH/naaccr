@@ -79,33 +79,40 @@ as.naaccr_record.data.frame <- function(x, ...) {
   missing_columns <- setdiff(latest_items[['xml_name']], names(record))
   safe_set(record, j = missing_columns, value = NA_character_)
 
-  type_columns <- split(item_types[["name"]], item_types[["type"]])
-  safe_set(
-    record,
-    j     = type_columns[["integer"]],
-    value = lapply(
-      record[, type_columns[["integer"]], with = FALSE],
-      as.integer
-    )
+  type_columns <- split(item_types[['name']], item_types[['type']])
+  type_converters <- list(
+    integer      = as.integer,
+    numeric      = as.numeric,
+    boolean      = naaccr_boolean,
+    override     = naaccr_override,
+    sentineled   = as.numeric,
+    postal       = clean_postal,
+    city         = clean_address_city,
+    address      = clean_address_number_and_street,
+    facility     = clean_facility_id,
+    census_block = clean_census_block,
+    census_tract = clean_census_tract,
+    icd_9        = clean_icd_9_cm,
+    county       = clean_county_fips,
+    physician    = clean_physician_id,
+    Date         = function(x) {
+      as.Date(x, format = '%Y%m%d')
+    },
+    datetime     = function(x) {
+      x <- stri_trim_both(x)
+      x <- stri_pad_right(x, width = 14L, pad = "0", use_length = TRUE)
+      as.POSIXct(x, format = "%Y%m%d%H%M%S")
+    }
   )
-  safe_set(
-    record,
-    j     = type_columns[["numeric"]],
-    value = lapply(
-      record[, type_columns[["numeric"]], with = FALSE],
-      as.numeric
-    )
-  )
-  safe_set(
-    record,
-    j     = type_columns[["Date"]],
-    value = lapply(
-      record[, type_columns[["Date"]], with = FALSE],
-      as.Date,
-      format = "%Y%m%d"
-    )
-  )
-
+  for (type in names(type_converters)) {
+    columns <- intersect(type_columns[[type]], names(record))
+    if (length(columns) > 0L) {
+      converter_fun <- type_converters[[type]]
+      for (column in columns) {
+        safe_set(record, j = column, value = converter_fun(record[[column]]))
+      }
+    }
+  }
   record[, ':='(
     # Patient
     ageAtDiagnosis          = clean_age(ageAtDiagnosis),
@@ -118,9 +125,6 @@ as.naaccr_record.data.frame <- function(x, ...) {
     followUpContactPostal   = clean_postal(followUpContactPostal),
     addrAtDxNoStreet        = clean_address_number_and_street(addrAtDxNoStreet),
     addrCurrentNoStreet     = clean_address_number_and_street(addrCurrentNoStreet),
-    censusBlockGrp197090    = clean_census_block(censusBlockGrp197090),
-    censusBlockGroup2000    = clean_census_block(censusBlockGroup2000),
-    censusBlockGroup2010    = clean_census_block(censusBlockGroup2010),
     censusTract19708090     = clean_census_tract(censusTract19708090),
     censusTract2000         = clean_census_tract(censusTract2000),
     censusTract2010         = clean_census_tract(censusTract2010),
@@ -140,7 +144,17 @@ as.naaccr_record.data.frame <- function(x, ...) {
     followingRegistry       = clean_facility_id(followingRegistry),
     institutionReferredFrom = clean_facility_id(institutionReferredFrom),
     institutionReferredTo   = clean_facility_id(institutionReferredTo),
-    reportingFacility       = clean_facility_id(reportingFacility)
+    reportingFacility       = clean_facility_id(reportingFacility),
+    # specific handling
+    cancerStatus            = naaccr_boolean(cancerStatus, false_value = '1'),
+    autopsy                 = c(`1` = TRUE, `2` = FALSE)[autopsy],
+    causeOfDeath            = clean_cause_of_death(causeOfDeath),
+    socialSecurityNumber    = replace(
+      socialSecurityNumber, which(socialSecurityNumber == '999999999'), NA
+    ),
+    telephone               = replace(
+      telephone, which(telephone %in% c("0000000000", "9999999999")), NA
+    )
   )]
 
   record <- setDF(record)
