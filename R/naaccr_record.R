@@ -114,38 +114,7 @@ as.naaccr_record.data.frame <- function(x, ...) {
     }
   }
   record[, ':='(
-    # Patient
     ageAtDiagnosis          = clean_age(ageAtDiagnosis),
-    # Location
-    addrAtDxCity            = clean_address_city(addrAtDxCity),
-    addrCurrentCity         = clean_address_city(addrCurrentCity),
-    followUpContactCity     = clean_address_city(followUpContactCity),
-    addrAtDxPostalCode      = clean_postal(addrAtDxPostalCode),
-    addrCurrentPostalCode   = clean_postal(addrCurrentPostalCode),
-    followUpContactPostal   = clean_postal(followUpContactPostal),
-    addrAtDxNoStreet        = clean_address_number_and_street(addrAtDxNoStreet),
-    addrCurrentNoStreet     = clean_address_number_and_street(addrCurrentNoStreet),
-    censusTract19708090     = clean_census_tract(censusTract19708090),
-    censusTract2000         = clean_census_tract(censusTract2000),
-    censusTract2010         = clean_census_tract(censusTract2010),
-    # secondary to diagnosis
-    comorbidComplication1   = clean_icd_9_cm(comorbidComplication1),
-    comorbidComplication2   = clean_icd_9_cm(comorbidComplication2),
-    comorbidComplication3   = clean_icd_9_cm(comorbidComplication3),
-    comorbidComplication4   = clean_icd_9_cm(comorbidComplication4),
-    comorbidComplication5   = clean_icd_9_cm(comorbidComplication5),
-    comorbidComplication6   = clean_icd_9_cm(comorbidComplication6),
-    comorbidComplication7   = clean_icd_9_cm(comorbidComplication7),
-    comorbidComplication8   = clean_icd_9_cm(comorbidComplication8),
-    comorbidComplication9   = clean_icd_9_cm(comorbidComplication9),
-    comorbidComplication10  = clean_icd_9_cm(comorbidComplication10),
-    # facility
-    archiveFin              = clean_facility_id(archiveFin),
-    followingRegistry       = clean_facility_id(followingRegistry),
-    institutionReferredFrom = clean_facility_id(institutionReferredFrom),
-    institutionReferredTo   = clean_facility_id(institutionReferredTo),
-    reportingFacility       = clean_facility_id(reportingFacility),
-    # specific handling
     cancerStatus            = naaccr_boolean(cancerStatus, false_value = '1'),
     autopsy                 = c(`1` = TRUE, `2` = FALSE)[autopsy],
     causeOfDeath            = clean_cause_of_death(causeOfDeath),
@@ -156,7 +125,6 @@ as.naaccr_record.data.frame <- function(x, ...) {
       telephone, which(telephone %in% c("0000000000", "9999999999")), NA
     )
   )]
-
   record <- setDF(record)
   class(record) <- c('naaccr_record', class(record))
   record
