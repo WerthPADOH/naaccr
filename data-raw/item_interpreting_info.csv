@@ -764,7 +764,7 @@ tnmClinN,ajcc_n
 tnmClinStageGroup,ajcc_stage_group
 tnmClinStagedBy,factor
 tnmClinT,ajcc_t
-tnmEditionNumber,sentineled
+tnmEditionNumber,factor
 tnmPathDescriptor,factor
 tnmPathM,ajcc_m
 tnmPathN,ajcc_n
