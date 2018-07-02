@@ -1,0 +1,8 @@
+"code","label","description"
+"0","none","None"
+"1","E","E (Extranodal, lymphomas only)"
+"2","S","S (Spleen, lymphomas only)"
+"3","M","M (Multiple primary tumors in a single site)"
+"4","Y","Y (Classification during or after initial multimodality therapy)-pathologic staging only"
+"5","E and S","E & S (Extranodal and spleen, lymphomas only)"
+"6","M and Y","M & Y (Multiple primary tumors and initial multimodality therapy)"

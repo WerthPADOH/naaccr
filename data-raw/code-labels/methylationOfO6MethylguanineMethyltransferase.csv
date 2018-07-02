@@ -1,0 +1,8 @@
+code,label,description
+"0","none","MGMT methylation absent/not present, unmethylated MGMT"
+"1","low","MGMT methylation present, low level; Hypomethylated; Partial methylated"
+"2","high","MGMT methylation present, high level; Hypermethylated"
+"3","present, NOS","MGMT Methylation present, level unspecified"
+"6","benign or borderline tumor","Benign or borderline tumor"
+"7","test ordered, no results","Test ordered, results not in chart"
+"8","not applicable","Not applicable: Information not collected for this case"

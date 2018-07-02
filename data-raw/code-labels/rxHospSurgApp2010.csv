@@ -1,0 +1,7 @@
+"code","label","description"
+"0","none","No surgical procedure of primary site at this facility. Diagnosed at autopsy."
+"1","robotic assisted","Robotic assisted."
+"2","robotic converted to open","Robotic converted to open."
+"3","endoscopic or laparoscopic","Endoscopic or laparoscopic."
+"4","endoscopic or laparoscopic converted to open","Endoscopic or laparoscopic converted to open."
+"5","open, NOS.","Open. Approach not specified."

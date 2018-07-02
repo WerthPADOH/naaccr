@@ -1,0 +1,8 @@
+"code","label","description"
+"0","not applicable","No radiation and/or no surgery; unknown if surgery and/or radiation given"
+"2","radiation before surgery","Radiation before surgery"
+"3","radiation after surgery","Radiation after surgery"
+"4","radiation before and after surgery","Radiation both before and after surgery"
+"5","radiation during surgery","Intraoperative radiation"
+"6","radiation during and before or after surgery","Intraoperative radiation with other radiation given before and/or after surgery"
+"7","surgery before and after radiation","Surgery both before and after radiation"

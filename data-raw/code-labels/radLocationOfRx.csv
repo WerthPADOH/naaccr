@@ -1,0 +1,7 @@
+"code","label","description"
+"0","no treatment","No radiation treatment"
+"1","facility only","All radiation treatment at this facility"
+"2","regional at facility, boost elsewhere","Regional treatment at this facility, boost elsewhere"
+"3","boost at facility, regional elsewhere","Boost radiation at this facility, regional elsewhere"
+"4","elsewhere only","All radiation treatment elsewhere"
+"8","other","Other, NOS"

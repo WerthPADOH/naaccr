@@ -1,0 +1,5 @@
+code,label,description
+"0","anemic","Anemia not present; Hgb =11.0 g/dL"
+"1","not anemic","Anemia present;Hgb <11.0 g/dL"
+"6","stated anemic, results unknown","Lab value unknown, physician states patient is anemic"
+"7","test ordered, results unknown","Test ordered, results not in chart"

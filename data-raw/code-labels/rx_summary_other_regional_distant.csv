@@ -1,0 +1,7 @@
+"code","label","description"
+"0","none","None; no non-primary site resection was performed. Diagnosed at autopsy."
+"1","non-primary, NOS","Non-primary surgical procedure performed, unknown if whether site is regional or distant."
+"2","non-primary, regional","Non-primary surgical procedure to other regional sites"
+"3","non-primary, distant lymph nodes","Non-primary surgical procedure to distant lymph node(s)."
+"4","non-primary, distant site","Non-primary surgical procedure to distant site."
+"5","non-primary, regional and distant","Any combination of codes 2, 3, or 4."

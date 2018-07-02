@@ -1,0 +1,5 @@
+"code","label","description"
+"0","no surgery, no readmission","No surgical procedure of the primary site was performed. Patient not readmitted to the same hospital within 30 days of discharge."
+"1","surgery, unplanned readmission","Patient was surgically treated and was then readmitted to the same hospital within 30 days of being discharged. This readmission was unplanned."
+"2","surgery, planned readmission","Patient was surgically treated and was then readmitted to the same hospital within 30 days of being discharged. This readmission was planned (chemotherapy port insertion, revision of colostomy, etc.)."
+"3","surgery, planned and unplanned readmissions","Patient was surgically treated and, within 30 days of being discharged, had both a planned and an unplanned readmission to the same hospital."
