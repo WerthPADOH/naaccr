@@ -94,8 +94,7 @@ documented_factors <- c(
   "multigeneSignatureMethod", "naaccrRecordVersion", "nextFollowUpSource",
   "nhiaDerivedHispOrigin", "occupationSource", "oncotypeDxRiskLevelDcis",
   "oncotypeDxRiskLevelInvasive", "overRideAgeSiteMorph", "overRideCs20",
-  "overRideHistology", "pathReportType1", "pathReportType2", "pathReportType3",
-  "pathReportType4", "pathReportType5", "pediatricStagedBy",
+  "overRideHistology", "pathReportType1", "pediatricStagedBy",
   "pediatricStagingSystem", "peripheralBloodInvolvement", "peritonealCytology",
   outer(
     X = c("phase1", "phase2", "phase3"),
@@ -110,32 +109,24 @@ documented_factors <- c(
   "radBoostRxModality", "radiationTreatmentDiscontinuedEarly",
   "radLocationOfRx", "radRegionalRxModality", "radTreatmentVolume",
   "readmSameHosp30Days", "reasonForNoRadiation", "reasonForNoSurgery",
-  "recordType", "recurrenceDate1stFlag", "recurrenceType1st", "registryType",
+  "recurrenceDate1stFlag", "recurrenceType1st", "registryType",
   "residualTumorVolumePostCytoreduction", "responseToNeoadjuvantTherapy",
   "rqrsNcdbSubmissionFlag", "ruralurbanContinuum1993",
   "ruralurbanContinuum2003", "ruralurbanContinuum2013", "rxCodingSystemCurrent",
-  "rxDateBrmFlag", "rxDateChemoFlag", "rxDateDxStgProcFlag",
-  "rxDateHormoneFlag", "rxDateMostDefinSurgFlag", "rxDateOtherFlag",
-  "rxDateRadiationEndedFlag", "rxDateRadiationFlag", "rxDateSurgicalDischFlag",
-  "rxDateSurgeryFlag", "rxDateSystemicFlag", "rxHospBrm", "rxHospChemo",
-  "rxHospDxStgProc", "rxHospHormone", "rxHospOther", "rxHospPalliativeProc",
-  "rxHospRadiation", "rxHospScopeRegLnSur", "rxHospSurgApp2010",
-  "rxHospSurgOthRegDis", "rxSummBrm", "rxSummChemo", "rxSummDxStgProc",
-  "rxSummHormone", "rxSummOther", "rxSummPalliativeProc", "rxSummRadToCns",
-  "rxSummRadiation", "rxSummScopeRegLnSur", "rxSummSurgOthRegDis",
-  "rxSummSurgRadSeq", "rxSummSurgicalMargins", "rxSummSystemicSurSeq",
-  "rxSummTransplntEndocr", "rxSummTreatmentStatus", "sCategoryClinical",
-  "sCategoryPathological", "seerCauseSpecificCod", "seerCodingSysCurrent",
-  "seerCodingSysOriginal", "seerOtherCod", "seerSummaryStage1977",
-  "seerSummaryStage2000", "seerTypeOfFollowUp", "separateTumorNodules",
-  "serumAlbuminPretreatmentLevel", "serumBeta2MicroglobulinPretreatmentLevel",
-  "sex", "siteCodingSysCurrent", "siteCodingSysOriginal",
-  "spanishHispanicOrigin", "subsqRx2ndcrsDateFlag", "subsqRx3rdcrsDateFlag",
-  "subsqRx4thcrsDateFlag", "summaryStage2018", "survFlagActiveFollowup",
-  "survFlagPresumedAlive", "thrombocytopenia", "tnmClinDescriptor",
-  "tnmClinStagedBy", "tnmEditionNumber", "tnmPathDescriptor", "tnmPathStagedBy",
-  "tumorGrowthPattern", stri_join("tumorMarker", 1:3), "typeOfReportingSource",
-  "uric2000", "uric2010", "visceralAndParietalPleuralInvasion"
+  "rxHospDxStgProc", "rxHospRadiation", "rxHospSurgApp2010", "rxSummDxStgProc",
+  "rxSummRadToCns", "rxSummRadiation", "rxSummSurgRadSeq",
+  "rxSummSurgicalMargins", "rxSummSystemicSurSeq", "rxSummTransplntEndocr",
+  "rxSummTreatmentStatus", "sCategoryClinical", "sCategoryPathological",
+  "seerCauseSpecificCod", "seerCodingSysCurrent", "seerCodingSysOriginal",
+  "seerOtherCod", "seerSummaryStage1977", "seerSummaryStage2000",
+  "seerTypeOfFollowUp", "separateTumorNodules", "serumAlbuminPretreatmentLevel",
+  "serumBeta2MicroglobulinPretreatmentLevel", "sex", "siteCodingSysCurrent",
+  "siteCodingSysOriginal", "spanishHispanicOrigin", "summaryStage2018",
+  "survFlagActiveFollowup", "survFlagPresumedAlive", "thrombocytopenia",
+  "tnmClinDescriptor", "tnmClinStagedBy", "tnmEditionNumber",
+  "tnmPathDescriptor", "tnmPathStagedBy", "tumorGrowthPattern",
+  stri_join("tumorMarker", 1:3), "typeOfReportingSource", "uric2000",
+  "uric2010", "visceralAndParietalPleuralInvasion"
 )
 
 
@@ -152,6 +143,12 @@ code_maps <- naaccr_info_from_api[
 ][
   tolower(code) == "blank",
   code := ""
+]
+
+# Some schemes are shared by  multiple variables
+code_maps[
+  xml_name == "pathReportType1",
+  xml_name := "pathReportType"
 ]
 
 code_maps[
