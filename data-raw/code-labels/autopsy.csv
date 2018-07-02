@@ -1,0 +1,5 @@
+"code","label","description"
+"0","not applicable; patient alive","Not applicable; patient alive"
+"1","autopsy performed","Autopsy performed"
+"2","no autopsy performed","No autopsy performed"
+"9","patient expired, unknown if autopsy performed","Patient expired, unknown if autopsy performed"

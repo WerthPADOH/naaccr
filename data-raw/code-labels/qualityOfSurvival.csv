@@ -1,0 +1,7 @@
+"code","label","description"
+"0","normal activity","Normal activity"
+"1","symptomatic and ambulatory","Symptomatic and ambulatory"
+"2","occasionally needs assistance","Ambulatory more than 50 percent of the time, occasionally needs assistance"
+"3","nursing care needed","Ambulatory less than 50 percent of the time, nursing care needed"
+"4","bedridden","Bedridden, may require hospitalization"
+"8","not applicable","Not applicable, dead"

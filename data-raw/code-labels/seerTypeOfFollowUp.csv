@@ -1,0 +1,5 @@
+"code","label","description"
+"1","""autopsy-only"" or ""death certificate-only"" case","""Autopsy-Only"" or ""Death Certificate-Only"" case"
+"2","active","Active follow-up case"
+"3","cervix uteri in situ","In situ cancer of the cervix uteri only"
+"4","not originally active, active now","Case not originally in active follow-up, but in active follow-up now (San Francisco-Oakland only)"

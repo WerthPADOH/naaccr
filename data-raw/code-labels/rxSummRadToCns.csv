@@ -1,0 +1,5 @@
+"code","label","description"
+"0","none","No radiation to the brain and/or central nervous system"
+"1","radiation","Radiation"
+"7","recommended, refused","Patient or patient's guardian refused"
+"8","recommended, unknown if administered","Radiation recommended, unknown if administered"

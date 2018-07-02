@@ -1,0 +1,10 @@
+code,label,description
+"0","none","None"
+"1","BRM","Biological response modifier"
+"2","bone marrow transplant, autologous","Bone marrow transplant—autologous"
+"3","bone marrow transplant, allogeneic","Bone marrow transplant—allogeneic"
+"4","bone marrow transplant, NOS","Bone marrow transplant, NOS"
+"5","stem cell transplant","Stem cell transplant"
+"6","BRM and bone marrow transplant","Combination of 1 and any 2, 3, 4, or 5"
+"7","recommended, refused","Patient or patient’s guardian refused"
+"8","recommended, unknown if administered","Biological response modifier therapy recommended, unknown if administered"

@@ -1,0 +1,8 @@
+code,label,description
+"0","none","No evidence of visceral pleural invasion identified; Tumor does not completely traverse the elastic layer of the pleura; Stated as PL0"
+"1","PL1","Invasion of visceral elastic layer; Not beyond visceral pleural; Stated as PL1"
+"2","PL3","Invasion outside surface of the visceral pleura; Invasion through outer surface of the visceral pleura; Stated as PL2"
+"3","PL3","Tumor invades into or through the parietal pleura OR chest wall; Stated as PL3"
+"4","visceral pleura, NOS","Invasion of visceral pleura present, NOS; not stated if PL1 or PL2"
+"6","pleura, NOS","Tumor extends to pleura, NOS; not stated if visceral or parietal"
+"8","not applicable","Not applicable: Information not collected for this case (If this item is required by your standard setter, use of code 8 will result in an edit error.)"

@@ -1,0 +1,5 @@
+code,label,description
+"1","all urban","All urban-the percent of the population in an urban area = 100%"
+"2","mostly urban","Mostly urban-the percent of the population in an urban area < 100% and ≥ 50%"
+"3","mostly rural","Mosty rural-the percent of the population in an urban area > 0% and < 50%"
+"4","all rural","All rural-the percent of the population in an urban area = 0%"
