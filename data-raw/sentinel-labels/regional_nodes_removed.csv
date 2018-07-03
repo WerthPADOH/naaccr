@@ -1,0 +1,7 @@
+"sentinel","label"
+"90","≥ 90"
+"95","aspiration performed, no removal"
+"96","sampling, number unknown"
+"97","dissection, number unknown"
+"98","removal, number unknown"
+"99","unknown"

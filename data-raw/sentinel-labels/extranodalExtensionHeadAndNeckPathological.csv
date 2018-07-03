@@ -1,0 +1,8 @@
+"sentinel","label"
+"X.1",">= 10"
+"X.2","microscopic, NOS"
+"X.3","major, NOS"
+"X.4","present, NOS"
+"X.7","lymph nodes negative for cancer"
+"X.8","not applicable"
+"X.9","not documented"
