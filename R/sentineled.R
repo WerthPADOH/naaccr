@@ -3,6 +3,7 @@ sentineled.default <- function(x, sentinels, labels = sentinels, ...) {
   sentinel_id <- match(x, sentinels)
   x[!is.na(sentinel_id)] <- NA
   s <- as.numeric(x)
+  attributes(s) <- attributes(x)
   attr(s, "sentinels") <- factor(labels[sentinel_id], labels)
   class(s) <- c("sentineled", class(s))
   s
@@ -126,6 +127,7 @@ levels.sentineled <- function(x) {
 #' @noRd
 print.sentineled <- function(x, ..., quote = FALSE) {
   xchar <- as.character(x)
+  names(xchar) <- names(x)
   xchar[is.na(xchar)] <- paste0("<", as.character(sentinels(x)[is.na(xchar)]), ">")
   print(xchar, quote = quote)
   cat("sentinel values: ")
