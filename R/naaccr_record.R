@@ -113,18 +113,24 @@ as.naaccr_record.data.frame <- function(x, ...) {
       }
     }
   }
-  record[, ':='(
-    ageAtDiagnosis          = clean_age(ageAtDiagnosis),
-    cancerStatus            = naaccr_boolean(cancerStatus, false_value = '1'),
-    autopsy                 = c(`1` = TRUE, `2` = FALSE)[autopsy],
-    causeOfDeath            = clean_cause_of_death(causeOfDeath),
-    socialSecurityNumber    = replace(
-      socialSecurityNumber, which(socialSecurityNumber == '999999999'), NA
-    ),
-    telephone               = replace(
-      telephone, which(telephone %in% c("0000000000", "9999999999")), NA
+  record[
+    ,
+    ':='(
+      ageAtDiagnosis = clean_age(ageAtDiagnosis),
+      cancerStatus   = naaccr_boolean(cancerStatus, false_value = '1'),
+      autopsy        = c(`1` = TRUE, `2` = FALSE)[autopsy],
+      causeOfDeath   = clean_cause_of_death(causeOfDeath)
     )
-  )]
+  ][
+    radNoOfTreatmentVol == 999,
+    radNoOfTreatmentVol := NA
+  ][
+    socialSecurityNumber == '999999999',
+    socialSecurityNumber := NA
+  ][
+    telephone %in% c("0000000000", "9999999999"),
+    telephone := NA
+  ]
   record <- setDF(record)
   class(record) <- c('naaccr_record', class(record))
   record
