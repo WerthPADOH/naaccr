@@ -2,7 +2,7 @@ library(testthat)
 library(naaccr)
 
 
-context("Reading NAACCR-formatted files")
+context("naaccr_factor")
 
 test_that("naaccr_factor converts the input to a factor", {
   input <- sprintf("%02d", 1:99)
