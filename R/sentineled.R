@@ -1,10 +1,15 @@
 #' @noRd
 sentineled.default <- function(x, sentinels, labels = sentinels, ...) {
+  if ("" %in% labels) {
+    warning("\"\" included in labels, which is also used for non-missing values")
+  }
   sentinel_id <- match(x, sentinels)
   x[!is.na(sentinel_id)] <- NA
   s <- as.numeric(x)
   attributes(s) <- attributes(x)
-  attr(s, "sentinels") <- factor(labels[sentinel_id], labels)
+  sents <- factor(labels[sentinel_id], union("", labels))
+  sents[!is.na(x)] <- ""
+  attr(s, "sentinels") <- sents
   class(s) <- c("sentineled", class(s))
   s
 }
@@ -12,11 +17,16 @@ sentineled.default <- function(x, sentinels, labels = sentinels, ...) {
 
 #' @noRd
 sentineled.numeric <- function(x, sentinels, labels = sentinels, ...) {
+  if ("" %in% labels) {
+    warning("\"\" included in labels, which is also used for non-missing values")
+  }
   sentinel_num <- suppressWarnings(as.numeric(sentinels))
   sentinel_id <- match(x, sentinel_num)
   sentinel_id[is.na(x)] <- NA
   x[!is.na(sentinel_id)] <- NA
-  attr(x, "sentinels") <- factor(labels[sentinel_id], labels)
+  sents <- factor(labels[sentinel_id], union("", labels))
+  sents[!is.na(x)] <- ""
+  attr(x, "sentinels") <- sents
   class(x) <- c("sentineled", class(x))
   x
 }
@@ -37,8 +47,10 @@ sentineled.numeric <- function(x, sentinels, labels = sentinels, ...) {
 #' @return
 #'   \code{sentineled} returns an object of class \code{"sentineled"}, which is
 #'   a numeric vector the length of \code{x} with a \code{"sentinels"} attribute
-#'   the same length. This is an object of class \code{"factor"} and the same
-#'   length classifying missing values.
+#'   the same length. The \code{"sentinels"} attribute is an object of class
+#'   \code{"factor"} and the same length classifying missing values. Its levels
+#'   are \code{c("", labels)}; \code{""} is used for non-missing values and is
+#'   included to simplify using the sentinels in expressions.
 #'
 #'   \code{sentinels} returns the \code{"sentinels"} attribute of \code{x}.
 #'
@@ -51,7 +63,7 @@ sentineled.numeric <- function(x, sentinels, labels = sentinels, ...) {
 #'   rs <- sentineled(responses, c("X", "Y"), c("refused", "not asked"))
 #'   which(is.na(rs))
 #'   levels(rs)
-#'   which(sentineled(rs) == "refused")
+#'   sentineled(rs) == "refused"
 #' @export
 sentineled <- function(x, sentinels, labels = sentinels, ...) {
   UseMethod("sentineled")
@@ -73,7 +85,7 @@ levels.sentineled <- function(x) {
 #' @noRd
 `[.sentineled` <- function(x, i) {
   xi_num <- as.numeric(x)[i]
-  s <- sentineled(xi_num, levels(x))
+  s <- sentineled(xi_num, levels(x)[-1L])
   attr(s, "sentinels") <- sentinels(x)[i]
   s
 }
@@ -82,7 +94,7 @@ levels.sentineled <- function(x) {
 #' @noRd
 `[[.sentineled` <- function(x, i, exact = TRUE) {
   xi_num <- as.numeric(x)[[i]]
-  s <- sentineled(xi_num, levels(x))
+  s <- sentineled(xi_num, levels(x)[-1L])
   attr(s, "sentinels") <- sentinels(x)[i]
   s
 }
@@ -91,6 +103,7 @@ levels.sentineled <- function(x) {
 #' @noRd
 `[<-.sentineled` <- function(x, i, value) {
   new_sent <- levels(x)[match(value, levels(x))]
+  new_sent[!is.na(value)] <- ""
   x_sent <- sentinels(x)
   x_sent[i] <- new_sent
   is_sent <- !is.na(new_sent)
