@@ -1,4 +1,5 @@
 #' @noRd
+#' @export
 sentineled.default <- function(x, sentinels, labels, ...) {
   if (missing(labels)) {
     labels <- sentinels
@@ -18,12 +19,14 @@ sentineled.default <- function(x, sentinels, labels, ...) {
 
 
 #' @noRd
+#' @export
 sentineled.sentineled <- function(x, sentinels, labels, ...) {
   x
 }
 
 
 #' @noRd
+#' @export
 sentineled.numeric <- function(x, sentinels, labels, ...) {
   if (missing(labels)) {
     labels <- sentinels
@@ -81,18 +84,21 @@ sentineled <- function(x, sentinels, labels = sentinels, ...) {
 
 
 #' @describeIn sentinels
+#' @export
 sentinels <- function(x) {
   attr(x, "sentinels")
 }
 
 
 #' @describeIn sentinels
+#' @export
 levels.sentineled <- function(x) {
   levels(sentinels(x))
 }
 
 
 #' @noRd
+#' @export
 `[.sentineled` <- function(x, i) {
   xi_num <- as.numeric(x)[i]
   s <- sentineled(xi_num, levels(x)[-1L])
@@ -102,6 +108,7 @@ levels.sentineled <- function(x) {
 
 
 #' @noRd
+#' @export
 `[[.sentineled` <- function(x, i, exact = TRUE) {
   s <- as.numeric(x)[[i]]
   attr(s, "sentinels") <- sentinels(x)[i]
@@ -111,6 +118,7 @@ levels.sentineled <- function(x) {
 
 
 #' @noRd
+#' @export
 `[<-.sentineled` <- function(x, i, value) {
   new_sent <- levels(x)[match(value, levels(x))]
   new_sent[!is.na(value)] <- ""
@@ -130,6 +138,7 @@ levels.sentineled <- function(x) {
 
 
 #' @noRd
+#' @export
 `[[<-.sentineled` <- function(x, i, value) {
   new_sent <- if (is.na(value)) {
     levels(x)[[match(value, levels(x))]]
@@ -152,6 +161,7 @@ levels.sentineled <- function(x) {
 
 
 #' @noRd
+#' @export
 print.sentineled <- function(x, ..., quote = FALSE) {
   xchar <- as.character(x)
   names(xchar) <- names(x)
