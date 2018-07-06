@@ -18,6 +18,12 @@ sentineled.default <- function(x, sentinels, labels, ...) {
 
 
 #' @noRd
+sentineled.sentineled <- function(x, sentinels, labels, ...) {
+  x
+}
+
+
+#' @noRd
 sentineled.numeric <- function(x, sentinels, labels, ...) {
   if (missing(labels)) {
     labels <- sentinels
