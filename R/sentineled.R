@@ -1,6 +1,8 @@
 #' @noRd
-sentineled.default <- function(x, sentinels, labels = sentinels, ...) {
-  if ("" %in% labels) {
+sentineled.default <- function(x, sentinels, labels, ...) {
+  if (missing(labels)) {
+    labels <- sentinels
+  } else if ("" %in% labels) {
     warning("\"\" included in labels, which is also used for non-missing values")
   }
   sentinel_id <- match(x, sentinels)
@@ -16,8 +18,10 @@ sentineled.default <- function(x, sentinels, labels = sentinels, ...) {
 
 
 #' @noRd
-sentineled.numeric <- function(x, sentinels, labels = sentinels, ...) {
-  if ("" %in% labels) {
+sentineled.numeric <- function(x, sentinels, labels, ...) {
+  if (missing(labels)) {
+    labels <- sentinels
+  } else if ("" %in% labels) {
     warning("\"\" included in labels, which is also used for non-missing values")
   }
   sentinel_num <- suppressWarnings(as.numeric(sentinels))
@@ -93,9 +97,9 @@ levels.sentineled <- function(x) {
 
 #' @noRd
 `[[.sentineled` <- function(x, i, exact = TRUE) {
-  xi_num <- as.numeric(x)[[i]]
-  s <- sentineled(xi_num, levels(x)[-1L])
+  s <- as.numeric(x)[[i]]
   attr(s, "sentinels") <- sentinels(x)[i]
+  class(s) <- c("sentineled", class(s))
   s
 }
 
@@ -121,7 +125,11 @@ levels.sentineled <- function(x) {
 
 #' @noRd
 `[[<-.sentineled` <- function(x, i, value) {
-  new_sent <- levels(x)[match(value, levels(x))]
+  new_sent <- if (is.na(value)) {
+    levels(x)[[match(value, levels(x))]]
+  } else {
+    ""
+  }
   x_sent <- sentinels(x)
   x_sent[[i]] <- new_sent
   is_sent <- !is.na(new_sent)
