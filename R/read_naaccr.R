@@ -130,5 +130,5 @@ read_naaccr <- function(input, version = NULL) {
   )
   setDT(records)
   setnames(records, name_recent(names(records)))
-  records
+  as.naaccr_record(records)
 }

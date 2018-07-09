@@ -18,13 +18,9 @@
 #'   used to parse the records. Only used if \code{input} is given.
 #' @return A \code{data.frame} with columns named using the NAACCR XML scheme.
 #' @export
-naaccr_record <- function(input, ..., version = NULL) {
-  input_data <- if (!missing(input)) {
-    read_naaccr(input, version)
-  } else {
-    character_values <- lapply(list(...), as.character)
-    as.data.frame(character_values, stringsAsFactors = FALSE)
-  }
+naaccr_record <- function(..., version = NULL) {
+  input_data <- lapply(list(...), as.character)
+  setDF(input_data)
   as.naaccr_record(input_data)
 }
 
