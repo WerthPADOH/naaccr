@@ -113,6 +113,13 @@ as.naaccr_record.data.frame <- function(x, ...) {
       }
     }
   }
+  for (column in intersect(type_columns[["factor"]], names(record))) {
+    safe_set(
+      x     = record,
+      j     = column,
+      value = naaccr_factor(record[[column]], field = column)
+    )
+  }
   for (column in intersect(type_columns[["sentineled"]], names(record))) {
     safe_set(
       x     = record,
