@@ -14,7 +14,9 @@ Suggests:
     httr       (>= 1.2.1),
     jsonlite   (>= 1.5),
     magrittr   (>= 1.5),
-    testthat   (>= 1.0.2)
+    testthat   (>= 1.0.2),
+    maps,
+    xml2
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
