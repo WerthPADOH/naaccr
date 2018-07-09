@@ -4,6 +4,8 @@
 #' @param x Vector (usually character) of codes.
 #' @param field String giving the XML name of the NAACCR field to code.
 #' @param ... Additional arguments passed onto \code{\link[base]{factor}}.
+#' @param full_names Logical indicating whether the levels should be the full
+#'   country names. If \code{FALSE}, the three-character ISO code is used.
 #' @return
 #'   A \code{factor} vector version of \code{x}. The levels are short
 #'   descriptions instead of the basic NAACCR codes. Codes which stood for
@@ -31,10 +33,14 @@ naaccr_factor <- function(x, field, ...) {
     codes <- field_codes[field_scheme, on = "scheme"]
     setorderv(codes, "code")
     factor(x, levels = codes[["code"]], labels = codes[["label"]], ...)
+  } else {
+    setNames(as.character(x), names(x))
   }
 }
 
 
+#' @export
+#' @rdname naaccr_factor
 naaccr_factor_country <- function(x, full_names = TRUE, ...) {
   country_labels <- if (isTRUE(full_names)) {
     country_codes[["name"]]
