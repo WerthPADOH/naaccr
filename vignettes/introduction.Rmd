@@ -1,0 +1,48 @@
+---
+title: "Introduction to naaccr"
+author: "Nathan Werth"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to naaccr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+library(naaccr)
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Analysts who work with cancer data likely know of the record format defined by
+the North American Association of Central Cancer Registries
+([NAACCR](https://www.naaccr.org/)). The most recent version of the format,
+`r max(naaccr:::naaccr_items[["naaccr_version"]])`, includes
+`r naaccr:::naaccr_items[naaccr_version == 18 & !is.na(xml_name), .N]` fields.
+Analysts can only safely use the literal values for a few of the fields:
+longitude, latitude, most address parts, and free text. All others require the
+user to consult the official and lengthy
+[data dictionary](http://datadictionary.naaccr.org/?c=10).
+
+The `naaccr` package attempts to assist the usage of cancer incidence records in
+R by following three tenets, in order of importance:
+
+1.  *Lose no information.* Some category descriptions were simplified
+    but still maintain the core concept. The curious analyst can easily look up
+    and match full descriptions from the official data dictionary.
+2.  *Use the right classes and values for each field.* Basic R classes are used
+    whenever possible: `factor` for categorical, `Date` for date, `logical` for
+    Boolean, and `character` for "free text." A new class, `sentineled`, handles
+    fields which mix continuous and categorical values. Values for
+    "undocumented" are mapped to `NA`.
+3.  *Stay close to the official format.* A common standard's purpose is to
+    simplify sharing data and analyses. All field names come from NAACCR's XML
+    standard. No extra columns are added. No "cleaning" is done beyond replacing
+    special values for "unknown" with `NA` in free-text fields. Most analyses
+    will require further processing, but that should be specific to the project.
+
+## Reading NAACCR records
