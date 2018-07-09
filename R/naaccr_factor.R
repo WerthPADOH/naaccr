@@ -43,3 +43,29 @@ naaccr_factor_country <- function(x, full_names = TRUE, ...) {
   }
   factor(x, levels = country_codes[["code"]], labels = country_labels, ...)
 }
+
+
+#' Convert NAACCR fields to sentineled numeric
+#'
+#' @param x Vector to convert to a \code{\link{sentineled}} object.
+#' @param field String giving the XML name of the NAACCR field to code.
+#' @param ... Additional arguments passed onto \code{sentineled}.
+#' @return An object of class \code{sentineled}. The sentinel levels are
+#'   determined using the NAACCR data dictionary. If \code{field} is not a
+#'   numeric field with sentinel values, then \code{x} will be rerturned.
+#' @examples
+#'   naaccr_sentineled()
+#' @export
+naaccr_sentineled <- function(x, field, ...) {
+  if (length(field) != 1L) {
+    stop("field should be single string")
+  }
+  if (field %in% field_sentinel_scheme[["xml_name"]]) {
+    field_scheme <- field_sentinel_scheme[list(field), on = "xml_name"]
+    sents <- field_sentinels[field_scheme, on = "scheme"]
+    x[!nzchar(x)] <- NA
+    sentineled(x, sentinels = sents[["sentinel"]], labels = sents[["label"]], ...)
+  } else {
+    x
+  }
+}

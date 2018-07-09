@@ -37,3 +37,20 @@ test_that("sentineled vectors are good for use", {
   expect_identical(as.numeric(sub_x), NA_real_)
   expect_identical(is.na(s), c(FALSE, TRUE, TRUE))
 })
+
+test_that("naaccr_sentineled works", {
+  gleason <- naaccr_sentineled(
+    c("02", "10", "X7", "X8", "X9", ""),
+    "gleasonScoreClinical"
+  )
+  expect_is(gleason, "sentineled")
+  expect_identical(as.numeric(gleason), c(2, 10, NA, NA, NA, NA))
+  expect_identical(
+    levels(gleason),
+    c("", "procedure not done", "not applicable", "not documented")
+  )
+  expect_identical(
+    as.character(sentinels(gleason)),
+    c("", "", "procedure not done", "not applicable", "not documented", NA)
+  )
+})
