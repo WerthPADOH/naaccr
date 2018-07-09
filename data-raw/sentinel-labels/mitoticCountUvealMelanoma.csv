@@ -1,0 +1,8 @@
+"sentinel","label"
+"XX.1","≥ 100"
+"XX.2","low, NOS"
+"XX.3","high, NOS"
+"XX.4","denominator not 40 HPF"
+"XX.7","test ordered, results unknown"
+"XX.8","not applicable"
+"XX.9","not documented"
