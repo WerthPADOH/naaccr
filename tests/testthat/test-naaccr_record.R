@@ -4,10 +4,20 @@ library(naaccr)
 
 context("Reading NAACCR-formatted files")
 
-test_that("naaccr_record returns a 'naaccr_record', 'data.frame' object", {
-  nr <- naaccr_record("../data/fake-naaccr14inc-2-rec.txt")
+test_that("read_naaccr returns a 'naaccr_record', 'data.frame' object", {
+  nr <- read_naaccr("../data/fake-naaccr14inc-2-rec.txt")
   expect_true(inherits(nr, "naaccr_record"))
   expect_true(inherits(nr, "data.frame"))
+})
+
+test_that("naaccr_record can be used to create a new naaccr_record object", {
+  nr <- naaccr_record(
+    sex             = c(1, 9),
+    race1           = c(1, 88),
+    dateOfDiagnosis = c("20140104", "20100705")
+  )
+  expect_is(nr, "naaccr_record")
+  expect_identical(nrow(nr), 2L)
 })
 
 test_that("name_recent gets the right names from item numbers", {
