@@ -166,6 +166,7 @@ print.sentineled <- function(x, ..., quote = FALSE) {
   xchar <- as.character(x)
   names(xchar) <- names(x)
   xchar[is.na(xchar)] <- paste0("<", as.character(sentinels(x)[is.na(xchar)]), ">")
+  xchar[is.na(sentinels(x))] <- "NA"
   print(xchar, quote = quote)
   cat("sentinel values: ")
   if (length(levels(x)) > 0L) {
