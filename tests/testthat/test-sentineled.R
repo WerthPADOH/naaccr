@@ -75,6 +75,23 @@ test_that("format.sentineled works", {
   )
 })
 
+test_that("sentineled columns in a data.frame print nicely", {
+  s <- sentineled(c(1:4, NA), 2:3, c("a", "bbbb"))
+  d <- data.frame(x = s)
+  result <- capture.output(print(d))
+  expect_identical(
+    result,
+    c(
+      "       x",
+      "1      1",
+      "2    <a>",
+      "3 <bbbb>",
+      "4      4",
+      "5     NA"
+    )
+  )
+})
+
 test_that("sentineled vectors are good for use", {
   s <- sentineled(c(1, 2, 3), c(2, 3), c("x", "y"))
   sub_x <- s[sentinels(s) == "x"]
