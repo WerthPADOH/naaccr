@@ -121,13 +121,13 @@ levels.sentineled <- function(x) {
 #' @export
 `[<-.sentineled` <- function(x, i, value) {
   new_sent <- levels(x)[match(value, levels(x))]
-  new_sent[!is.na(value)] <- ""
+  new_sent[!is.na(value) & is.na(new_sent)] <- ""
   x_sent <- sentinels(x)
   x_sent[i] <- new_sent
-  is_sent <- !is.na(new_sent)
+  is_value <- new_sent == ""
   x_num <- as.numeric(x)
-  x_num[i][is_sent] <- NA
-  x_num[i][!is_sent] <- as.numeric(value[!is_sent])
+  x_num[i][!is_value] <- NA
+  x_num[i][is_value] <- as.numeric(value[is_value])
   structure(
     .Data = x_num,
     names = names(x),
@@ -140,17 +140,20 @@ levels.sentineled <- function(x) {
 #' @noRd
 #' @export
 `[[<-.sentineled` <- function(x, i, value) {
-  new_sent <- if (is.na(value)) {
-    levels(x)[[match(value, levels(x))]]
+  if (is.na(value)) {
+    new_sent  <- NA
+    new_value <- NA
+  } else if (value %in% levels(x)) {
+    new_sent  <- value
+    new_value <- NA
   } else {
-    ""
+    new_sent  <- ""
+    new_value <- as.numeric(value)
   }
   x_sent <- sentinels(x)
   x_sent[[i]] <- new_sent
-  is_sent <- !is.na(new_sent)
   x_num <- as.numeric(x)
-  x_num[[i]][is_sent] <- NA
-  x_num[[i]][!is_sent] <- as.numeric(value[!is_sent])
+  x_num[[i]] <- new_value
   structure(
     .Data = x_num,
     names = names(x),

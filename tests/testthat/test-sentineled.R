@@ -23,6 +23,25 @@ test_that("subsets of sentineled are also sentineled, and can be assigned to", {
   expect_identical(sentineled(sub_single), sentineled(s)[1])
 })
 
+test_that("subset assignment results in valid value/sentinel pairs", {
+  s <- sentineled(c(1:4, NA), 3:4)
+  s[2:3] <- 5:6
+  expect_identical(s, sentineled(c(1, 5, 6, 4, NA), 3:4))
+  s <- sentineled(c(1:4, NA), 3:4)
+  s[2:3] <- 4:5
+  expect_identical(s, sentineled(c(1, 4, 5, 4, NA), 3:4))
+  expect_true(is.na(s[2]))
+  expect_identical(sentinels(s)[2], sentinels(s)[4])
+  s <- sentineled(c(1:4, NA), 3:4)
+  s[[2]] <- 5
+  expect_identical(s, sentineled(c(1, 5, 3, 4, NA), 3:4))
+  s <- sentineled(c(1:4, NA), 3:4)
+  s[[2]] <- 4
+  expect_identical(s, sentineled(c(1, 4, 3, 4, NA), 3:4))
+  expect_true(is.na(s[2]))
+  expect_identical(sentinels(s)[2], sentinels(s)[4])
+})
+
 test_that("Conversion to sentineled retains attributes", {
   n <- setNames(1:26, letters)
   attr(n, "pet") <- "dog"
