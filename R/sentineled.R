@@ -121,13 +121,13 @@ levels.sentineled <- function(x) {
 #' @export
 `[<-.sentineled` <- function(x, i, value) {
   new_sent <- levels(x)[match(value, levels(x))]
-  new_sent[!is.na(value)] <- ""
+  new_sent[!is.na(value) & is.na(new_sent)] <- ""
   x_sent <- sentinels(x)
   x_sent[i] <- new_sent
-  is_sent <- !is.na(new_sent)
+  is_value <- new_sent == ""
   x_num <- as.numeric(x)
-  x_num[i][is_sent] <- NA
-  x_num[i][!is_sent] <- as.numeric(value[!is_sent])
+  x_num[i][!is_value] <- NA
+  x_num[i][is_value] <- as.numeric(value[is_value])
   structure(
     .Data = x_num,
     names = names(x),
@@ -140,17 +140,20 @@ levels.sentineled <- function(x) {
 #' @noRd
 #' @export
 `[[<-.sentineled` <- function(x, i, value) {
-  new_sent <- if (is.na(value)) {
-    levels(x)[[match(value, levels(x))]]
+  if (is.na(value)) {
+    new_sent  <- NA
+    new_value <- NA
+  } else if (value %in% levels(x)) {
+    new_sent  <- value
+    new_value <- NA
   } else {
-    ""
+    new_sent  <- ""
+    new_value <- as.numeric(value)
   }
   x_sent <- sentinels(x)
   x_sent[[i]] <- new_sent
-  is_sent <- !is.na(new_sent)
   x_num <- as.numeric(x)
-  x_num[[i]][is_sent] <- NA
-  x_num[[i]][!is_sent] <- as.numeric(value[!is_sent])
+  x_num[[i]] <- new_value
   structure(
     .Data = x_num,
     names = names(x),
@@ -166,6 +169,7 @@ print.sentineled <- function(x, ..., quote = FALSE) {
   xchar <- as.character(x)
   names(xchar) <- names(x)
   xchar[is.na(xchar)] <- paste0("<", as.character(sentinels(x)[is.na(xchar)]), ">")
+  xchar[is.na(sentinels(x))] <- "NA"
   print(xchar, quote = quote)
   cat("sentinel values: ")
   if (length(levels(x)) > 0L) {
@@ -178,4 +182,27 @@ print.sentineled <- function(x, ..., quote = FALSE) {
   }
   cat("\n")
   invisible(x)
+}
+
+#' @noRd
+#' @export
+format.sentineled <- function(x,
+                              ...,
+                              trim = FALSE,
+                              width = NULL,
+                              justify = NULL) {
+  x_vec <- setNames(as.vector(x), names(x))
+  # Numeric vectors are always right-justified
+  if (is.numeric(x_vec)) {
+    justify <- "right"
+  }
+  out <- format(x_vec, trim = trim, width = width, justify = justify, ...)
+  sent_char <- as.character(sentinels(x))
+  sent_index <- which(nzchar(sent_char, keepNA = TRUE))
+  out[sent_index] <- paste0("<", sent_char[sent_index], ">")
+  out <- format(out, width = width, justify = justify, ...)
+  if (isTRUE(trim)) {
+    out <- trimws(out)
+  }
+  out
 }
