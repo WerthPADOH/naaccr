@@ -34,6 +34,7 @@ naaccr_factor <- function(x, field, ...) {
     setorderv(codes, "code")
     factor(x, levels = codes[["code"]], labels = codes[["label"]], ...)
   } else {
+    warning('"', field, '" not a valid XML field name')
     setNames(as.character(x), names(x))
   }
 }
@@ -72,6 +73,7 @@ naaccr_sentineled <- function(x, field, ...) {
     x[!nzchar(x)] <- NA
     sentineled(x, sentinels = sents[["sentinel"]], labels = sents[["label"]], ...)
   } else {
+    warning('"', field, '" not a valid XML field name')
     x
   }
 }

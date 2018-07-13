@@ -20,3 +20,7 @@ test_that("naaccr_factor works for country codes", {
   country_factor <- naaccr_factor(input[["code"]], "addrAtDxCountry")
   expect_identical(as.character(country_factor), input[["name"]])
 })
+
+test_that("naaccr_factor warns for non-fields", {
+  expect_warning(naaccr_factor("a", "foo"))
+})

@@ -54,3 +54,7 @@ test_that("naaccr_sentineled works", {
     c("", "", "procedure not done", "not applicable", "not documented", NA)
   )
 })
+
+test_that("naaccr_sentineled warns for non-fields", {
+  expect_warning(naaccr_sentineled(1, "foo"))
+})
