@@ -180,3 +180,26 @@ print.sentineled <- function(x, ..., quote = FALSE) {
   cat("\n")
   invisible(x)
 }
+
+#' @noRd
+#' @export
+format.sentineled <- function(x,
+                              ...,
+                              trim = FALSE,
+                              width = NULL,
+                              justify = NULL) {
+  x_vec <- setNames(as.vector(x), names(x))
+  # Numeric vectors are always right-justified
+  if (is.numeric(x_vec)) {
+    justify <- "right"
+  }
+  out <- format(x_vec, trim = trim, width = width, justify = justify, ...)
+  sent_char <- as.character(sentinels(x))
+  sent_index <- which(nzchar(sent_char, keepNA = TRUE))
+  out[sent_index] <- paste0("<", sent_char[sent_index], ">")
+  out <- format(out, width = width, justify = justify, ...)
+  if (isTRUE(trim)) {
+    out <- trimws(out)
+  }
+  out
+}

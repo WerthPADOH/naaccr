@@ -31,6 +31,31 @@ test_that("Conversion to sentineled retains attributes", {
   expect_identical(attr(s, "pet"), "dog")
 })
 
+test_that("format.sentineled works", {
+  # Don't leave choices to session options
+  orig_op <- options(
+    scipen = 1000,
+    digits = 10,
+    OutDec = "."
+  )
+  on.exit(options(orig_op))
+  s <- sentineled(c(1, 1000000, "tiny", "enormous", NA), c("tiny", "enormous"))
+  expect_identical(
+    format(s),
+    c("         1", "   1000000", "    <tiny>", "<enormous>", "        NA")
+  )
+  expect_identical(format(s[-4]), c("      1", "1000000", " <tiny>", "     NA"))
+  expect_identical(format(s[-c(2, 4)]), c("     1", "<tiny>", "    NA"))
+  expect_identical(
+    format(s, trim = TRUE),
+    c("1", "1000000", "<tiny>", "<enormous>", "NA")
+  )
+  expect_identical(
+    format(s[c(1, 4, 5)], width = 11),
+    c("          1", " <enormous>", "         NA")
+  )
+})
+
 test_that("sentineled vectors are good for use", {
   s <- sentineled(c(1, 2, 3), c(2, 3), c("x", "y"))
   sub_x <- s[sentinels(s) == "x"]
