@@ -541,7 +541,7 @@ raceNapiia,race
 radBoostDoseCgy,character
 radBoostRxModality,factor
 radLocationOfRx,factor
-radNoOfTreatmentVol,sentineled
+radNoOfTreatmentVol,integer
 radRegionalDoseCgy,character
 radRegionalRxModality,factor
 radTreatmentVolume,factor

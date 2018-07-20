@@ -132,7 +132,7 @@ as.naaccr_record.data.frame <- function(x, ...) {
       causeOfDeath   = clean_cause_of_death(causeOfDeath)
     )
   ][
-    radNoOfTreatmentVol == 999,
+    radNoOfTreatmentVol == 999L,
     radNoOfTreatmentVol := NA
   ][
     socialSecurityNumber == '999999999',
