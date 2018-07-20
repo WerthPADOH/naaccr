@@ -51,7 +51,7 @@ behaviorIcdO1,character
 behaviorIcdO2,character
 bilirubinPretreatmentTotalLabValue,sentineled
 bilirubinPretreatmentUnitOfMeasure,factor
-birthplace,place
+birthplace,factor
 birthplaceCountry,country
 birthplaceState,factor
 boneInvasion,boolean
@@ -516,7 +516,7 @@ physician4,physician
 physicianFollowUp,physician
 physicianManaging,physician
 physicianPrimarySurg,physician
-placeOfDeath,place
+placeOfDeath,factor
 placeOfDeathCountry,country
 placeOfDeathState,factor
 pleuralEffusion,factor
