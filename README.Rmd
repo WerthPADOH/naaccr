@@ -33,15 +33,21 @@ can contain multiple records as rows.
 The `read_naaccr` function creates a `naaccr_record` object from a
 NAACCR-formatted file.
 
+```{r showRecords}
+record_file <- system.file(
+  "extdata/synthetic-naaccr-18-abstract.txt",
+  package = "naaccr"
+)
+record_lines <- readLines(record_file)
+## Marital status and race fields
+cat(substr(record_lines[1:5], 206, 216), sep = "\n")
+```
+
 ```{r readNaaccr}
 library(naaccr)
 
-record_file <- "tests/data/fake-naaccr14inc-2-rec.txt"
-record_lines <- readLines(record_file)
-# Marital status and race fields
-cat(substr(record_lines, 206, 216), sep = "\n")
 records <- read_naaccr(record_file)
-records[, c("maritalStatusAtDx", "race1", "race2", "race3", "race4", "race5")]
+records[1:5, c("maritalStatusAtDx", "race1", "race2", "race3")]
 ```
 
 Like with most classes, one can create a new `naaccr_record` object with the
@@ -128,7 +134,7 @@ continuous nor sentinel codes. These "totally missing" values are likely errors
 in coding and should be addressed.
 
 ```{r sentinelsBlanks}
-# Returns the desired and NA values, but not the non-missing
+## Returns the desired and NA values, but not the non-missing
 rnp[sentinels(rnp) == "unknown"]
 ```
 
