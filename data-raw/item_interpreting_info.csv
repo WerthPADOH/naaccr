@@ -696,10 +696,10 @@ siteCodingSysOriginal,factor
 siteIcdO1,character
 socialSecurityNumber,character
 spanishHispanicOrigin,factor
-stateAtDxGeocode19708090,state_fips
-stateAtDxGeocode2000,state_fips
-stateAtDxGeocode2010,state_fips
-stateAtDxGeocode2020,state_fips
+stateAtDxGeocode19708090,character
+stateAtDxGeocode2000,character
+stateAtDxGeocode2010,character
+stateAtDxGeocode2020,character
 stateRequestorItems,character
 subsqRx2ndCourseBrm,character
 subsqRx2ndCourseChemo,character
