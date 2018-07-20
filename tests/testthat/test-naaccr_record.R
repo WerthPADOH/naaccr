@@ -5,9 +5,15 @@ library(naaccr)
 context("Reading NAACCR-formatted files")
 
 test_that("read_naaccr returns a 'naaccr_record', 'data.frame' object", {
-  nr <- read_naaccr("../data/fake-naaccr14inc-2-rec.txt")
+  nr <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt")
   expect_true(inherits(nr, "naaccr_record"))
   expect_true(inherits(nr, "data.frame"))
+})
+
+test_that("read_naaccr returns the same number of columns for any input", {
+  abstract  <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt")
+  incidence <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt")
+  expect_identical(nrow(abstract), nrow(incidence))
 })
 
 test_that("naaccr_record can be used to create a new naaccr_record object", {

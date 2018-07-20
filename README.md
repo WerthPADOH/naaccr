@@ -18,54 +18,31 @@ The `naaccr_record` class defines objects which store cancer incidence records. 
 The `read_naaccr` function creates a `naaccr_record` object from a NAACCR-formatted file.
 
 ``` r
+record_file <- system.file(
+  "extdata/synthetic-naaccr-18-abstract.txt",
+  package = "naaccr"
+)
+record_lines <- readLines(record_file)
+## Marital status and race fields
+cat(substr(record_lines[1:5], 206, 216), sep = "\n")
+#> 30188888888
+#> 40188888888
+#> 20188888888
+#> 20188888888
+#> 30188888888
+```
+
+``` r
 library(naaccr)
 
-record_file <- "tests/data/fake-naaccr14inc-2-rec.txt"
-record_lines <- readLines(record_file)
-# Marital status and race fields
-cat(substr(record_lines, 206, 216), sep = "\n")
-#> 43006039681
-#> 04582423900
 records <- read_naaccr(record_file)
-#> Warning in converter_fun(record[[column]]): NAs introduced by coercion
-
-#> Warning in converter_fun(record[[column]]): NAs introduced by coercion
-
-#> Warning in converter_fun(record[[column]]): NAs introduced by coercion
-
-#> Warning in converter_fun(record[[column]]): NAs introduced by coercion
-
-#> Warning in converter_fun(record[[column]]): NAs introduced by coercion
-
-#> Warning in converter_fun(record[[column]]): NAs introduced by coercion
-
-#> Warning in converter_fun(record[[column]]): NAs introduced by coercion
-
-#> Warning in converter_fun(record[[column]]): NAs introduced by coercion
-
-#> Warning in converter_fun(record[[column]]): NAs introduced by coercion
-
-#> Warning in converter_fun(record[[column]]): NAs introduced by coercion
-
-#> Warning in converter_fun(record[[column]]): NAs introduced by coercion
-
-#> Warning in converter_fun(record[[column]]): NAs introduced by coercion
-
-#> Warning in converter_fun(record[[column]]): NAs introduced by coercion
-
-#> Warning in converter_fun(record[[column]]): NAs introduced by coercion
-#> Warning in naaccr_factor(record[[column]], field = column): "ruca2000" not
-#> a valid XML field name
-#> Warning in naaccr_factor(record[[column]], field = column): "ruca2010" not
-#> a valid XML field name
-#> Warning in naaccr_factor(record[[column]], field = column):
-#> "tnmPathDescriptor" not a valid XML field name
-#> Warning in naaccr_sentineled(record[[column]], field = column):
-#> "radNoOfTreatmentVol" not a valid XML field name
-records[, c("maritalStatusAtDx", "race1", "race2", "race3", "race4", "race5")]
-#>   maritalStatusAtDx race1 race2 race3 race4 race5
-#> 1          divorced    30    06    03    96    81
-#> 2              <NA>    45    82    42    39    00
+records[1:5, c("maritalStatusAtDx", "race1", "race2", "race3")]
+#>   maritalStatusAtDx race1 race2 race3
+#> 1         separated    01    88    88
+#> 2          divorced    01    88    88
+#> 3           married    01    88    88
+#> 4           married    01    88    88
+#> 5         separated    01    88    88
 ```
 
 Like with most classes, one can create a new `naaccr_record` object with the function of the same name. The result will have all the necessary columns, each of the correct class. Any columns not provided will be filled with missing values.
@@ -75,14 +52,6 @@ nr <- naaccr_record(
   primarySite         = "C010",
   dateOfBirth         = "19450521"
 )
-#> Warning in naaccr_factor(record[[column]], field = column): "ruca2000" not
-#> a valid XML field name
-#> Warning in naaccr_factor(record[[column]], field = column): "ruca2010" not
-#> a valid XML field name
-#> Warning in naaccr_factor(record[[column]], field = column):
-#> "tnmPathDescriptor" not a valid XML field name
-#> Warning in naaccr_sentineled(record[[column]], field = column):
-#> "radNoOfTreatmentVol" not a valid XML field name
 nr[, c("primarySite", "dateOfBirth", "autopsy")]
 #>   primarySite dateOfBirth autopsy
 #> 1        C010  1945-05-21      NA
@@ -96,14 +65,6 @@ prefab <- data.frame(
   race1          = c("01", "02", "88")
 )
 as.naaccr_record(prefab)[, c("ageAtDiagnosis", "race1", "anemia")]
-#> Warning in naaccr_factor(record[[column]], field = column): "ruca2000" not
-#> a valid XML field name
-#> Warning in naaccr_factor(record[[column]], field = column): "ruca2010" not
-#> a valid XML field name
-#> Warning in naaccr_factor(record[[column]], field = column):
-#> "tnmPathDescriptor" not a valid XML field name
-#> Warning in naaccr_sentineled(record[[column]], field = column):
-#> "radNoOfTreatmentVol" not a valid XML field name
 #>   ageAtDiagnosis race1 anemia
 #> 1              1    01   <NA>
 #> 2            120    02   <NA>
@@ -169,7 +130,7 @@ sentinels(rnp)
 Notice that, for the non-missing values in `rnp`, their respective sentinel codes are blanks (`""`). This differentiates them from values which were neither continuous nor sentinel codes. These "totally missing" values are likely errors in coding and should be addressed.
 
 ``` r
-# Returns the desired and NA values, but not the non-missing
+## Returns the desired and NA values, but not the non-missing
 rnp[sentinels(rnp) == "unknown"]
 #> [1] <unknown> NA       
 #> sentinel values: "" "= 90" "positive aspiration" "positive, NOS" "no nodes examined" "unknown"
