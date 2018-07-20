@@ -265,6 +265,7 @@ thrombocytopenia,thrombocytopenia
 tnmClinDescriptor,tnm_descriptor
 tnmClinStagedBy,tnm_staged_by
 tnmEditionNumber,tnmEditionNumber
+tnmPathDescriptor,tnm_descriptor
 tnmPathStagedBy,tnm_staged_by
 tumorGrowthPattern,tumorGrowthPattern
 tumorMarker1,tumor_marker
