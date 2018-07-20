@@ -113,13 +113,13 @@ clean_facility_id <- function(fin) {
 
 #' Clean the "Multiplicity Counter" codes
 #' @param count A character vector of "Multiplicity Counter" codes.
-#' @return \code{count}, but with values of \code{NA} for codes meaning not
-#'   reported or unkown.
+#' @return Integer vector of \code{count}, but with values of \code{NA} for
+#'   codes meaning not reported or unkown.
 #' @export
 clean_multiplicity_counter <- function(count) {
   count_int <- as.integer(count)
-  count[count_int < 0L | count_int > 87L] <- NA
-  count
+  count_int[count_int < 0L | count_int > 87L] <- NA
+  count_int
 }
 
 
