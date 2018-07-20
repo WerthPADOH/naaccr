@@ -1,0 +1,69 @@
+---
+title: "naaccr"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>",
+  fig.path = "man/figures/README-"
+)
+```
+
+## Summary
+
+The `naaccr` R package enables researchers to easily read and begin analyzing
+cancer incidence records stored in the
+[North American Association of Central Cancer Registries](https://www.naaccr.org/)
+(NAACCR) file format.
+
+## Usage
+
+`naaccr` focuses on two tasks: arranging the records and preparing the fields
+for analysis.
+
+### Records
+
+The `naaccr_record` class defines objects which store cancer incidence records.
+It inherits from `data.frame`, and for now only makes sure a dataset has a
+standard set of columns. While `naaccr_record` has a singular-sounding name, it
+can contain multiple records as rows.
+
+The `read_naaccr` function creates a `naaccr_record` object from a
+NAACCR-formatted file.
+
+```{r readNaaccr}
+library(naaccr)
+
+record_file <- "tests/data/fake-naaccr14inc-2-rec.txt"
+record_lines <- readLines(record_file)
+# Marital status and race fields
+cat(substr(record_lines, 206, 216), sep = "\n")
+records <- read_naaccr(record_file)
+records[, c("maritalStatusAtDx", "race1", "race2", "race3", "race4", "race5")]
+```
+
+Like with most classes, one can create a new `naaccr_record` object with the
+function of the same name. The result will have all the necessary columns, each
+of the correct class. Any columns not provided will be filled with missing
+values.
+
+```{r naaccrRecord}
+nr <- naaccr_record(
+  primarySite         = "C010",
+  dateOfBirth         = "19450521"
+)
+nr[, c("primarySite", "dateOfBirth", "autopsy")]
+```
+
+The `as.naaccr_record` function can transform an existing data frame. It does
+require any existing columns to use NAACCR's XML names.
+
+```{r asNaaccrRecord}
+prefab <- data.frame(
+  ageAtDiagnosis = c(1, 120, 999),
+  race1          = c("01", "02", "88")
+)
+as.naaccr_record(prefab)[, c("ageAtDiagnosis", "race1", "anemia")]
+```
