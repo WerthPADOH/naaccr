@@ -5,13 +5,13 @@ addrAtDxCity,city
 addrAtDxCountry,country
 addrAtDxNoStreet,address
 addrAtDxPostalCode,postal
-addrAtDxState,state
+addrAtDxState,factor
 addrAtDxSupplementl,character
 addrCurrentCity,city
 addrCurrentCountry,country
 addrCurrentNoStreet,address
 addrCurrentPostalCode,postal
-addrCurrentState,state
+addrCurrentState,factor
 addrCurrentSupplementl,character
 adenoidCysticBasaloidPattern,sentineled
 adenopathy,boolean
@@ -53,7 +53,7 @@ bilirubinPretreatmentTotalLabValue,sentineled
 bilirubinPretreatmentUnitOfMeasure,factor
 birthplace,place
 birthplaceCountry,country
-birthplaceState,state
+birthplaceState,factor
 boneInvasion,boolean
 brainMolecularMarkers,factor
 breslowTumorThickness,sentineled
@@ -263,7 +263,7 @@ followUpContactCity,city
 followUpContactName,character
 followUpContactNost,address
 followUpContactPostal,postal
-followUpContactState,state
+followUpContactState,factor
 followUpContactSuppl,character
 followUpSource,factor
 followUpSourceCentral,factor
@@ -518,7 +518,7 @@ physicianManaging,physician
 physicianPrimarySurg,physician
 placeOfDeath,place
 placeOfDeathCountry,country
-placeOfDeathState,state
+placeOfDeathState,factor
 pleuralEffusion,factor
 primaryPayerAtDx,factor
 primarySclerosingCholangitis,boolean
