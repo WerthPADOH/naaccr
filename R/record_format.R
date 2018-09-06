@@ -13,8 +13,16 @@
 #' @param type Name of the column class.
 #' @param name_literal (Optional) Item name in plain language.
 #'
-#' @return An object of class \code{"record_format"} which has the columns
-#'   \code{number}, \code{start_col}, and \code{end_col} (all integer vectors).
+#' @return An object of class \code{"record_format"} which has the following
+#'   columns:
+#' \describe{
+#'   \item{\code{name)}{(\code{character) XML item name.}
+#'   \item{\code{item)}{(\code{integer)) Item number.}
+#'   \item{\code{start_col)}{(\code{integer)) First column of the field.}
+#'   \item{\code{end_col)}{(\code{integer)) Last column of the field.}
+#'   \item{\code{name_literal)}{(\code{character)) Item name in plain language.}
+#' }
+#'
 #' @examples
 #'   my_fields <- record_format(
 #'     xml_name  = c("foo", "bar")
@@ -73,6 +81,7 @@ rbind.record_format <- function(..., stringsAsFactors = FALSE) {
 #'
 #' Columns:
 #' \describe{
+#'   \item{version}{(\code{integer}) NAACCR format version.}
 #'   \item{\code{name)}{(\code{character) XML item name.}
 #'   \item{\code{item)}{(\code{integer)) Item number.}
 #'   \item{\code{start_col)}{(\code{integer)) First column of the field.}
