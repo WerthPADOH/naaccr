@@ -28,6 +28,18 @@ test_that("read_naaccr only creates the columns from the format", {
   expect_named(nr, unique(naaccr_format[["name"]]), ignore.order = TRUE)
 })
 
+test_that("read_naaccr can handle different versions", {
+  nr16 <- read_naaccr("../data/synthetic-naaccr-16-abstract.txt", version = 16)
+  expect_identical(
+    nr16[["ageAtDiagnosis"]],
+    c(60L, 72L, 70L, 60L, 83L, 56L, 73L, 60L, 42L, 61L)
+  )
+  expect_identical(
+    nr16[["addrAtDxCity"]][1:2],
+    c("STRASBURG", "BRIDGEVILLE")
+  )
+})
+
 test_that("naaccr_record can be used to create a new naaccr_record object", {
   nr <- naaccr_record(
     sex             = c(1, 9),
