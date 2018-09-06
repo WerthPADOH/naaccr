@@ -89,3 +89,26 @@ naaccr_format <- readRDS("inst/extdata/naaccr_format.rds")[
   keyby = "version"
 ]
 
+#' @rdname naaccr_format
+#' @export
+naaccr_format_12 <- as.record_format(naaccr_format[version == 12L])
+
+#' @rdname naaccr_format
+#' @export
+naaccr_format_13 <- as.record_format(naaccr_format[version == 13L])
+
+#' @rdname naaccr_format
+#' @export
+naaccr_format_14 <- as.record_format(naaccr_format[version == 14L])
+
+#' @rdname naaccr_format
+#' @export
+naaccr_format_15 <- as.record_format(naaccr_format[version == 15L])
+
+#' @rdname naaccr_format
+#' @export
+naaccr_format_16 <- as.record_format(naaccr_format[version == 16L])
+
+#' @rdname naaccr_format
+#' @export
+naaccr_format_18 <- as.record_format(naaccr_format[version == 18L])
