@@ -16,6 +16,18 @@ test_that("read_naaccr returns the same number of columns for any input", {
   expect_identical(nrow(abst), nrow(inc))
 })
 
+test_that("read_naaccr reads the data", {
+  nr <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt", version = 18)
+  record_lines <- readLines("../data/synthetic-naaccr-18-abstract.txt")
+  age_expected <- as.integer(substr(record_lines, 223, 225))
+  expect_identical(nr[["ageAtDiagnosis"]], age_expected)
+})
+
+test_that("read_naaccr only creates the columns from the format", {
+  nr <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt", version = 18)
+  expect_named(nr, unique(naaccr_format[["name"]]), ignore.order = TRUE)
+})
+
 test_that("naaccr_record can be used to create a new naaccr_record object", {
   nr <- naaccr_record(
     sex             = c(1, 9),

@@ -105,7 +105,7 @@ read_naaccr <- function(input, version = NULL, format = NULL) {
     record_lines = record_lines,
     start_cols   = read_format[["start_col"]],
     end_cols     = read_format[["end_col"]],
-    col_names    = read_format[["xml_name"]]
+    col_names    = read_format[["name"]]
   )
   setDT(records)
   as.naaccr_record(records)
