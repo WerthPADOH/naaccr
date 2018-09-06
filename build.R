@@ -12,11 +12,10 @@ source_subprocess <- function(source_file, ...) {
 # Run "data-raw/request-naaccr-info.R" to update the file
 # "data-raw/naaccr_info_from_api.csv". Because of our proxy, the script is not
 # reliable enough to include in an automated build.
-source_subprocess("data-raw/naaccr_items.R")
-source_subprocess("data-raw/create-country_codes.R")
-source_subprocess("data-raw/create-occupation_codes.R")
-source_subprocess("data-raw/create-field_codes.R")
-source_subprocess("data-raw/create-field_sentinels.R")
+data_scripts <- list.files("data-raw", "^create-.*\\.R$", full.names = TRUE)
+for (script in data_scripts) {
+  source_subprocess(script)
+}
 sys_data_files <- list.files("data-raw/sys-data", full.names  = TRUE)
 sys_objects <- new.env()
 for (sdf in sys_data_files) {

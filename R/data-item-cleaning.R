@@ -19,6 +19,7 @@ clean_age <- function(age) {
 #' @return A character vector, with \code{NA} for unknown cities.
 #' @export
 clean_address_city <- function(city) {
+  city <- trimws(city)
   city[city == 'UNKNOWN'] <- NA
   city
 }
@@ -29,6 +30,7 @@ clean_address_city <- function(city) {
 #' @return A character vector, with \code{NA} for unknown locations.
 #' @export
 clean_address_number_and_street <- function(location) {
+  location <- trimws(location)
   location[location == 'UNKNOWN'] <- NA
   location
 }
@@ -39,6 +41,7 @@ clean_address_number_and_street <- function(location) {
 #' @return A character vector, with \code{NA} for unknown postal codes.
 #' @export
 clean_postal <- function(postal) {
+  postal <- trimws(postal)
   postal[postal %in% c('888888888', '999999999', '999999')] <- NA
   postal
 }
@@ -62,6 +65,7 @@ clean_census_block <- function(block) {
 #' @import data.table
 #' @export
 clean_census_tract <- function(tract) {
+  tract <- trimws(tract)
   is_tract <- data.table::between(tract, '000100', '949999')
   is_bna   <- data.table::between(tract, '950100', '998999')
   tract[!is_tract & !is_bna] <- NA
@@ -74,6 +78,7 @@ clean_census_tract <- function(tract) {
 #' @return A character vector, with \code{NA} for unknown counties.
 #' @export
 clean_county_fips <- function(county) {
+  county <- trimws(county)
   stri_subset_regex(county, "^\\d{3}$", negate = TRUE) <- NA
   county
 }
@@ -84,6 +89,7 @@ clean_county_fips <- function(county) {
 #' @return \code{code}, but with values of \code{NA} instead of \code{"00000"}.
 #' @export
 clean_icd_9_cm <- function(code) {
+  code <- trimws(code)
   code[code %in% c('', '00000')] <- NA
   code
 }
@@ -95,6 +101,7 @@ clean_icd_9_cm <- function(code) {
 #'   \code{"7797"} replaced with \code{NA}.
 #' @export
 clean_cause_of_death <- function(code) {
+  code <- trimws(code)
   code[stri_trim_both(code) %in% c('', '0000', '7777', '7797')] <- NA
   code
 }
@@ -106,6 +113,7 @@ clean_cause_of_death <- function(code) {
 #'   reported or unkown.
 #' @export
 clean_facility_id <- function(fin) {
+  fin <- trimws(fin)
   fin[fin %in% c('0000000000', '0099999999')] <- NA
   fin
 }
@@ -130,6 +138,7 @@ clean_multiplicity_counter <- function(count) {
 #'   reported or unkown.
 #' @export
 clean_physician_id <- function(physician) {
+  physician <- trimws(physician)
   physician[physician %in% c('00000000', '99999999')] <- NA
   physician
 }
