@@ -5,15 +5,39 @@ library(naaccr)
 context("Reading NAACCR-formatted files")
 
 test_that("read_naaccr returns a 'naaccr_record', 'data.frame' object", {
-  nr <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt")
+  nr <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt", version = 18)
   expect_true(inherits(nr, "naaccr_record"))
   expect_true(inherits(nr, "data.frame"))
 })
 
 test_that("read_naaccr returns the same number of columns for any input", {
-  abstract  <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt")
-  incidence <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt")
-  expect_identical(nrow(abstract), nrow(incidence))
+  abst <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt",  version = 18)
+  inc  <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt", version = 18)
+  expect_identical(nrow(abst), nrow(inc))
+})
+
+test_that("read_naaccr reads the data", {
+  nr <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt", version = 18)
+  record_lines <- readLines("../data/synthetic-naaccr-18-abstract.txt")
+  age_expected <- as.integer(substr(record_lines, 223, 225))
+  expect_identical(nr[["ageAtDiagnosis"]], age_expected)
+})
+
+test_that("read_naaccr only creates the columns from the format", {
+  nr <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt", version = 18)
+  expect_named(nr, unique(naaccr_format[["name"]]), ignore.order = TRUE)
+})
+
+test_that("read_naaccr can handle different versions", {
+  nr16 <- read_naaccr("../data/synthetic-naaccr-16-abstract.txt", version = 16)
+  expect_identical(
+    nr16[["ageAtDiagnosis"]],
+    c(60L, 72L, 70L, 60L, 83L, 56L, 73L, 60L, 42L, 61L)
+  )
+  expect_identical(
+    nr16[["addrAtDxCity"]][1:2],
+    c("STRASBURG", "BRIDGEVILLE")
+  )
 })
 
 test_that("naaccr_record can be used to create a new naaccr_record object", {
@@ -24,17 +48,6 @@ test_that("naaccr_record can be used to create a new naaccr_record object", {
   )
   expect_is(nr, "naaccr_record")
   expect_identical(nrow(nr), 2L)
-})
-
-test_that("name_recent gets the right names from item numbers", {
-  expect_identical(
-    naaccr:::name_recent("270"),
-    "censusOccCode19702000"
-  )
-  expect_identical(
-    naaccr:::name_recent("3221"),
-    "rxDateRadiationEndedFlag"
-  )
 })
 
 test_that("as.naaccr_record auto-cleans fields", {
@@ -53,4 +66,14 @@ test_that("as.naaccr_record auto-cleans fields", {
     expect_true( is.na(processed[[column]][[1L]]))
     expect_false(is.na(processed[[column]][[2L]]))
   }
+})
+
+test_that("as.naaccr_record creates fields with correct classes", {
+  record <- as.naaccr_record(list(ageAtDiagnosis = NA))
+  expect_is(record[["ageAtDiagnosis"]], "integer")
+  expect_is(record[["dateOfBirth"]], "Date")
+  expect_is(record[["censusOccCode19702000"]], "factor")
+  expect_is(record[["estrogenReceptorSummary"]], "logical")
+  expect_is(record[["secondaryDiagnosis1"]] ,"character")
+  expect_is(record[["latitude"]], "numeric")
 })

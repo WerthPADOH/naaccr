@@ -64,39 +64,19 @@ parse_records <- function(record_lines,
 }
 
 
-#' Get the latest field names for item numbers
-#' @param item_numbers Integer vector of NAACCR item numbers
-#' @return A character vector the same length as \code{item_numbers} of the
-#'   names from the most recent NAACCR format.
-#' @import data.table
-#' @noRd
-name_recent <- function(item_numbers) {
-  named_items <- naaccr_items[
-    naaccr_version == max(naaccr_version)
-  ][
-    list(item = as.integer(item_numbers)),
-    list(xml_name),
-    on      = "item",
-    nomatch = NA,
-    by      = .EACHI
-  ]
-
-  named_items[["xml_name"]]
-}
-
-
 #' Read records from a NAACCR file
 #' @param input Either a string with a file name (containing no \code{\\n}
 #'   character), a \code{\link[base]{connection}} object, or the text records
 #'   themselves as a character vector.
-#' @param version An integer specifying which NAACCR format should be used to
-#'   parse the records.
+#' @param version An integer specifying the NAACCR format version for parsing
+#'   the records. Use this or \code{format}, not both.
+#' @param format A \code{\link{record_format}} object for parsing the records.
 #' @return A \code{data.frame} of the records. The columns included depend on
 #'   the NAACCR record format version. All columns are character vectors.
 #' @import data.table
 #' @import stringi
 #' @export
-read_naaccr <- function(input, version = NULL) {
+read_naaccr <- function(input, version = NULL, format = NULL) {
   if (!inherits(input, "connection")) {
     input <- as.connection(input)
     on.exit(
@@ -104,31 +84,29 @@ read_naaccr <- function(input, version = NULL) {
       add = TRUE
     )
   }
-  if (is.null(version)) {
-    version <- max(naaccr_items[['naaccr_version']])
+  read_format <- if (!is.null(version)) {
+    key_data <- list(version = version)
+    naaccr_format[key_data, on = "version"]
+  } else if (!is.null(format)) {
+    format
+  } else {
+    stop("Must specify either version or format")
   }
-  if (length(version) > 1L) {
-    version <- version[[1L]]
-    warning("Only using first value of version")
-  }
-  input_items <- naaccr_items[
-    list(naaccr_version = version),
-    on = 'naaccr_version'
-  ]
+  read_format <- as.record_format(read_format)
   # Read all record types as the longest type, with padding
   record_lines <- readLines(input)
   line_lengths <- stringi::stri_width(record_lines)
+  record_width <- max(read_format[["end_col"]])
   record_lines <- stringi::stri_pad_right(
     record_lines,
-    width = max(line_lengths) - line_lengths
+    width = record_width - line_lengths
   )
   records <- parse_records(
     record_lines = record_lines,
-    start_cols   = input_items[["start_col"]],
-    end_cols     = input_items[["end_col"]],
-    col_names    = as.character(input_items[["item"]])
+    start_cols   = read_format[["start_col"]],
+    end_cols     = read_format[["end_col"]],
+    col_names    = read_format[["name"]]
   )
   setDT(records)
-  setnames(records, name_recent(names(records)))
   as.naaccr_record(records)
 }

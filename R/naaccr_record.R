@@ -68,14 +68,12 @@ safe_set <- function(x, i = NULL, j, value) {
 #' @import data.table
 #' @export
 as.naaccr_record.data.frame <- function(x, ...) {
-  latest_items <- naaccr_items[naaccr_version == max(naaccr_version)]
-  matched_items <- latest_items[list(names(x)), on = 'xml_name']
+  all_items <- naaccr_format[, .SD[1], by = list(item)]
   record <- as.data.table(x)
-  setnames(record, matched_items[['xml_name']])
-  missing_columns <- setdiff(latest_items[['xml_name']], names(record))
+  missing_columns <- setdiff(all_items[['name']], names(record))
   safe_set(record, j = missing_columns, value = NA_character_)
 
-  type_columns <- split(item_types[['name']], item_types[['type']])
+  type_columns <- split(all_items[['name']], all_items[['type']])
   type_converters <- list(
     integer      = as.integer,
     numeric      = as.numeric,

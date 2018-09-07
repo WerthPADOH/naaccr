@@ -35,7 +35,7 @@ cat(substr(record_lines[1:5], 206, 216), sep = "\n")
 ``` r
 library(naaccr)
 
-records <- read_naaccr(record_file)
+records <- read_naaccr(record_file, version = 18)
 records[1:5, c("maritalStatusAtDx", "race1", "race2", "race3")]
 #>   maritalStatusAtDx race1 race2 race3
 #> 1         separated    01    88    88
