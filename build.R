@@ -1,6 +1,7 @@
 # Rebuild the package from scratch
 library(devtools)
 library(testthat)
+library(rmarkdown)
 
 
 source_subprocess <- function(source_file, ...) {
@@ -32,4 +33,5 @@ if (any(results_df[["failed"]] > 0 | results_df[["error"]] > 0)) {
 
 # Build ------------------------------------------------------------------------
 devtools::document()
+rmarkdown::render("README.Rmd")
 devtools::build(binary = TRUE)
