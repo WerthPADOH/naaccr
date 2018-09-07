@@ -62,6 +62,7 @@ naaccr_factor_country <- function(x, full_names = TRUE, ...) {
 #'   numeric field with sentinel values, then \code{x} will be rerturned.
 #' @examples
 #'   naaccr_sentineled()
+#' @import sentinel
 #' @export
 naaccr_sentineled <- function(x, field, ...) {
   if (length(field) != 1L) {

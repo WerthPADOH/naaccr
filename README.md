@@ -113,32 +113,9 @@ Some fields contain primarily continuous or count data but also use special code
 ``` r
 rnp <- naaccr_sentineled(c(10, 20, 90, 95, 99, NA), "regionalNodesPositive")
 rnp
-#> [1] 10                    20                    <= 90>               
-#> [4] <positive aspiration> <unknown>             NA                   
+#> [1] 10                  20                  = 90               
+#> [4] positive aspiration unknown             NA                 
 #> sentinel values: "" "= 90" "positive aspiration" "positive, NOS" "no nodes examined" "unknown"
 ```
 
-The sentinel codes are treated as missing, but the different categories of missing are stored as a factor vector in the `"sentinels"` attribute of the object. Use the `sentinels` function to access them.
-
-``` r
-sentinels(rnp)
-#> [1]                                         = 90               
-#> [4] positive aspiration unknown             <NA>               
-#> 6 Levels:  = 90 positive aspiration positive, NOS ... unknown
-```
-
-Notice that, for the non-missing values in `rnp`, their respective sentinel codes are blanks (`""`). This differentiates them from values which were neither continuous nor sentinel codes. These "totally missing" values are likely errors in coding and should be addressed.
-
-``` r
-## Returns the desired and NA values, but not the non-missing
-rnp[sentinels(rnp) == "unknown"]
-#> [1] <unknown> NA       
-#> sentinel values: "" "= 90" "positive aspiration" "positive, NOS" "no nodes examined" "unknown"
-```
-
-The `sentineled` vector can be used in arithmetic, with all non-missing values acting like normal numeric values.
-
-``` r
-mean(rnp, na.rm = TRUE)
-#> [1] 15
-```
+For more on working with `sentineled` vectors, see the documentation for the `sentinel` package: `help(package="sentinel")`.
