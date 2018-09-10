@@ -26,7 +26,7 @@ clean_address_city <- function(city) {
 
 
 #' Clean house number and street values
-#' @param city A character vector of house numbers and street names.
+#' @param location A character vector of house numbers and street names.
 #' @return A character vector, with \code{NA} for unknown locations.
 #' @export
 clean_address_number_and_street <- function(location) {
@@ -74,7 +74,7 @@ clean_census_tract <- function(tract) {
 
 
 #' Clean county FIPS codes
-#' @param tract A character vector of county FIPS codes.
+#' @param county A character vector of county FIPS codes.
 #' @return A character vector, with \code{NA} for unknown counties.
 #' @export
 clean_county_fips <- function(county) {

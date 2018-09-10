@@ -63,7 +63,7 @@ naaccr_factor_country <- function(x, full_names = TRUE, ...) {
 #'   determined using the NAACCR data dictionary. If \code{field} is not a
 #'   numeric field with sentinel values, then \code{x} will be rerturned.
 #' @examples
-#'   naaccr_sentineled()
+#'   naaccr_sentineled(c(1, 50, "XXX.1", "XXX.9", NA), "psaLabValue")
 #' @import sentinel
 #' @export
 naaccr_sentineled <- function(x, field, ...) {
