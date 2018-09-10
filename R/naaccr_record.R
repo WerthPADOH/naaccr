@@ -68,7 +68,7 @@ safe_set <- function(x, i = NULL, j, value) {
 #' @import data.table
 #' @export
 as.naaccr_record.data.frame <- function(x, ...) {
-  all_items <- naaccr_format[, .SD[1], by = list(item)]
+  all_items <- naaccr_format[, .SD[1], by = "item"]
   record <- as.data.table(x)
   missing_columns <- setdiff(all_items[['name']], names(record))
   safe_set(record, j = missing_columns, value = NA_character_)
@@ -121,6 +121,15 @@ as.naaccr_record.data.frame <- function(x, ...) {
       value = naaccr_sentineled(record[[column]], field = column)
     )
   }
+  # Avoid R CMD check notes about unbound global variables
+  ageAtDiagnosis       <- NULL
+  cancerStatus         <- NULL
+  autopsy              <- NULL
+  causeOfDeath         <- NULL
+  radNoOfTreatmentVol  <- NULL
+  socialSecurityNumber <- NULL
+  telephone            <- NULL
+
   record[
     ,
     ':='(
