@@ -5,6 +5,4 @@ r_github_packages: WerthPADOH/sentinel
 script:
 - Rscript build.R
 - R CMD check *tar.gz
-
-after_failure:
-- R -e 'list.files(\'/\')'
+- ls -R
