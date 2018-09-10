@@ -1,6 +1,6 @@
 language: r
 cache: packages
-Remotes: github::WerthPADOH/sentinel
+r_github_packages: WerthPADOH/sentinel
 
 install:
 - R -e 'devtools::install_deps(dependencies = TRUE)'
