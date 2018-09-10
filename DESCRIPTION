@@ -19,7 +19,8 @@ Suggests:
     magrittr,
     testthat,
     maps,
-    xml2
+    xml2,
+    rmarkdown
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
