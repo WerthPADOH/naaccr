@@ -35,7 +35,9 @@ naaccr_factor <- function(x, field, ...) {
     factor(x, levels = codes[["code"]], labels = codes[["label"]], ...)
   } else {
     warning('"', field, '" not a valid XML field name')
-    setNames(as.character(x), names(x))
+    out <- as.character(x)
+    names(out) <- names(x)
+    out
   }
 }
 
