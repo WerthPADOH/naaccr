@@ -4,5 +4,3 @@ r_github_packages: WerthPADOH/sentinel
 
 script:
 - Rscript build.R
-- R CMD check *tar.gz
-- ls -R

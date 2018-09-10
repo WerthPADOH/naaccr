@@ -38,5 +38,6 @@ if (any(results_df[["failed"]] > 0 | results_df[["error"]] > 0)) {
 # Build ------------------------------------------------------------------------
 devtools::document()
 rmarkdown::render("README.Rmd")
-devtools::build(binary = FALSE)
+built_path <- devtools::build(binary = FALSE)
 devtools::build(binary = TRUE)
+devtools::check_built(built_path)
