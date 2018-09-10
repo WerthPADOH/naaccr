@@ -18,7 +18,7 @@ for (script in data_scripts) {
   source_subprocess(script)
 }
 sys_data_files <- list.files("data-raw/sys-data", full.names  = TRUE)
-sys_data_files <- normalizePath(sys_data_files)
+sys_data_files <- file.path(".", sys_data_files)
 sys_objects <- new.env()
 for (sdf in sys_data_files) {
   load(sdf, envir = sys_objects)
