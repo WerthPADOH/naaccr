@@ -2,9 +2,6 @@ language: r
 cache: packages
 r_github_packages: WerthPADOH/sentinel
 
-install:
-- R -e 'devtools::install_deps(dependencies = TRUE)'
-
 script:
 - R build.R
 - R CMD check *tar.gz
