@@ -13,12 +13,15 @@ source_subprocess <- function(source_file, ...) {
 # Run "data-raw/request-naaccr-info.R" to update the file
 # "data-raw/naaccr_info_from_api.csv". Because of our proxy, the script is not
 # reliable enough to include in an automated build.
+if (dir.exists("data-raw/sys-data")) {
+  unlink("data-raw/sys-data", recursive = TRUE)
+}
+dir.create("data-raw/sys-data")
 data_scripts <- list.files("data-raw", "^create-.*\\.R$", full.names = TRUE)
 for (script in data_scripts) {
   source_subprocess(script)
 }
 sys_data_files <- list.files("data-raw/sys-data", full.names  = TRUE)
-sys_data_files <- file.path(".", sys_data_files)
 sys_objects <- new.env()
 for (sdf in sys_data_files) {
   load(sdf, envir = sys_objects)
