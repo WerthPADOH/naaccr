@@ -10,14 +10,14 @@ Description: Functions for reading cancer record files which follow a format
 Depends:
     sentinel
 Imports:
-    data.table (>= 1.10.4),
-    readr      (>= 1.1.1)
+    data.table,
+    stringi
 Suggests:
     devtools,
-    httr       (>= 1.2.1),
-    jsonlite   (>= 1.5),
-    magrittr   (>= 1.5),
-    testthat   (>= 1.0.2),
+    httr,
+    jsonlite,
+    magrittr,
+    testthat,
     maps,
     xml2
 License: MIT + file LICENSE
