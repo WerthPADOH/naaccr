@@ -3,5 +3,5 @@ cache: packages
 r_github_packages: WerthPADOH/sentinel
 
 script:
-- R build.R
+- Rscript build.R
 - R CMD check *tar.gz
