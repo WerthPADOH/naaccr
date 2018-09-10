@@ -43,6 +43,9 @@ record_format <- function(name,
                           end_col,
                           type,
                           name_literal = NULL) {
+  if (is.null(name_literal)) {
+    name_literal <- NA_character_
+  }
   record_format <- data.table(
     name         = as.character(name),
     item         = as.integer(item),
