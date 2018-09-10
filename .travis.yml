@@ -5,3 +5,6 @@ r_github_packages: WerthPADOH/sentinel
 script:
 - Rscript build.R
 - R CMD check *tar.gz
+
+after_failure:
+- R -e 'cat(list.files(recursive = TRUE, full.names = TRUE))'
