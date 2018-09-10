@@ -40,4 +40,14 @@ devtools::document()
 rmarkdown::render("README.Rmd")
 built_path <- devtools::build(binary = FALSE)
 devtools::build(binary = TRUE)
-devtools::check_built(built_path)
+check_results <- devtools::check_built(built_path)
+
+if (length(check_results[["notes"]])) {
+  message(paste0(check_results[["notes"]], collapse = "\n\n"))
+}
+if (length(check_results[["warnings"]])) {
+  warning(paste0(check_results[["errors"]], collapse = "\n\n"))
+}
+if (length(check_results[["errors"]])) {
+  stop(paste0(check_results[["errors"]], collapse = "\n\n"))
+}
