@@ -63,6 +63,7 @@ as.record_format <- function(x, ...) {
     return(x)
   }
   xlist <- as.list(x)
+  xlist <- utils::modifyList(xlist, list(...), keep.null = TRUE)
   call_args <- args(record_format)
   arg_names <- names(as.list(call_args))
   arg_names <- arg_names[nzchar(arg_names)]
