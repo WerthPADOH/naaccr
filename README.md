@@ -1,6 +1,8 @@
 naaccr
 ================
 
+[![Build status](https://travis-ci.org/WerthPADOH/naaccr.svg?branch=master)](https://travis-ci.org/WerthPADOH/naaccr)
+
 Summary
 -------
 
@@ -34,6 +36,7 @@ cat(substr(record_lines[1:5], 206, 216), sep = "\n")
 
 ``` r
 library(naaccr)
+#> Loading required package: sentinel
 
 records <- read_naaccr(record_file, version = 18)
 records[1:5, c("maritalStatusAtDx", "race1", "race2", "race3")]
