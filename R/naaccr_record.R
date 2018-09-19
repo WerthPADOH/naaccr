@@ -108,9 +108,13 @@ as.naaccr_record.data.frame <- function(x, ...) {
     )
   }
   for (column in type_columns[["sentineled"]]) {
+    flag_column <- paste0(column, "Flag")
+    if (flag_column %in% names(record)) {
+      warning(flag_column, " already exists in dataset, will not be overwritten")
+    }
     set(
       x     = record,
-      j     = column,
+      j     = c(column, flag_column),
       value = naaccr_sentineled(record[[column]], field = column)
     )
   }

@@ -34,7 +34,7 @@ naaccr_factor <- function(x, field, ...) {
     setorderv(codes, "code")
     factor(x, levels = codes[["code"]], labels = codes[["label"]], ...)
   } else {
-    warning('"', field, '" not a valid XML field name')
+    warning('"', field, '" not a coded field')
     out <- as.character(x)
     names(out) <- names(x)
     out
@@ -54,29 +54,45 @@ naaccr_factor_country <- function(x, full_names = TRUE, ...) {
 }
 
 
-#' Convert NAACCR fields to sentineled numeric
+#' Separate a field's continuous and sentinel values
 #'
-#' @param x Vector to convert to a \code{\link{sentineled}} object.
-#' @param field String giving the XML name of the NAACCR field to code.
-#' @param ... Additional arguments passed onto \code{sentineled}.
-#' @return An object of class \code{sentineled}. The sentinel levels are
-#'   determined using the NAACCR data dictionary. If \code{field} is not a
-#'   numeric field with sentinel values, then \code{x} will be rerturned.
+#' Separate a sentineled field's values into two vectors: one with the
+#' continuous data and one with the sentinel values.
+#'
+#' @inheritParams naaccr_factor
+#' @return
+#'   If \code{field} is a sentineled field, a \code{list} with two
+#'   vectors. The first is a \code{numeric} version of the continuous values
+#'   from \code{x}. Its name is the value of \code{field}. The second is a
+#'   \code{factor} with levels representing the sentinel values. For all
+#'   non-missing values in the numeric vector, the respective value in the
+#'   factor is \code{""}. This allows distinguishing between non-sentineled and
+#'   missing values in the factor.
+#'
+#'   If \code{field} is not a sentineled field, a list with just \code{x} is
+#'   returned with a warning.
 #' @examples
-#'   naaccr_sentineled(c(1, 50, "XXX.1", "XXX.9", NA), "psaLabValue")
-#' @import sentinel
+#'   separate_sentineled()
 #' @export
-naaccr_sentineled <- function(x, field, ...) {
+separate_sentineled <- function(x, field) {
   if (length(field) != 1L) {
     stop("field should be single string")
   }
   if (field %in% field_sentinel_scheme[["xml_name"]]) {
     field_scheme <- field_sentinel_scheme[list(field), on = "xml_name"]
     sents <- field_sentinels[field_scheme, on = "scheme"]
+    setorderv(sents, "sentinel")
+    x <- as.character(x)
     x[!nzchar(x)] <- NA
-    sentineled(x, sentinels = sents[["sentinel"]], labels = sents[["label"]], ...)
+    is_continuous <- !(x %in% sents[["sentinel"]]) & nzchar(x, keepNA = TRUE)
+    x_num <- as.numeric(replace(x, !is_continuous, NA))
+    x_sent <- factor(x, c("", sent[["sentinel"]]), c("", sents[["label"]]))
+    x_sent[is_continuous] <- ""
+    out <- list(x_num, x_sent)
+    names(out) <- c(field, paste0(field, "Flag"))
+    out
   } else {
-    warning('"', field, '" not a valid XML field name')
-    x
+    warning('"', field, '" not a sentineld field')
+    list(x)
   }
 }
