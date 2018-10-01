@@ -9,8 +9,8 @@
 #' @export
 clean_age <- function(age) {
   age_int <- as.integer(age)
-  age[age_int < 0L | age_int > 120L] <- NA
-  age
+  age_int[age_int < 0L | age_int > 120L] <- NA
+  age_int
 }
 
 
@@ -100,9 +100,9 @@ clean_icd_9_cm <- function(code) {
 #' @return \code{code}, but with values of \code{"00000"}, \code{"7777"}, and
 #'   \code{"7797"} replaced with \code{NA}.
 #' @export
-clean_cause_of_death <- function(code) {
+clean_icd_code <- function(code) {
   code <- trimws(code)
-  code[stri_trim_both(code) %in% c('', '0000', '7777', '7797')] <- NA
+  code[code %in% c('', '0000', '7777', '7797')] <- NA
   code
 }
 
@@ -124,7 +124,7 @@ clean_facility_id <- function(fin) {
 #' @return Integer vector of \code{count}, but with values of \code{NA} for
 #'   codes meaning not reported or unkown.
 #' @export
-clean_multiplicity_counter <- function(count) {
+clean_multiplicity <- function(count) {
   count_int <- as.integer(count)
   count_int[count_int < 0L | count_int > 87L] <- NA
   count_int
@@ -141,4 +141,51 @@ clean_physician_id <- function(physician) {
   physician <- trimws(physician)
   physician[physician %in% c('00000000', '99999999')] <- NA
   physician
+}
+
+
+#' Clean telephone numbers
+#' @param number A character vector of telephone numbers. No spaces or
+#'   punctuation, only numbers.
+#' @return \code{number}, but with values of \code{NA} for unknown numbers.
+#' @export
+clean_telephone <- function(number) {
+  number <- trimws(number)
+  number[grep("^[09]+$", number)] <- NA
+  number
+}
+
+
+#' Clean counts
+#'
+#' Replaces any values of all 9's with \code{NA} and converts the rest to
+#' integers.
+#'
+#' @param count A character vector of counts (integer characters only).
+#' @param field XML name of the field. Necessary to know the field width.
+#' @return An integer vector of \code{count}, but with values of all 9's
+#'   replaced with \code{NA}.
+#' @import stringi
+#' @export
+clean_count <- function(count, field) {
+  count <- trimws(count)
+  width <- naaccr_format[
+    name == field,
+    end_col[[1]] - start_col[[1]] + 1L
+  ]
+  na_code <- stri_join(rep("9", width), collapse = "")
+  count[count == na_code] <- NA
+  as.integer(count)
+}
+
+
+#' Clean Social Security ID numbers
+#' @param number A character vector of Social Security identification numbers.
+#'   No spaces or punctuation, only numbers.
+#' @return \code{number}, but with values of \code{NA} for unknown numbers.
+#' @export
+clean_ssn <- function(number) {
+  number <- trimws(number)
+  number[number == "999999999"] <- NA
+  number
 }

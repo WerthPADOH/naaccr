@@ -76,48 +76,32 @@ rbind.record_format <- function(..., stringsAsFactors = FALSE) {
 
 #' Field definitions from all NAACCR format versions
 #'
-#' A \code{data.table) defining the fields for all versions of NAACCR's
+#' A \code{data.table) object defining the fields for each version of NAACCR's
 #' fixed-width record file format.
 #'
 #' Columns:
 #' \describe{
-#'   \item{version}{(\code{integer}) NAACCR format version.}
-#'   \item{\code{name)}{(\code{character) XML item name.}
-#'   \item{\code{item)}{(\code{integer)) Item number.}
-#'   \item{\code{start_col)}{(\code{integer)) First column of the field.}
-#'   \item{\code{end_col)}{(\code{integer)) Last column of the field.}
-#'   \item{\code{name_literal)}{(\code{character)) Item name in plain language.}
+#'   \item{\code{name)}{(\code{character}) XML item name.}
+#'   \item{\code{item)}{(\code{integer})) Item number.}
+#'   \item{\code{start_col)}{(\code{integer})) First column of the field.}
+#'   \item{\code{end_col)}{(\code{integer})) Last column of the field.}
+#'   \item{\code{name_literal)}{(\code{character})) Item name in plain language.}
 #' }
 #'
-#' @format A \code{data.table) with 3,281 rows and 6 columns.
 #' @rdname naaccr_format
-#' @export
-naaccr_format <- readRDS("inst/extdata/naaccr_format.rds")[
-  ,
-  as.record_format(.SD),
-  keyby = "version"
-]
+"naaccr_format_12"
 
 #' @rdname naaccr_format
-#' @export
-naaccr_format_12 <- as.record_format(naaccr_format[version == 12L])
+"naaccr_format_13"
 
 #' @rdname naaccr_format
-#' @export
-naaccr_format_13 <- as.record_format(naaccr_format[version == 13L])
+"naaccr_format_14"
 
 #' @rdname naaccr_format
-#' @export
-naaccr_format_14 <- as.record_format(naaccr_format[version == 14L])
+"naaccr_format_15"
 
 #' @rdname naaccr_format
-#' @export
-naaccr_format_15 <- as.record_format(naaccr_format[version == 15L])
+"naaccr_format_16"
 
 #' @rdname naaccr_format
-#' @export
-naaccr_format_16 <- as.record_format(naaccr_format[version == 16L])
-
-#' @rdname naaccr_format
-#' @export
-naaccr_format_18 <- as.record_format(naaccr_format[version == 18L])
+"naaccr_format_18"
