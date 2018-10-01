@@ -13,7 +13,8 @@ test_that("read_naaccr returns a 'naaccr_record', 'data.frame' object", {
 test_that("read_naaccr returns the same number of columns for any input", {
   abst <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt",  version = 18)
   inc  <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt", version = 18)
-  expect_identical(nrow(abst), nrow(inc))
+  expect_identical(ncol(abst), ncol(inc))
+  expect_identical(ncol(abst), nrow(naaccr_format_18))
 })
 
 test_that("read_naaccr reads the data", {
@@ -25,7 +26,7 @@ test_that("read_naaccr reads the data", {
 
 test_that("read_naaccr only creates the columns from the format", {
   nr <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt", version = 18)
-  expect_named(nr, unique(naaccr_format[["name"]]), ignore.order = TRUE)
+  expect_named(nr, unique(naaccr_format_18[["name"]]), ignore.order = TRUE)
 })
 
 test_that("read_naaccr can handle different versions", {
@@ -63,8 +64,15 @@ test_that("as.naaccr_record auto-cleans fields", {
   )
   processed <- as.naaccr_record(record)
   for (column in names(record)) {
-    expect_true( is.na(processed[[column]][[1L]]))
-    expect_false(is.na(processed[[column]][[2L]]))
+    test_label <- paste0("(", column, " is NA)")
+    expect_true(
+      is.na(processed[[column]][[1L]]),
+      label = paste0(column, "[1] is NA")
+    )
+    expect_false(
+      is.na(processed[[column]][[2L]]),
+      label = paste0(column, "[2] is not NA")
+    )
   }
 })
 
