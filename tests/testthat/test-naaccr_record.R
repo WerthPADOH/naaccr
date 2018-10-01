@@ -69,7 +69,14 @@ test_that("as.naaccr_record auto-cleans fields", {
 })
 
 test_that("as.naaccr_record creates fields with correct classes", {
-  record <- as.naaccr_record(list(ageAtDiagnosis = NA))
+  record <- as.naaccr_record(list(
+    ageAtDiagnosis          = NA,
+    dateOfBirth             = NA,
+    censusOccCode19702000   = NA,
+    estrogenReceptorSummary = NA,
+    secondaryDiagnosis1     = NA,
+    latitude                = NA
+  ))
   expect_is(record[["ageAtDiagnosis"]], "integer")
   expect_is(record[["dateOfBirth"]], "Date")
   expect_is(record[["censusOccCode19702000"]], "factor")

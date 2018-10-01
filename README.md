@@ -34,27 +34,34 @@ cat(substr(record_lines[1:5], 206, 216), sep = "\n")
 
 ``` r
 library(naaccr)
+#> Loading required package: sentinel
 
 records <- read_naaccr(record_file, version = 18)
 records[1:5, c("maritalStatusAtDx", "race1", "race2", "race3")]
-#>   maritalStatusAtDx race1 race2 race3
-#> 1         separated    01    88    88
-#> 2          divorced    01    88    88
-#> 3           married    01    88    88
-#> 4           married    01    88    88
-#> 5         separated    01    88    88
+#>   maritalStatusAtDx race1                      race2
+#> 1         separated white no further race documented
+#> 2          divorced white no further race documented
+#> 3           married white no further race documented
+#> 4           married white no further race documented
+#> 5         separated white no further race documented
+#>                        race3
+#> 1 no further race documented
+#> 2 no further race documented
+#> 3 no further race documented
+#> 4 no further race documented
+#> 5 no further race documented
 ```
 
-Like with most classes, one can create a new `naaccr_record` object with the function of the same name. The result will have all the necessary columns, each of the correct class. Any columns not provided will be filled with missing values.
+Like with most classes, one can create a new `naaccr_record` object with the function of the same name. The result will have the given columns.
 
 ``` r
 nr <- naaccr_record(
-  primarySite         = "C010",
-  dateOfBirth         = "19450521"
+  primarySite = "C010",
+  dateOfBirth = "19450521"
 )
-nr[, c("primarySite", "dateOfBirth", "autopsy")]
-#>   primarySite dateOfBirth autopsy
-#> 1        C010  1945-05-21      NA
+nr[, c("primarySite", "dateOfBirth")]
+#>   primarySite dateOfBirth
+#> 1        C010  1945-05-21
 ```
 
 The `as.naaccr_record` function can transform an existing data frame. It does require any existing columns to use NAACCR's XML names.
@@ -64,11 +71,12 @@ prefab <- data.frame(
   ageAtDiagnosis = c(1, 120, 999),
   race1          = c("01", "02", "88")
 )
-as.naaccr_record(prefab)[, c("ageAtDiagnosis", "race1", "anemia")]
-#>   ageAtDiagnosis race1 anemia
-#> 1              1    01   <NA>
-#> 2            120    02   <NA>
-#> 3             NA    88   <NA>
+converted <- as.naaccr_record(prefab)
+converted[, c("ageAtDiagnosis", "race1")]
+#>   ageAtDiagnosis                      race1
+#> 1              1                      white
+#> 2            120                      black
+#> 3             NA no further race documented
 ```
 
 ### Code translation
@@ -87,13 +95,6 @@ Some fields use `"1"` for `FALSE` and `"2"` for `TRUE`. Use the `false_value` pa
 ``` r
 naaccr_boolean(c("0", "1", "2"), false_value = "1")
 #> [1]    NA FALSE  TRUE
-```
-
-NAACCR's dates follow the `YYYYMMDD` format, which R doesn't recognize. The `naaccr_date` function parses these strings into `Date` vectors.
-
-``` r
-naaccr_date("20180720")
-#> [1] "2018-07-20 EDT"
 ```
 
 #### Categorical fields

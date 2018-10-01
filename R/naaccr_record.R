@@ -45,25 +45,6 @@ as.naaccr_record.list <- function(x, ...) {
 }
 
 
-#' Assignment by reference if needed
-#'
-#' Only attempt to apply \code{set} on a \code{data.table} if something will
-#' actually be set.
-#'
-#' @param x,i,j,value Passed onto \code{\link[data.table]{set}}.
-#' @return \code{x} is modified by reference and returned invisibly.
-#' @import data.table
-#' @noRd
-safe_set <- function(x, i = NULL, j, value) {
-  is_non_empty_i <- is.null(i) | length(i) > 0
-  is_non_empty_j <- length(j) > 0
-  if (is_non_empty_i && is_non_empty_j) {
-    set(x, i, j, value)
-  }
-  invisible(x)
-}
-
-
 #' @noRd
 type_converters <- list(
   integer      = as.integer,
@@ -100,10 +81,12 @@ type_converters <- list(
 #' @import data.table
 #' @export
 as.naaccr_record.data.frame <- function(x, ...) {
-  all_items <- naaccr_format[, .SD[1], by = list(item)]
+  all_items <- naaccr_format[
+    name %in% names(x),
+    .SD[1],
+    by = list(item)
+  ]
   record <- as.data.table(x)
-  missing_columns <- setdiff(all_items[['name']], names(record))
-  safe_set(record, j = missing_columns, value = NA_character_)
   type_columns <- split(all_items[['name']], all_items[['type']])
   simple_types <- setdiff(
     names(type_columns),
