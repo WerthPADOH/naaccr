@@ -10,7 +10,7 @@ test_that("read_naaccr returns a 'naaccr_record', 'data.frame' object", {
   expect_true(inherits(nr, "data.frame"))
 })
 
-test_that("read_naaccr returns the same number of columns for any input", {
+test_that("read_naaccr returns all columns by default", {
   abst <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt",  version = 18)
   inc  <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt", version = 18)
   expect_identical(ncol(abst), ncol(inc))
@@ -39,6 +39,16 @@ test_that("read_naaccr can handle different versions", {
     nr16[["addrAtDxCity"]][1:2],
     c("STRASBURG", "BRIDGEVILLE")
   )
+})
+
+test_that("read_naaccr only keeps requested columns", {
+  kept <- c("nameMiddle", "rxDateHormone", "diagnosticConfirmation")
+  nr <- read_naaccr(
+    input       = "../data/synthetic-naaccr-18-abstract.txt",
+    version     = 18,
+    keep_fields = kept
+  )
+  expect_named(nr, kept)
 })
 
 test_that("naaccr_record can be used to create a new naaccr_record object", {
