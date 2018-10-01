@@ -52,6 +52,23 @@ records <- read_naaccr(record_file, version = 18)
 records[1:5, c("maritalStatusAtDx", "race1", "race2", "race3")]
 ```
 
+By default, `read_naaccr` reads all fields defined in a format. For example,
+the NAACCR 18 format used above has `r nrow(naaccr_format_18)` fields. Rarely
+would an analysis need even 100 fields. By specifying which fields to keep, one
+can improve time and memory efficiency.
+
+```{r readKeepColumns}
+dim(records)
+format(object.size(records))
+records_slim <- read_naaccr(
+  input       = record_file,
+  version     = 18,
+  keep_fields = c("ageAtDiagnosis", "countyAtDx", "primarySite")
+)
+dim(records_slim)
+format(object.size(records_slim))
+```
+
 Like with most classes, one can create a new `naaccr_record` object with the
 function of the same name. The result will have the given columns.
 

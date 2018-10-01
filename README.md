@@ -52,6 +52,24 @@ records[1:5, c("maritalStatusAtDx", "race1", "race2", "race3")]
 #> 5 no further race documented
 ```
 
+By default, `read_naaccr` reads all fields defined in a format. For example, the NAACCR 18 format used above has 791 fields. Rarely would an analysis need even 100 fields. By specifying which fields to keep, one can improve time and memory efficiency.
+
+``` r
+dim(records)
+#> [1]  20 791
+format(object.size(records))
+#> [1] "669832 bytes"
+records_slim <- read_naaccr(
+  input       = record_file,
+  version     = 18,
+  keep_fields = c("ageAtDiagnosis", "countyAtDx", "primarySite")
+)
+dim(records_slim)
+#> [1] 20  3
+format(object.size(records_slim))
+#> [1] "2368 bytes"
+```
+
 Like with most classes, one can create a new `naaccr_record` object with the function of the same name. The result will have the given columns.
 
 ``` r
