@@ -86,7 +86,7 @@ separate_sentineled <- function(x, field) {
     x[!nzchar(x)] <- NA
     is_continuous <- !(x %in% sents[["sentinel"]]) & nzchar(x, keepNA = TRUE)
     x_num <- as.numeric(replace(x, !is_continuous, NA))
-    x_sent <- factor(x, c("", sent[["sentinel"]]), c("", sents[["label"]]))
+    x_sent <- factor(x, c("", sents[["sentinel"]]), c("", sents[["label"]]))
     x_sent[is_continuous] <- ""
     out <- list(x_num, x_sent)
     names(out) <- c(field, paste0(field, "Flag"))
