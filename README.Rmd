@@ -52,17 +52,32 @@ records <- read_naaccr(record_file, version = 18)
 records[1:5, c("maritalStatusAtDx", "race1", "race2", "race3")]
 ```
 
+By default, `read_naaccr` reads all fields defined in a format. For example,
+the NAACCR 18 format used above has `r nrow(naaccr_format_18)` fields. Rarely
+would an analysis need even 100 fields. By specifying which fields to keep, one
+can improve time and memory efficiency.
+
+```{r readKeepColumns}
+dim(records)
+format(object.size(records))
+records_slim <- read_naaccr(
+  input       = record_file,
+  version     = 18,
+  keep_fields = c("ageAtDiagnosis", "countyAtDx", "primarySite")
+)
+dim(records_slim)
+format(object.size(records_slim))
+```
+
 Like with most classes, one can create a new `naaccr_record` object with the
-function of the same name. The result will have all the necessary columns, each
-of the correct class. Any columns not provided will be filled with missing
-values.
+function of the same name. The result will have the given columns.
 
 ```{r naaccrRecord}
 nr <- naaccr_record(
-  primarySite         = "C010",
-  dateOfBirth         = "19450521"
+  primarySite = "C010",
+  dateOfBirth = "19450521"
 )
-nr[, c("primarySite", "dateOfBirth", "autopsy")]
+nr[, c("primarySite", "dateOfBirth")]
 ```
 
 The `as.naaccr_record` function can transform an existing data frame. It does
@@ -73,7 +88,8 @@ prefab <- data.frame(
   ageAtDiagnosis = c(1, 120, 999),
   race1          = c("01", "02", "88")
 )
-as.naaccr_record(prefab)[, c("ageAtDiagnosis", "race1", "anemia")]
+converted <- as.naaccr_record(prefab)
+converted[, c("ageAtDiagnosis", "race1")]
 ```
 
 ### Code translation
@@ -93,13 +109,6 @@ parameter to work with these.
 
 ```{r falseValue}
 naaccr_boolean(c("0", "1", "2"), false_value = "1")
-```
-
-NAACCR's dates follow the `YYYYMMDD` format, which R doesn't recognize. The
-`naaccr_date` function parses these strings into `Date` vectors.
-
-```{r naaccrDate}
-naaccr_date("20180720")
 ```
 
 #### Categorical fields

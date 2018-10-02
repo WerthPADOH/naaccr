@@ -71,12 +71,17 @@ parse_records <- function(record_lines,
 #' @param version An integer specifying the NAACCR format version for parsing
 #'   the records. Use this or \code{format}, not both.
 #' @param format A \code{\link{record_format}} object for parsing the records.
+#' @param keep_fields Character vector of XML field names to keep in the
+#'   dataset. If \code{NULL} (default), all columns are kept.
 #' @return A \code{data.frame} of the records. The columns included depend on
 #'   the NAACCR record format version. All columns are character vectors.
 #' @import data.table
 #' @import stringi
 #' @export
-read_naaccr <- function(input, version = NULL, format = NULL) {
+read_naaccr <- function(input,
+                        version = NULL,
+                        format = NULL,
+                        keep_fields = NULL) {
   if (!inherits(input, "connection")) {
     input <- as.connection(input)
     on.exit(
@@ -91,6 +96,9 @@ read_naaccr <- function(input, version = NULL, format = NULL) {
     format
   } else {
     stop("Must specify either version or format")
+  }
+  if (!is.null(keep_fields)) {
+    read_format <- read_format[name %in% keep_fields]
   }
   read_format <- as.record_format(read_format)
   # Read all record types as the longest type, with padding
@@ -108,5 +116,6 @@ read_naaccr <- function(input, version = NULL, format = NULL) {
     col_names    = read_format[["name"]]
   )
   setDT(records)
+  setcolorder(records, keep_fields)
   as.naaccr_record(records)
 }
