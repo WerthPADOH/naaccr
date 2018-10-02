@@ -10,10 +10,11 @@ test_that("read_naaccr returns a 'naaccr_record', 'data.frame' object", {
   expect_true(inherits(nr, "data.frame"))
 })
 
-test_that("read_naaccr returns the same number of columns for any input", {
+test_that("read_naaccr returns all columns by default", {
   abst <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt",  version = 18)
   inc  <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt", version = 18)
-  expect_identical(nrow(abst), nrow(inc))
+  expect_identical(ncol(abst), ncol(inc))
+  expect_identical(ncol(abst), nrow(naaccr_format_18))
 })
 
 test_that("read_naaccr reads the data", {
@@ -25,7 +26,7 @@ test_that("read_naaccr reads the data", {
 
 test_that("read_naaccr only creates the columns from the format", {
   nr <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt", version = 18)
-  expect_named(nr, unique(naaccr_format[["name"]]), ignore.order = TRUE)
+  expect_named(nr, unique(naaccr_format_18[["name"]]), ignore.order = TRUE)
 })
 
 test_that("read_naaccr can handle different versions", {
@@ -38,6 +39,16 @@ test_that("read_naaccr can handle different versions", {
     nr16[["addrAtDxCity"]][1:2],
     c("STRASBURG", "BRIDGEVILLE")
   )
+})
+
+test_that("read_naaccr only keeps requested columns", {
+  kept <- c("nameMiddle", "rxDateHormone", "diagnosticConfirmation")
+  nr <- read_naaccr(
+    input       = "../data/synthetic-naaccr-18-abstract.txt",
+    version     = 18,
+    keep_fields = kept
+  )
+  expect_named(nr, kept)
 })
 
 test_that("naaccr_record can be used to create a new naaccr_record object", {
@@ -63,13 +74,27 @@ test_that("as.naaccr_record auto-cleans fields", {
   )
   processed <- as.naaccr_record(record)
   for (column in names(record)) {
-    expect_true( is.na(processed[[column]][[1L]]))
-    expect_false(is.na(processed[[column]][[2L]]))
+    test_label <- paste0("(", column, " is NA)")
+    expect_true(
+      is.na(processed[[column]][[1L]]),
+      label = paste0(column, "[1] is NA")
+    )
+    expect_false(
+      is.na(processed[[column]][[2L]]),
+      label = paste0(column, "[2] is not NA")
+    )
   }
 })
 
 test_that("as.naaccr_record creates fields with correct classes", {
-  record <- as.naaccr_record(list(ageAtDiagnosis = NA))
+  record <- as.naaccr_record(list(
+    ageAtDiagnosis          = NA,
+    dateOfBirth             = NA,
+    censusOccCode19702000   = NA,
+    estrogenReceptorSummary = NA,
+    secondaryDiagnosis1     = NA,
+    latitude                = NA
+  ))
   expect_is(record[["ageAtDiagnosis"]], "integer")
   expect_is(record[["dateOfBirth"]], "Date")
   expect_is(record[["censusOccCode19702000"]], "factor")

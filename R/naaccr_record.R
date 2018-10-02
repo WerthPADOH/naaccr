@@ -45,109 +45,74 @@ as.naaccr_record.list <- function(x, ...) {
 }
 
 
-#' Assignment by reference if needed
-#'
-#' Only attempt to apply \code{set} on a \code{data.table} if something will
-#' actually be set.
-#'
-#' @param x,i,j,value Passed onto \code{\link[data.table]{set}}.
-#' @return \code{x} is modified by reference and returned invisibly.
-#' @import data.table
 #' @noRd
-safe_set <- function(x, i = NULL, j, value) {
-  is_non_empty_i <- is.null(i) | length(i) > 0
-  is_non_empty_j <- length(j) > 0
-  if (is_non_empty_i && is_non_empty_j) {
-    set(x, i, j, value)
+type_converters <- list(
+  integer      = as.integer,
+  numeric      = as.numeric,
+  character    = as.character,
+  age          = clean_age,
+  icd_code     = clean_icd_code,
+  postal       = clean_postal,
+  city         = clean_address_city,
+  address      = clean_address_number_and_street,
+  facility     = clean_facility_id,
+  census_block = clean_census_block,
+  census_tract = clean_census_tract,
+  icd_9        = clean_icd_9_cm,
+  county       = clean_county_fips,
+  physician    = clean_physician_id,
+  override     = naaccr_override,
+  sentineled   = as.numeric,
+  boolean01    = naaccr_boolean,
+  telephone    = clean_telephone,
+  count        = clean_count,
+  ssn          = clean_ssn,
+  boolean12    = function(x) naaccr_boolean(x, false_value = '1'),
+  Date         = function(x) as.Date(x, format = '%Y%m%d'),
+  datetime     = function(x) {
+    x <- stri_trim_both(x)
+    x <- stri_pad_right(x, width = 14L, pad = "0", use_length = TRUE)
+    as.POSIXct(x, format = "%Y%m%d%H%M%S")
   }
-  invisible(x)
-}
+)
 
 
 #' @rdname as.naaccr_record
 #' @import data.table
 #' @export
 as.naaccr_record.data.frame <- function(x, ...) {
-  all_items <- naaccr_format[, .SD[1], by = "item"]
+  all_items <- naaccr_format[
+    name %in% names(x),
+    .SD[1],
+    by = list(item)
+  ]
   record <- as.data.table(x)
-  missing_columns <- setdiff(all_items[['name']], names(record))
-  safe_set(record, j = missing_columns, value = NA_character_)
-
   type_columns <- split(all_items[['name']], all_items[['type']])
-  type_converters <- list(
-    integer      = as.integer,
-    numeric      = as.numeric,
-    boolean      = naaccr_boolean,
-    override     = naaccr_override,
-    sentineled   = as.numeric,
-    postal       = clean_postal,
-    city         = clean_address_city,
-    address      = clean_address_number_and_street,
-    facility     = clean_facility_id,
-    census_block = clean_census_block,
-    census_tract = clean_census_tract,
-    icd_9        = clean_icd_9_cm,
-    county       = clean_county_fips,
-    physician    = clean_physician_id,
-    Date         = function(x) {
-      as.Date(x, format = '%Y%m%d')
-    },
-    datetime     = function(x) {
-      x <- stri_trim_both(x)
-      x <- stri_pad_right(x, width = 14L, pad = "0", use_length = TRUE)
-      as.POSIXct(x, format = "%Y%m%d%H%M%S")
-    }
+  simple_types <- setdiff(
+    names(type_columns),
+    c("factor", "sentineled", "count")
   )
-  for (type in names(type_converters)) {
+  for (type in simple_types) {
     columns <- intersect(type_columns[[type]], names(record))
-    if (length(columns) > 0L) {
-      converter_fun <- type_converters[[type]]
-      for (column in columns) {
-        safe_set(record, j = column, value = converter_fun(record[[column]]))
-      }
+    converter_fun <- type_converters[[type]]
+    for (column in columns) {
+      set(record, j = column, value = converter_fun(record[[column]]))
     }
   }
-  for (column in intersect(type_columns[["factor"]], names(record))) {
-    safe_set(
+  for (column in type_columns[["factor"]]) {
+    set(
       x     = record,
       j     = column,
       value = naaccr_factor(record[[column]], field = column)
     )
   }
-  for (column in intersect(type_columns[["sentineled"]], names(record))) {
-    safe_set(
+  for (column in type_columns[["sentineled"]]) {
+    set(
       x     = record,
       j     = column,
       value = naaccr_sentineled(record[[column]], field = column)
     )
   }
-  # Avoid R CMD check notes about unbound global variables
-  ageAtDiagnosis       <- NULL
-  cancerStatus         <- NULL
-  autopsy              <- NULL
-  causeOfDeath         <- NULL
-  radNoOfTreatmentVol  <- NULL
-  socialSecurityNumber <- NULL
-  telephone            <- NULL
-
-  record[
-    ,
-    ':='(
-      ageAtDiagnosis = clean_age(ageAtDiagnosis),
-      cancerStatus   = naaccr_boolean(cancerStatus, false_value = '1'),
-      autopsy        = c(`1` = TRUE, `2` = FALSE)[autopsy],
-      causeOfDeath   = clean_cause_of_death(causeOfDeath)
-    )
-  ][
-    radNoOfTreatmentVol == 999L,
-    radNoOfTreatmentVol := NA
-  ][
-    socialSecurityNumber == '999999999',
-    socialSecurityNumber := NA
-  ][
-    telephone %in% c("0000000000", "9999999999"),
-    telephone := NA
-  ]
   record <- setDF(record)
   class(record) <- c('naaccr_record', class(record))
   record
