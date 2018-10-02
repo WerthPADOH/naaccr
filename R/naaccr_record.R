@@ -82,9 +82,10 @@ type_converters <- list(
 #' @export
 as.naaccr_record.data.frame <- function(x, ...) {
   all_items <- naaccr_format[
-    name %in% names(x),
+    list(name = names(x)),
+    on = "name",
     .SD[1],
-    by = list(item)
+    by = "item"
   ]
   record <- as.data.table(x)
   type_columns <- split(all_items[['name']], all_items[['type']])
