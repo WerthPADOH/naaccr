@@ -98,7 +98,7 @@ read_naaccr <- function(input,
     stop("Must specify either version or format")
   }
   if (!is.null(keep_fields)) {
-    read_format <- read_format[name %in% keep_fields]
+    read_format <- read_format[list(name = keep_fields), on = "name"]
   }
   read_format <- as.record_format(read_format)
   # Read all record types as the longest type, with padding

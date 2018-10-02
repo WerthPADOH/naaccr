@@ -26,7 +26,7 @@ clean_address_city <- function(city) {
 
 
 #' Clean house number and street values
-#' @param city A character vector of house numbers and street names.
+#' @param location A character vector of house numbers and street names.
 #' @return A character vector, with \code{NA} for unknown locations.
 #' @export
 clean_address_number_and_street <- function(location) {
@@ -74,7 +74,7 @@ clean_census_tract <- function(tract) {
 
 
 #' Clean county FIPS codes
-#' @param tract A character vector of county FIPS codes.
+#' @param county A character vector of county FIPS codes.
 #' @return A character vector, with \code{NA} for unknown counties.
 #' @export
 clean_county_fips <- function(county) {
@@ -169,10 +169,8 @@ clean_telephone <- function(number) {
 #' @export
 clean_count <- function(count, field) {
   count <- trimws(count)
-  width <- naaccr_format[
-    name == field,
-    end_col[[1]] - start_col[[1]] + 1L
-  ]
+  info <- naaccr_format[list(name = field), on = "name"]
+  width <- info[["end_col"]][[1]] - info[["start_col"]][[1]] + 1L
   na_code <- stri_join(rep("9", width), collapse = "")
   count[count == na_code] <- NA
   as.integer(count)
