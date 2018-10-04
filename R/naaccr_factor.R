@@ -86,8 +86,15 @@ split_sentineled <- function(x, field) {
     sents <- field_sentinels[field_scheme, on = "scheme"]
     setorderv(sents, "sentinel")
     x <- as.character(x)
-    x[!nzchar(x)] <- NA
-    is_continuous <- !(x %in% sents[["sentinel"]]) & nzchar(x, keepNA = TRUE)
+    x <- trimws(x)
+    is_empty <- !nzchar(x)
+    x[is_empty] <- NA
+    is_sentinel <- x %in% sents[["sentinel"]]
+    is_continuous <- !is_sentinel & grepl("^\\d+(\\.\\d+)?$", x, perl = TRUE)
+    is_invalid <- !is_empty & !is_sentinel & !is_continuous & !is.na(x)
+    if (any(is_invalid)) {
+      warning("Non-blank invalid codes set to NA: ", field)
+    }
     x_num <- as.numeric(replace(x, !is_continuous, NA))
     x_sent <- factor(x, sents[["sentinel"]], sents[["label"]])
     out <- data.frame(x_num, x_sent)

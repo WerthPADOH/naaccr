@@ -37,3 +37,9 @@ test_that("split_sentineled returns a data.frame of the values and flags", {
   missing_flag  <- is.na(result[["numberOfCoresExaminedFlag"]])
   expect_true(all(missing_value | missing_flag))
 })
+
+test_that("split_sentineled returns double-NA for invalid codes with warning", {
+  expect_warning(result <- split_sentineled("QQ", "gleasonScoreClinical"))
+  expect_true(is.na(result[["gleasonScoreClinical"]]))
+  expect_true(is.na(result[["gleasonScoreClinicalFlag"]]))
+})
