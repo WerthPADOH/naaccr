@@ -1,3 +1,4 @@
+library(data.table)
 library(testthat)
 library(naaccr)
 
@@ -14,7 +15,10 @@ test_that("read_naaccr returns all columns by default", {
   abst <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt",  version = 18)
   inc  <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt", version = 18)
   expect_identical(ncol(abst), ncol(inc))
-  expect_identical(ncol(abst), nrow(naaccr_format_18))
+  expect_identical(
+    ncol(abst),
+    naaccr_format_18[, .N + sum(type == "sentineled")]
+  )
 })
 
 test_that("read_naaccr reads the data", {
@@ -26,7 +30,11 @@ test_that("read_naaccr reads the data", {
 
 test_that("read_naaccr only creates the columns from the format", {
   nr <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt", version = 18)
-  expect_named(nr, unique(naaccr_format_18[["name"]]), ignore.order = TRUE)
+  expected_names <- naaccr_format_18[
+    ,
+    c(name, paste0(name[type == "sentineled"], "Flag"))
+  ]
+  expect_named(nr, expected_names, ignore.order = TRUE)
 })
 
 test_that("read_naaccr can handle different versions", {
