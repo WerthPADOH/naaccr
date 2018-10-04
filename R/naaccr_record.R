@@ -115,7 +115,7 @@ as.naaccr_record.data.frame <- function(x, ...) {
     set(
       x     = record,
       j     = c(column, flag_column),
-      value = separate_sentineled(record[[column]], field = column)
+      value = split_sentineled(record[[column]], field = column)
     )
   }
   record <- setDF(record)
