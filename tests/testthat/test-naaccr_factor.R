@@ -24,3 +24,16 @@ test_that("naaccr_factor works for country codes", {
 test_that("naaccr_factor warns for non-fields", {
   expect_warning(naaccr_factor("a", "foo"))
 })
+
+test_that("separate_sentineled returns a data.frame of the values and flags", {
+  values <- c(sprintf("%02d", 0:50), "X1", "X7", "X9", 51:99)
+  result <- separate_sentineled(values, "numberOfCoresExamined")
+  expect_is(result, "data.frame")
+  expect_identical(dim(result), c(length(values), 2L))
+  expect_named(result, c("numberOfCoresExamined", "numberOfCoresExaminedFlag"))
+  expect_is(result[["numberOfCoresExamined"]], "numeric")
+  expect_is(result[["numberOfCoresExaminedFlag"]], "factor")
+  missing_value <- is.na(result[["numberOfCoresExamined"]])
+  missing_flag  <- is.na(result[["numberOfCoresExaminedFlag"]])
+  expect_true(all(missing_value | missing_flag))
+})
