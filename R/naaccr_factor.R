@@ -66,8 +66,8 @@ naaccr_factor_country <- function(x, full_names = TRUE, ...) {
 #'   from \code{x}. Its name is the value of \code{field}. The second is a
 #'   \code{factor} with levels representing the sentinel values. For all
 #'   non-missing values in the numeric vector, the respective value in the
-#'   factor is \code{""}. This allows distinguishing between non-sentineled and
-#'   missing values in the factor.
+#'   factor is \code{NA}. If a value of \code{x} was not valid, the respective
+#'   row will be \code{NA} for the continuous and flag values.
 #'
 #'   If \code{field} is not a sentineled field, a data.frame with just \code{x}
 #'   is returned with a warning.
@@ -86,9 +86,7 @@ separate_sentineled <- function(x, field) {
     x[!nzchar(x)] <- NA
     is_continuous <- !(x %in% sents[["sentinel"]]) & nzchar(x, keepNA = TRUE)
     x_num <- as.numeric(replace(x, !is_continuous, NA))
-    x_sent <- factor(x, c("", sents[["sentinel"]]), c("", sents[["label"]]))
-    x_sent[is_continuous] <- ""
-    out <- list(x_num, x_sent)
+    x_sent <- factor(x, sents[["sentinel"]], sents[["label"]])
     out <- data.frame(x_num, x_sent)
     names(out) <- c(field, paste0(field, "Flag"))
     out
