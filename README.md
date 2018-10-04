@@ -57,9 +57,9 @@ By default, `read_naaccr` reads all fields defined in a format. For example, the
 
 ``` r
 dim(records)
-#> [1]  20 791
+#> [1]  20 862
 format(object.size(records))
-#> [1] "670400 bytes"
+#> [1] "643880 bytes"
 records_slim <- read_naaccr(
   input       = record_file,
   version     = 18,
@@ -128,14 +128,16 @@ naaccr_factor(c("01", "31", "65"), "primaryPayerAtDx")
 
 #### Numeric with special missing
 
-Some fields contain primarily continuous or count data but also use special codes. One name for this type of code is a "sentinel value." The `naaccr_sentineled` function creates a vector of the `"sentineled"` class.
+Some fields contain primarily continuous or count data but also use special codes. One name for this type of code is a "sentinel value." The `separate_sentineled` function splits these fields in two.
 
 ``` r
-rnp <- naaccr_sentineled(c(10, 20, 90, 95, 99, NA), "regionalNodesPositive")
+rnp <- separate_sentineled(c(10, 20, 90, 95, 99, NA), "regionalNodesPositive")
 rnp
-#> [1] 10                  20                  = 90               
-#> [4] positive aspiration unknown             NA                 
-#> sentinel values: "" "= 90" "positive aspiration" "positive, NOS" "no nodes examined" "unknown"
+#>   regionalNodesPositive regionalNodesPositiveFlag
+#> 1                    10                      <NA>
+#> 2                    20                      <NA>
+#> 3                    NA                      = 90
+#> 4                    NA       positive aspiration
+#> 5                    NA                   unknown
+#> 6                    NA                      <NA>
 ```
-
-For more on working with `sentineled` vectors, see the documentation for the `sentinel` package: `help(package="sentinel")`.

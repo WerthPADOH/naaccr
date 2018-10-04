@@ -72,7 +72,10 @@ naaccr_factor_country <- function(x, full_names = TRUE, ...) {
 #'   If \code{field} is not a sentineled field, a data.frame with just \code{x}
 #'   is returned with a warning.
 #' @examples
-#'   separate_sentineled()
+#'   node_codes <- c("10", "20", "90", "95", "99", NA)
+#'   s <- separate_sentineled(node_codes, "regionalNodesPositive")
+#'   print(s)
+#'   s[is.na(s[["regionalNodesPositive"]]), "regionalNodesPositiveFlag"]
 #' @export
 separate_sentineled <- function(x, field) {
   if (length(field) != 1L) {

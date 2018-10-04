@@ -126,12 +126,9 @@ naaccr_factor(c("01", "31", "65"), "primaryPayerAtDx")
 
 Some fields contain primarily continuous or count data but also use special
 codes. One name for this type of code is a "sentinel value." The
-`naaccr_sentineled` function creates a vector of the `"sentineled"` class.
+`separate_sentineled` function splits these fields in two.
 
 ```{r naaccrSentineled}
-rnp <- naaccr_sentineled(c(10, 20, 90, 95, 99, NA), "regionalNodesPositive")
+rnp <- separate_sentineled(c(10, 20, 90, 95, 99, NA), "regionalNodesPositive")
 rnp
 ```
-
-For more on working with `sentineled` vectors, see the documentation for the
-`sentinel` package: `help(package="sentinel")`.
