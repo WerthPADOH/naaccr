@@ -7,8 +7,6 @@ Maintainer: Nathan Werth <nwerth@pa.gov>
 Description: Functions for reading cancer record files which follow a format
     defined by the North American Association of Central Cancer Registries
     (NAACCR).
-Depends:
-    sentinel
 Imports:
     data.table,
     stringi,

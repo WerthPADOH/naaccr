@@ -108,12 +108,24 @@ as.naaccr_record.data.frame <- function(x, ...) {
     )
   }
   for (column in type_columns[["sentineled"]]) {
+    flag_column <- paste0(column, "Flag")
+    if (flag_column %in% names(record)) {
+      warning(flag_column, " already exists in dataset, will not be overwritten")
+    }
     set(
       x     = record,
-      j     = column,
-      value = naaccr_sentineled(record[[column]], field = column)
+      j     = c(column, flag_column),
+      value = split_sentineled(record[[column]], field = column)
     )
   }
+  # Have each "Flag" column following the one it describes
+  possible_names <- paste0(
+    rep(stri_subset_regex(names(record), "Flag$", negate = TRUE), each = 2),
+    c("", "Flag")
+  )
+  stopifnot(!anyDuplicated(possible_names))
+  valid_names <- possible_names[possible_names %in% names(record)]
+  setcolorder(record, valid_names)
   record <- setDF(record)
   class(record) <- c('naaccr_record', class(record))
   record
