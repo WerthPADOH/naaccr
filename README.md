@@ -59,7 +59,7 @@ By default, `read_naaccr` reads all fields defined in a format. For example, the
 dim(records)
 #> [1]  20 862
 format(object.size(records))
-#> [1] "643880 bytes"
+#> [1] "750184 bytes"
 records_slim <- read_naaccr(
   input       = record_file,
   version     = 18,
