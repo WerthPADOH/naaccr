@@ -26,6 +26,6 @@
 "60","radio-isotopes, NOS","Radio-isotopes, NOS"
 "61","strontium - 89","Strontium - 89"
 "62","strontium - 90","Strontium - 90"
-"80*","combination modality, specified","Combination modality, specified"
-"85*","combination modality, NOS","Combination modality, NOS"
+"80","combination modality, specified","Combination modality, specified"
+"85","combination modality, NOS","Combination modality, NOS"
 "98","other","Other, NOS"
