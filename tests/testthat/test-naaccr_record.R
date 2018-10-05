@@ -49,7 +49,7 @@ test_that("read_naaccr can handle different versions", {
   )
 })
 
-test_that("read_naaccr only keeps requested columns", {
+test_that("read_naaccr only keeps requested columns and their flags", {
   kept <- c("nameMiddle", "rxDateHormone", "diagnosticConfirmation")
   nr <- read_naaccr(
     input       = "../data/synthetic-naaccr-18-abstract.txt",
@@ -57,6 +57,17 @@ test_that("read_naaccr only keeps requested columns", {
     keep_fields = kept
   )
   expect_named(nr, kept)
+
+  kept_with_sentinel <- c(kept, "tumorDeposits", "lnSize")
+  nr <- read_naaccr(
+    input       = "../data/synthetic-naaccr-18-abstract.txt",
+    version     = 18,
+    keep_fields = kept_with_sentinel
+  )
+  expect_named(
+    nr,
+    c(kept, "tumorDeposits", "tumorDepositsFlag", "lnSize", "lnSizeFlag")
+  )
 })
 
 test_that("naaccr_record can be used to create a new naaccr_record object", {
