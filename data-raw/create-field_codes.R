@@ -1,24 +1,32 @@
 # Create the code-label dataset for factoring fields
 library(data.table)
 library(stringi)
-library(maps)
+library(ISOcodes)
 
-# Dynamically create the ISO country code file so it's up to date
-country_codes <- unique(maps::iso3166[, c("a3", "ISOname")])
+# Create country code file -----------------------------------------------------
+country_codes <- ISO_3166_1[
+  , c("Alpha_3", "Name", "Official_name", "Common_name")
+]
 setDT(country_codes)
-setnames(country_codes, c("code", "label"))
-country_codes <- country_codes[!stri_detect_fixed(code, "?")]
-# Remove some duplicate codes, which are territories
 country_codes <- country_codes[
-  !(code == "CHN" & label != "China") &
-    !(code == "FRA" & label != "France")
+  is.na(Official_name),
+  Official_name := Name
+][
+  is.na(Common_name),
+  Common_name := Name
+][
+  ,
+  list(
+    code        = Alpha_3,
+    label       = Common_name,
+    description = Official_name
+  )
 ]
 custom_countries <- fread("data-raw/custom-country-codes.csv")
 country_codes <- rbind(country_codes, custom_countries)
-country_codes[, description := label]
 fwrite(country_codes, "data-raw/code-labels/iso_country.csv", quote = TRUE)
 
-# Combine the code-label pairs from all files
+# Combine codes ----------------------------------------------------------------
 code_files <- list.files("data-raw/code-labels", full.names = TRUE)
 names(code_files) <- stri_replace_last_fixed(basename(code_files), ".csv", "")
 field_codes <- rbindlist(

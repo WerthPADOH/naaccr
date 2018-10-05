@@ -17,7 +17,7 @@ Suggests:
     jsonlite,
     magrittr,
     testthat,
-    maps,
+    ISOcodes,
     xml2,
     rmarkdown,
     roxygen2
