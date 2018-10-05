@@ -4,7 +4,7 @@ addrAtDxState,state
 addrCurrentCountry,iso_country
 addrCurrentState,state
 afpPostOrchiectomyRange,afpPostOrchiectomyRange
-afpPreOrchiectomyRange,afpPreOrchiectomyRange
+afpPreOrchiectomyRange,afpPostOrchiectomyRange
 afpPretreatmentInterpretation,afpPretreatmentInterpretation
 ambiguousTerminologyDx,ambiguousTerminologyDx
 anemia,anemia

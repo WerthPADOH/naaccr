@@ -41,3 +41,13 @@ test_that("split_sentineled returns double-NA for invalid codes with warning", {
   expect_true(is.na(result[["gleasonScoreClinical"]]))
   expect_true(is.na(result[["gleasonScoreClinicalFlag"]]))
 })
+
+test_that("All required code/sentinel schemes exist", {
+  specified_schemes <- unique(naaccr:::field_code_scheme[["scheme"]])
+  defined_schemes   <- unique(naaccr:::field_codes[["scheme"]])
+  expect_setequal(defined_schemes, specified_schemes)
+
+  specified_schemes <- unique(naaccr:::field_sentinel_scheme[["scheme"]])
+  defined_schemes   <- unique(naaccr:::field_sentinels[["scheme"]])
+  expect_setequal(defined_schemes, specified_schemes)
+})
