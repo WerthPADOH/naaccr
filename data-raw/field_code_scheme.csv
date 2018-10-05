@@ -1,5 +1,7 @@
 xml_name,scheme
+addrAtDxCountry,iso_country
 addrAtDxState,state
+addrCurrentCountry,iso_country
 addrCurrentState,state
 afpPostOrchiectomyRange,afpPostOrchiectomyRange
 afpPreOrchiectomyRange,afpPreOrchiectomyRange
@@ -9,6 +11,7 @@ anemia,anemia
 autopsy,autopsy
 bilirubinPretreatmentUnitOfMeasure,bilirubinPretreatmentUnitOfMeasure
 birthplace,place
+birthplaceCountry,iso_country
 birthplaceState,state
 brainMolecularMarkers,brainMolecularMarkers
 ca125PretreatmentInterpretation,ca125PretreatmentInterpretation
@@ -63,6 +66,7 @@ extranodalExtensionHeadAndNeckClinical,extranodalExtensionHeadAndNeckClinical
 extranodalExtensionPath,extranodalExtensionPath
 fibrosisScore,fibrosisScore
 figoStage,figoStage
+followupContactCountry,iso_country
 followUpContactState,state
 followUpSource,followUpSource
 followUpSourceCentral,followUpSourceCentral
@@ -189,6 +193,7 @@ phase3RadiationPrimaryTreatmentVolume,phase3RadiationPrimaryTreatmentVolume
 phase3RadiationToDrainingLymphNodes,phase3RadiationToDrainingLymphNodes
 phase3RadiationTreatmentModality,phase3RadiationTreatmentModality
 placeOfDeath,place
+placeOfDeathCountry,iso_country
 placeOfDeathState,state
 pleuralEffusion,pleuralEffusion
 primaryPayerAtDx,primaryPayerAtDx
