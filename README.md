@@ -128,10 +128,10 @@ naaccr_factor(c("01", "31", "65"), "primaryPayerAtDx")
 
 #### Numeric with special missing
 
-Some fields contain primarily continuous or count data but also use special codes. One name for this type of code is a "sentinel value." The `separate_sentineled` function splits these fields in two.
+Some fields contain primarily continuous or count data but also use special codes. One name for this type of code is a "sentinel value." The `split_sentineled` function splits these fields in two.
 
 ``` r
-rnp <- separate_sentineled(c(10, 20, 90, 95, 99, NA), "regionalNodesPositive")
+rnp <- split_sentineled(c(10, 20, 90, 95, 99, NA), "regionalNodesPositive")
 rnp
 #>   regionalNodesPositive regionalNodesPositiveFlag
 #> 1                    10                      <NA>
