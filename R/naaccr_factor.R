@@ -20,8 +20,8 @@ naaccr_factor <- function(x, field, ...) {
   if (length(field) != 1L) {
     stop("field should be single string")
   }
-  if (field %in% field_code_scheme[["xml_name"]]) {
-    field_scheme <- field_code_scheme[list(xml_name = field), on = "xml_name"]
+  if (field %in% field_code_scheme[["name"]]) {
+    field_scheme <- field_code_scheme[list(name = field), on = "name"]
     codes <- field_codes[field_scheme, on = "scheme"]
     setorderv(codes, "code")
     factor(x, levels = codes[["code"]], labels = codes[["label"]], ...)
@@ -61,8 +61,8 @@ split_sentineled <- function(x, field) {
   if (length(field) != 1L) {
     stop("field should be single string")
   }
-  if (field %in% field_sentinel_scheme[["xml_name"]]) {
-    field_scheme <- field_sentinel_scheme[list(field), on = "xml_name"]
+  if (field %in% field_sentinel_scheme[["name"]]) {
+    field_scheme <- field_sentinel_scheme[list(field), on = "name"]
     sents <- field_sentinels[field_scheme, on = "scheme"]
     setorderv(sents, "sentinel")
     x <- as.character(x)

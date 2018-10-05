@@ -6,7 +6,7 @@ naaccr_unfactor <- function(x, field) {
   if (length(field) != 1L) {
     stop("field should be single string")
   }
-  field_scheme <- field_code_scheme[list(xml_name = field), on = "xml_name"]
+  field_scheme <- field_code_scheme[list(name = field), on = "name"]
   if (nrow(field_scheme) != 1L) {
     stop(field, " matched ", nrow(field_scheme), " schema")
   }
@@ -37,7 +37,7 @@ naaccr_unsentinel <- function(value,
   if (length(field) != 1L) {
     stop("field should be single string")
   }
-  field_scheme <- field_sentinel_scheme[list(xml_name = field), on = "xml_name"]
+  field_scheme <- field_sentinel_scheme[list(name = field), on = "name"]
   if (nrow(field_scheme) != 1L) {
     stop(field, " matched ", nrow(field_scheme), " schema")
   }
