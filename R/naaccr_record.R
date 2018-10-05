@@ -118,6 +118,14 @@ as.naaccr_record.data.frame <- function(x, ...) {
       value = split_sentineled(record[[column]], field = column)
     )
   }
+  # Have each "Flag" column following the one it describes
+  possible_names <- paste0(
+    rep(stri_subset_regex(names(record), "Flag$", negate = TRUE), each = 2),
+    c("", "Flag")
+  )
+  stopifnot(!anyDuplicated(possible_names))
+  valid_names <- possible_names[possible_names %in% names(record)]
+  setcolorder(record, valid_names)
   record <- setDF(record)
   class(record) <- c('naaccr_record', class(record))
   record
