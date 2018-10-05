@@ -2,3 +2,4 @@
 "0","not treated","No treatment given"
 "1","treated","Treatment given"
 "2","active surveillance","Active surveillance (watchful waiting)"
+"9","unknown","unknown if treatment was given"
