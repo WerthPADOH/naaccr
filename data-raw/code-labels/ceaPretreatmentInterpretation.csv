@@ -1,0 +1,8 @@
+"code","label","description"
+"0","normal","Negative/normal; within normal limits"
+"1","elevated","Positive/elevated"
+"2","borderline","Borderline; undetermined if positive or negative"
+"3","undetermined","Undetermined if positive or negative (normal values not available) AND no MD interpretation"
+"7","test ordered, results unknown","Test ordered, results not in chart"
+"8","not applicable","Not applicable: Information not collected for this case"
+"9","unknown","Not documented in medical record; AFP pretreatment interpretation not assessed or unknown if assessed"
