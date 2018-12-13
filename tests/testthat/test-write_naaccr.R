@@ -59,3 +59,19 @@ test_that("write_naaccr correctly formats dates and times", {
   expect_identical(dates, c("20110805", "20171231", "        "))
   expect_identical(times, c("20131211100908", "20010907165853", "              "))
 })
+
+test_that("write_naaccr -> read_naaccr will give the same values", {
+  records_16 <- read_naaccr("../data/synthetic-naaccr-16-incidence.txt", 16)
+  tf16 <- tempfile()
+  write_naaccr(records_16, tf16, 16)
+  records_16_2 <- read_naaccr(tf16, 16)
+  expect_equivalent(records_16, records_16_2)
+  file.remove(tf16)
+
+  records_18 <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt", 18)
+  tf18 <- tempfile()
+  write_naaccr(records_18, tf18, 18)
+  records_18_2 <- read_naaccr(tf18, 18)
+  expect_equivalent(records_18, records_18_2)
+  file.remove(tf18)
+})
