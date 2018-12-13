@@ -111,6 +111,7 @@ write_naaccr <- function(records, con, version = NULL, format = NULL) {
     version_key <- list(version = version)
     format <- naaccr_format[version_key, on = "version"]
   }
+  line_length <- max(format[["end_col"]])
   write_format <- format[
     list(name = names(records)),
     on      = "name",
@@ -121,7 +122,6 @@ write_naaccr <- function(records, con, version = NULL, format = NULL) {
     j = "width",
     value = write_format[["end_col"]] - write_format[["start_col"]] + 1L
   )
-  line_length <- max(write_format[["end_col"]])
   blank_line <- stri_pad_left("", width = line_length, pad = " ")
   text_lines <- rep(blank_line, nrow(records))
   for (column in write_format[["name"]]) {
