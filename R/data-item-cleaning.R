@@ -31,7 +31,7 @@ clean_age <- function(age) {
 #' @export
 clean_address_city <- function(city) {
   city <- trimws(city)
-  city[city == 'UNKNOWN'] <- NA
+  city[city %in% c('', 'UNKNOWN')] <- NA
   city
 }
 
@@ -42,7 +42,7 @@ clean_address_city <- function(city) {
 #' @export
 clean_address_number_and_street <- function(location) {
   location <- trimws(location)
-  location[location == 'UNKNOWN'] <- NA
+  location[location %in% c('', 'UNKNOWN')] <- NA
   location
 }
 
@@ -53,7 +53,7 @@ clean_address_number_and_street <- function(location) {
 #' @export
 clean_postal <- function(postal) {
   postal <- trimws(postal)
-  postal[postal %in% c('888888888', '999999999', '999999')] <- NA
+  postal[postal %in% c('', '888888888', '999999999', '999999')] <- NA
   postal
 }
 
@@ -91,6 +91,7 @@ clean_census_tract <- function(tract) {
 clean_county_fips <- function(county) {
   county <- trimws(county)
   stri_subset_regex(county, "^\\d{3}$", negate = TRUE) <- NA
+  county[!nzchar(county)] <- NA
   county
 }
 
@@ -125,7 +126,7 @@ clean_icd_code <- function(code) {
 #' @export
 clean_facility_id <- function(fin) {
   fin <- trimws(fin)
-  fin[fin %in% c('0000000000', '0099999999')] <- NA
+  fin[fin %in% c('', '0000000000', '0099999999')] <- NA
   fin
 }
 
@@ -150,7 +151,7 @@ clean_multiplicity <- function(count) {
 #' @export
 clean_physician_id <- function(physician) {
   physician <- trimws(physician)
-  physician[physician %in% c('00000000', '99999999')] <- NA
+  physician[physician %in% c('', '00000000', '99999999')] <- NA
   physician
 }
 
@@ -163,6 +164,7 @@ clean_physician_id <- function(physician) {
 clean_telephone <- function(number) {
   number <- trimws(number)
   number[grep("^[09]+$", number)] <- NA
+  number[!nzchar(number)] <- NA
   number
 }
 
@@ -195,6 +197,6 @@ clean_count <- function(count, field) {
 #' @export
 clean_ssn <- function(number) {
   number <- trimws(number)
-  number[number == "999999999"] <- NA
+  number[number %in% c("", "999999999")] <- NA
   number
 }
