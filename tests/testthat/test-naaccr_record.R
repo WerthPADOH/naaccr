@@ -17,7 +17,7 @@ test_that("read_naaccr returns all columns by default", {
   expect_identical(ncol(abst), ncol(inc))
   expect_identical(
     ncol(abst),
-    naaccr_format_18[, .N + sum(type == "sentineled")]
+    naaccr_format_18[, .N + sum(startsWith(type, "sentineled"))]
   )
 })
 
@@ -32,7 +32,7 @@ test_that("read_naaccr only creates the columns from the format", {
   nr <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt", version = 18)
   expected_names <- naaccr_format_18[
     ,
-    c(name, paste0(name[type == "sentineled"], "Flag"))
+    c(name, paste0(name[startsWith(type, "sentineled")], "Flag"))
   ]
   expect_named(nr, expected_names, ignore.order = TRUE)
 })
