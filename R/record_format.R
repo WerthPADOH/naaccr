@@ -11,6 +11,10 @@
 #' @param start_col First column of the field in a fixed-width record.
 #' @param end_col Last column of the field in a fixed-width record.
 #' @param type Name of the column class.
+#' @param alignment Alignment of the field in fixed-width files. Either
+#'   \code{"left"} (default) or \code{"right"}.
+#' @param padding Single-character strings to use for padding in fixed-width
+#'   files.
 #' @param name_literal (Optional) Item name in plain language.
 #' @param x Object to be coerced to a \code{record_format}, usually a
 #'   \code{data.frame} or \code{list}.
@@ -19,11 +23,32 @@
 #' @return An object of class \code{"record_format"} which has the following
 #'   columns:
 #'   \describe{
-#'     \item{\code{name}}{(\code{character}) XML item name.}
-#'     \item{\code{item}}{(\code{integer}) Item number.}
-#'     \item{\code{start_col}}{(\code{integer}) First column of the field.}
-#'     \item{\code{end_col}}{(\code{integer}) Last column of the field.}
-#'     \item{\code{name_literal}}{(\code{character}) Item name in plain language.}
+#'     \item{\code{name}}{
+#'       (\code{character}) XML field name.
+#'     }
+#'     \item{\code{item}}{
+#'       (\code{integer}) Field item number.
+#'     }
+#'     \item{\code{start_col}}{
+#'       (\code{integer}) First column of the field in a fixed-width text file.
+#'     }
+#'     \item{\code{end_col}}{
+#'       (\code{integer}) Last column of the field in a fixed-width text file.
+#'     }
+#'     \item{\code{type}}{
+#'       (\code{character}) R class for the column vector.
+#'     }
+#'     \item{\code{alignment}}{
+#'       (\code{character}) Alignment of the field's values in a fixed-width
+#'       text file.
+#'     }
+#'     \item{\code{padding}}{
+#'       (\code{character}) String used for padding field values in a
+#'       fixed-width text file.
+#'     }
+#'     \item{\code{name_literal}}{
+#'       (\code{character}) Field name in plain language.
+#'     }
 #'   }
 #'
 #' @examples
@@ -42,16 +67,41 @@ record_format <- function(name,
                           start_col,
                           end_col,
                           type,
+                          alignment    = "left",
+                          padding      = " ",
                           name_literal = NULL) {
-  if (is.null(name_literal)) {
+  # Allow 0-row formats, because why not?
+  n_rows <- max(
+    length(name), length(item), length(start_col), length(end_col),
+    length(type), length(name_literal)
+  )
+  if (n_rows == 0L) {
+    alignment    <- character(0L)
+    padding      <- character(0L)
+    name_literal <- character(0L)
+  } else if (is.null(name_literal)) {
     name_literal <- NA_character_
   }
+  # Check for valid values
+  alignment <- as.character(alignment)
+  not_left_right <- !(alignment %in% c("left", "right"))
+  if (any(not_left_right, na.rm = TRUE)) {
+    stop("'alignment' must only contain values of \"left\" or \"right\"")
+  }
+  padding   <- as.character(padding)
+  padding_width <- nchar(padding)
+  if (any(padding_width > 1L, na.rm = TRUE)) {
+    stop("'padding' must only contain single-character values")
+  }
+  # Create the format
   record_format <- data.table(
     name         = as.character(name),
     item         = as.integer(item),
     start_col    = as.integer(start_col),
     end_col      = as.integer(end_col),
     type         = as.character(type),
+    alignment    = as.character(alignment),
+    padding      = as.character(padding),
     name_literal = as.character(name_literal)
   )
   setattr(record_format, "class", c("record_format", class(record_format)))
@@ -86,14 +136,7 @@ rbind.record_format <- function(..., stringsAsFactors = FALSE) {
 #' A \code{data.table} object defining the fields for each version of NAACCR's
 #' fixed-width record file format.
 #'
-#' @description Columns:
-#'   \describe{
-#'     \item{\code{name}}{(\code{character}) XML item name.}
-#'     \item{\code{item}}{(\code{integer}) Item number.}
-#'     \item{\code{start_col}}{(\code{integer}) First column of the field.}
-#'     \item{\code{end_col}}{(\code{integer}) Last column of the field.}
-#'     \item{\code{name_literal}}{(\code{character}) Item name in plain language.}
-#'   }
+#' @description See \code{\link{record_format}}.
 #'
 #' @rdname naaccr_format
 "naaccr_format_12"

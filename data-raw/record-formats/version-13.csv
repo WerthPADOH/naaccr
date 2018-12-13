@@ -1,547 +1,547 @@
-"item","name_literal","start_col","end_col"
-10,"Record Type",1,1
-30,"Registry Type",2,2
-37,"Reserved 00",3,16
-50,"NAACCR Record Version",17,19
-45,"NPI--Registry ID",20,29
-40,"Registry ID",30,39
-60,"Tumor Record Number",40,41
-20,"Patient ID Number",42,49
-21,"Patient System ID-Hosp",50,57
-370,"Reserved 01",58,94
-70,"Addr at DX--City",95,144
-80,"Addr at DX--State",145,146
-100,"Addr at DX--Postal Code",147,155
-90,"County at DX",156,158
-110,"Census Tract 1970/80/90",159,164
-368,"Census Block Grp 1970-90",165,165
-120,"Census Cod Sys 1970/80/90",166,166
-364,"Census Tr Cert 1970/80/90",167,167
-130,"Census Tract 2000",168,173
-362,"Census Block Group 2000",174,174
-365,"Census Tr Certainty 2000",175,175
-150,"Marital Status at DX",176,176
-160,"Race 1",177,178
-161,"Race 2",179,180
-162,"Race 3",181,182
-163,"Race 4",183,184
-164,"Race 5",185,186
-170,"Race Coding Sys--Current",187,187
-180,"Race Coding Sys--Original",188,188
-190,"Spanish/Hispanic Origin",189,189
-200,"Computed Ethnicity",190,190
-210,"Computed Ethnicity Source",191,191
-220,"Sex",192,192
-230,"Age at Diagnosis",193,195
-240,"Date of Birth",196,203
-241,"Date of Birth Flag",204,205
-250,"Birthplace",206,208
-270,"Census Occ Code 1970-2000",209,211
-280,"Census Ind Code 1970-2000",212,214
-290,"Occupation Source",215,215
-300,"Industry Source",216,216
-310,"Text--Usual Occupation",217,316
-320,"Text--Usual Industry",317,416
-330,"Census Occ/Ind Sys 70-00",417,417
-191,"NHIA Derived Hisp Origin",418,418
-193,"Race--NAPIIA(derived API)",419,420
-192,"IHS Link",421,421
-366,"GIS Coordinate Quality",422,423
-3300,"RuralUrban Continuum 1993",424,425
-3310,"RuralUrban Continuum 2003",426,427
-135,"Census Tract 2010",428,433
-363,"Census Block Group 2010",434,434
-367,"Census Tr Certainty 2010",435,435
-102,"Addr at DX--Country",436,438
-1832,"Addr Current--Country",439,441
-252,"Birthplace--State",442,443
-254,"Birthplace--Country",444,446
-1847,"FollowUp Contact--Country",447,449
-1942,"Place of Death--State",450,451
-1944,"Place of Death--Country",452,454
-272,"Census Ind Code 2010",455,458
-282,"Census Occ Code 2010",459,462
-145,"Census Tr Poverty Indictr",463,463
-530,"Reserved 02",464,527
-380,"Sequence Number--Central",528,529
-390,"Date of Diagnosis",530,537
-391,"Date of Diagnosis Flag",538,539
-400,"Primary Site",540,543
-410,"Laterality",544,544
-420,"Histology (92-00) ICD-O-2",545,548
-430,"Behavior (92-00) ICD-O-2",549,549
-522,"Histologic Type ICD-O-3",550,553
-523,"Behavior Code ICD-O-3",554,554
-440,"Grade",555,555
-441,"Grade Path Value",556,556
-449,"Grade Path System",557,557
-450,"Site Coding Sys--Current",558,558
-460,"Site Coding Sys--Original",559,559
-470,"Morph Coding Sys--Current",560,560
-480,"Morph Coding Sys--Originl",561,561
-490,"Diagnostic Confirmation",562,562
-500,"Type of Reporting Source",563,563
-501,"Casefinding Source",564,565
-442,"Ambiguous Terminology DX",566,566
-443,"Date Conclusive DX",567,574
-448,"Date Conclusive DX Flag",575,576
-444,"Mult Tum Rpt as One Prim",577,578
-445,"Date of Mult Tumors",579,586
-439,"Date of Mult Tumors Flag",587,588
-446,"Multiplicity Counter",589,590
-680,"Reserved 03",591,690
-545,"NPI--Reporting Facility",691,700
-540,"Reporting Facility",701,710
-3105,"NPI--Archive FIN",711,720
-3100,"Archive FIN",721,730
-550,"Accession Number--Hosp",731,739
-560,"Sequence Number--Hospital",740,741
-570,"Abstracted By",742,744
-580,"Date of 1st Contact",745,752
-581,"Date of 1st Contact Flag",753,754
-590,"Date of Inpt Adm",755,762
-591,"Date of Inpt Adm Flag",763,764
-600,"Date of Inpt Disch",765,772
-601,"Date of Inpt Disch Flag",773,774
-605,"Inpatient Status",775,775
-610,"Class of Case",776,777
-630,"Primary Payer at DX",778,779
-2400,"Reserved 15",780,780
-668,"RX Hosp--Surg App 2010",781,781
-670,"RX Hosp--Surg Prim Site",782,783
-672,"RX Hosp--Scope Reg LN Sur",784,784
-674,"RX Hosp--Surg Oth Reg/Dis",785,785
-676,"RX Hosp--Reg LN Removed",786,787
-2450,"Reserved 16",788,788
-690,"RX Hosp--Radiation",789,789
-700,"RX Hosp--Chemo",790,791
-710,"RX Hosp--Hormone",792,793
-720,"RX Hosp--BRM",794,795
-730,"RX Hosp--Other",796,796
-740,"RX Hosp--DX/Stg Proc",797,798
-3280,"RX Hosp--Palliative Proc",799,799
-746,"RX Hosp--Surg Site 98-02",800,801
-747,"RX Hosp--Scope Reg 98-02",802,802
-748,"RX Hosp--Surg Oth 98-02",803,803
-750,"Reserved 04",804,903
-759,"SEER Summary Stage 2000",904,904
-760,"SEER Summary Stage 1977",905,905
-780,"EOD--Tumor Size",906,908
-790,"EOD--Extension",909,910
-800,"EOD--Extension Prost Path",911,912
-810,"EOD--Lymph Node Involv",913,913
-820,"Regional Nodes Positive",914,915
-830,"Regional Nodes Examined",916,917
-840,"EOD--Old 13 Digit",918,930
-850,"EOD--Old 2 Digit",931,932
-860,"EOD--Old 4 Digit",933,936
-870,"Coding System for EOD",937,937
-1060,"TNM Edition Number",938,939
-880,"TNM Path T",940,943
-890,"TNM Path N",944,947
-900,"TNM Path M",948,951
-910,"TNM Path Stage Group",952,955
-920,"TNM Path Descriptor",956,956
-930,"TNM Path Staged By",957,957
-940,"TNM Clin T",958,961
-950,"TNM Clin N",962,965
-960,"TNM Clin M",966,969
-970,"TNM Clin Stage Group",970,973
-980,"TNM Clin Descriptor",974,974
-990,"TNM Clin Staged By",975,975
-1120,"Pediatric Stage",976,977
-1130,"Pediatric Staging System",978,979
-1140,"Pediatric Staged By",980,980
-1150,"Tumor Marker 1",981,981
-1160,"Tumor Marker 2",982,982
-1170,"Tumor Marker 3",983,983
-1182,"Lymph-vascular Invasion",984,984
-2800,"CS Tumor Size",985,987
-2810,"CS Extension",988,990
-2820,"CS Tumor Size/Ext Eval",991,991
-2830,"CS Lymph Nodes",992,994
-2840,"CS Lymph Nodes Eval",995,995
-2850,"CS Mets at DX",996,997
-2860,"CS Mets Eval",998,998
-2851,"CS Mets at Dx-Bone",999,999
-2852,"CS Mets at Dx-Brain",1000,1000
-2853,"CS Mets at Dx-Liver",1001,1001
-2854,"CS Mets at Dx-Lung",1002,1002
-2880,"CS Site-Specific Factor 1",1003,1005
-2890,"CS Site-Specific Factor 2",1006,1008
-2900,"CS Site-Specific Factor 3",1009,1011
-2910,"CS Site-Specific Factor 4",1012,1014
-2920,"CS Site-Specific Factor 5",1015,1017
-2930,"CS Site-Specific Factor 6",1018,1020
-2861,"CS Site-Specific Factor 7",1021,1023
-2862,"CS Site-Specific Factor 8",1024,1026
-2863,"CS Site-Specific Factor 9",1027,1029
-2864,"CS Site-Specific Factor10",1030,1032
-2865,"CS Site-Specific Factor11",1033,1035
-2866,"CS Site-Specific Factor12",1036,1038
-2867,"CS Site-Specific Factor13",1039,1041
-2868,"CS Site-Specific Factor14",1042,1044
-2869,"CS Site-Specific Factor15",1045,1047
-2870,"CS Site-Specific Factor16",1048,1050
-2871,"CS Site-Specific Factor17",1051,1053
-2872,"CS Site-Specific Factor18",1054,1056
-2873,"CS Site-Specific Factor19",1057,1059
-2874,"CS Site-Specific Factor20",1060,1062
-2875,"CS Site-Specific Factor21",1063,1065
-2876,"CS Site-Specific Factor22",1066,1068
-2877,"CS Site-Specific Factor23",1069,1071
-2878,"CS Site-Specific Factor24",1072,1074
-2879,"CS Site-Specific Factor25",1075,1077
-2730,"CS PreRx Tumor Size",1078,1080
-2735,"CS PreRx Extension",1081,1083
-2740,"CS PreRx Tum Sz/Ext Eval",1084,1084
-2750,"CS PreRx Lymph Nodes",1085,1087
-2755,"CS PreRx Reg Nodes Eval",1088,1088
-2760,"CS PreRx Mets at DX",1089,1090
-2765,"CS PreRx Mets Eval",1091,1091
-2770,"CS PostRx Tumor Size",1092,1094
-2775,"CS PostRx Extension",1095,1097
-2780,"CS PostRx Lymph Nodes",1098,1100
-2785,"CS PostRx Mets at DX",1101,1102
-2940,"Derived AJCC-6 T",1103,1104
-2950,"Derived AJCC-6 T Descript",1105,1105
-2960,"Derived AJCC-6 N",1106,1107
-2970,"Derived AJCC-6 N Descript",1108,1108
-2980,"Derived AJCC-6 M",1109,1110
-2990,"Derived AJCC-6 M Descript",1111,1111
-3000,"Derived AJCC-6 Stage Grp",1112,1113
-3400,"Derived AJCC-7 T",1114,1116
-3402,"Derived AJCC-7 T Descript",1117,1117
-3410,"Derived AJCC-7 N",1118,1120
-3412,"Derived AJCC-7 N Descript",1121,1121
-3420,"Derived AJCC-7 M",1122,1124
-3422,"Derived AJCC-7 M Descript",1125,1125
-3430,"Derived AJCC-7 Stage Grp",1126,1128
-3440,"Derived PreRx-7 T",1129,1131
-3442,"Derived PreRx-7 T Descrip",1132,1132
-3450,"Derived PreRx-7 N",1133,1135
-3452,"Derived PreRx-7 N Descrip",1136,1136
-3460,"Derived PreRx-7 M",1137,1139
-3462,"Derived PreRx-7 M Descrip",1140,1140
-3470,"Derived PreRx-7 Stage Grp",1141,1143
-3480,"Derived PostRx-7 T",1144,1146
-3482,"Derived PostRx-7 N",1147,1149
-3490,"Derived PostRx-7 M",1150,1151
-3492,"Derived PostRx-7 Stge Grp",1152,1154
-3010,"Derived SS1977",1155,1155
-3020,"Derived SS2000",1156,1156
-3600,"Derived Neoadjuv Rx Flag",1157,1157
-3030,"Derived AJCC--Flag",1158,1158
-3040,"Derived SS1977--Flag",1159,1159
-3050,"Derived SS2000--Flag",1160,1160
-2937,"CS Version Input Current",1161,1166
-2935,"CS Version Input Original",1167,1172
-2936,"CS Version Derived",1173,1178
-3700,"SEER Site-Specific Fact 1",1179,1179
-3702,"SEER Site-Specific Fact 2",1180,1180
-3704,"SEER Site-Specific Fact 3",1181,1181
-3706,"SEER Site-Specific Fact 4",1182,1182
-3708,"SEER Site-Specific Fact 5",1183,1183
-3710,"SEER Site-Specific Fact 6",1184,1184
-3165,"ICD Revision Comorbid",1185,1185
-3110,"Comorbid/Complication 1",1186,1190
-3120,"Comorbid/Complication 2",1191,1195
-3130,"Comorbid/Complication 3",1196,1200
-3140,"Comorbid/Complication 4",1201,1205
-3150,"Comorbid/Complication 5",1206,1210
-3160,"Comorbid/Complication 6",1211,1215
-3161,"Comorbid/Complication 7",1216,1220
-3162,"Comorbid/Complication 8",1221,1225
-3163,"Comorbid/Complication 9",1226,1230
-3164,"Comorbid/Complication 10",1231,1235
-3720,"NPCR Specific Field 1",1325,1380
-3780,"Secondary Diagnosis 1",1236,1242
-3782,"Secondary Diagnosis 2",1243,1249
-3784,"Secondary Diagnosis 3",1250,1256
-3786,"Secondary Diagnosis 4",1257,1263
-3788,"Secondary Diagnosis 5",1264,1270
-3790,"Secondary Diagnosis 6",1271,1277
-3792,"Secondary Diagnosis 7",1278,1284
-3794,"Secondary Diagnosis 8",1285,1291
-3796,"Secondary Diagnosis 9",1292,1298
-3798,"Secondary Diagnosis 10",1299,1305
-1180,"Reserved 05",1381,1435
-1260,"Date Initial RX SEER",1436,1443
-1261,"Date Initial RX SEER Flag",1444,1445
-1270,"Date 1st Crs RX CoC",1446,1453
-1271,"Date 1st Crs RX CoC Flag",1454,1455
-1200,"RX Date Surgery",1456,1463
-1201,"RX Date Surgery Flag",1464,1465
-3170,"RX Date Mst Defn Srg",1466,1473
-3171,"RX Date Mst Defn Srg Flag",1474,1475
-3180,"RX Date Surg Disch",1476,1483
-3181,"RX Date Surg Disch Flag",1484,1485
-1210,"RX Date Radiation",1486,1493
-1211,"RX Date Radiation Flag",1494,1495
-3220,"RX Date Rad Ended",1496,1503
-3221,"RX Date Rad Ended Flag",1504,1505
-3230,"RX Date Systemic",1506,1513
-3231,"RX Date Systemic Flag",1514,1515
-1220,"RX Date Chemo",1516,1523
-1221,"RX Date Chemo Flag",1524,1525
-1230,"RX Date Hormone",1526,1533
-1231,"RX Date Hormone Flag",1534,1535
-1240,"RX Date BRM",1536,1543
-1241,"RX Date BRM Flag",1544,1545
-1250,"RX Date Other",1546,1553
-1251,"RX Date Other Flag",1554,1555
-1280,"RX Date DX/Stg Proc",1556,1563
-1281,"RX Date DX/Stg Proc Flag",1564,1565
-1285,"RX Summ--Treatment Status",1566,1566
-1290,"RX Summ--Surg Prim Site",1567,1568
-1292,"RX Summ--Scope Reg LN Sur",1569,1569
-1294,"RX Summ--Surg Oth Reg/Dis",1570,1570
-1296,"RX Summ--Reg LN Examined",1571,1572
-1310,"RX Summ--Surgical Approch",1573,1573
-1320,"RX Summ--Surgical Margins",1574,1574
-1330,"RX Summ--Reconstruct 1st",1575,1575
-1340,"Reason for No Surgery",1576,1576
-1350,"RX Summ--DX/Stg Proc",1577,1578
-3270,"RX Summ--Palliative Proc",1579,1579
-1360,"RX Summ--Radiation",1580,1580
-1370,"RX Summ--Rad to CNS",1581,1581
-1380,"RX Summ--Surg/Rad Seq",1582,1582
-3250,"RX Summ--Transplnt/Endocr",1583,1584
-1390,"RX Summ--Chemo",1585,1586
-1400,"RX Summ--Hormone",1587,1588
-1410,"RX Summ--BRM",1589,1590
-1420,"RX Summ--Other",1591,1591
-1430,"Reason for No Radiation",1592,1592
-1460,"RX Coding System--Current",1593,1594
-2161,"Reserved 18",1595,1595
-1510,"Rad--Regional Dose: cGy",1596,1600
-1520,"Rad--No of Treatment Vol",1601,1603
-1540,"Rad--Treatment Volume",1604,1605
-1550,"Rad--Location of RX",1606,1606
-1570,"Rad--Regional RX Modality",1607,1608
-3200,"Rad--Boost RX Modality",1609,1610
-3210,"Rad--Boost Dose cGy",1611,1615
-1639,"RX Summ--Systemic/Sur Seq",1616,1616
-1640,"RX Summ--Surgery Type",1617,1618
-3190,"Readm Same Hosp 30 Days",1619,1619
-1646,"RX Summ--Surg Site 98-02",1620,1621
-1647,"RX Summ--Scope Reg 98-02",1622,1622
-1648,"RX Summ--Surg Oth 98-02",1623,1623
-1190,"Reserved 06",1624,1723
-1660,"Subsq RX 2nd Course Date",1724,1731
-1661,"Subsq RX 2ndCrs Date Flag",1732,1733
-1671,"Subsq RX 2nd Course Surg",1734,1735
-1677,"Subsq RX 2nd--Scope LN SU",1736,1736
-1678,"Subsq RX 2nd--Surg Oth",1737,1737
-1679,"Subsq RX 2nd--Reg LN Rem",1738,1739
-1672,"Subsq RX 2nd Course Rad",1740,1740
-1673,"Subsq RX 2nd Course Chemo",1741,1741
-1674,"Subsq RX 2nd Course Horm",1742,1742
-1675,"Subsq RX 2nd Course BRM",1743,1743
-1676,"Subsq RX 2nd Course Oth",1744,1744
-1680,"Subsq RX 3rd Course Date",1745,1752
-1681,"Subsq RX 3rdCrs Date Flag",1753,1754
-1691,"Subsq RX 3rd Course Surg",1755,1756
-1697,"Subsq RX 3rd--Scope LN Su",1757,1757
-1698,"Subsq RX 3rd--Surg Oth",1758,1758
-1699,"Subsq RX 3rd--Reg LN Rem",1759,1760
-1692,"Subsq RX 3rd Course Rad",1761,1761
-1693,"Subsq RX 3rd Course Chemo",1762,1762
-1694,"Subsq RX 3rd Course Horm",1763,1763
-1695,"Subsq RX 3rd Course BRM",1764,1764
-1696,"Subsq RX 3rd Course Oth",1765,1765
-1700,"Subsq RX 4th Course Date",1766,1773
-1701,"Subsq RX 4thCrs Date Flag",1774,1775
-1711,"Subsq RX 4th Course Surg",1776,1777
-1717,"Subsq RX 4th--Scope LN Su",1778,1778
-1718,"Subsq RX 4th--Surg Oth",1779,1779
-1719,"Subsq RX 4th--Reg LN Rem",1780,1781
-1712,"Subsq RX 4th Course Rad",1782,1782
-1713,"Subsq RX 4th Course Chemo",1783,1783
-1714,"Subsq RX 4th Course Horm",1784,1784
-1715,"Subsq RX 4th Course BRM",1785,1785
-1716,"Subsq RX 4th Course Oth",1786,1786
-1741,"Subsq RX--Reconstruct Del",1787,1787
-1300,"Reserved 07",1788,1887
-1981,"Over-ride SS/NodesPos",1888,1888
-1982,"Over-ride SS/TNM-N",1889,1889
-1983,"Over-ride SS/TNM-M",1890,1890
-1985,"Over-ride Acsn/Class/Seq",1891,1891
-1986,"Over-ride HospSeq/DxConf",1892,1892
-1987,"Over-ride CoC-Site/Type",1893,1893
-1988,"Over-ride HospSeq/Site",1894,1894
-1989,"Over-ride Site/TNM-StgGrp",1895,1895
-1990,"Over-ride Age/Site/Morph",1896,1896
-2000,"Over-ride SeqNo/DxConf",1897,1897
-2010,"Over-ride Site/Lat/SeqNo",1898,1898
-2020,"Over-ride Surg/DxConf",1899,1899
-2030,"Over-ride Site/Type",1900,1900
-2040,"Over-ride Histology",1901,1901
-2050,"Over-ride Report Source",1902,1902
-2060,"Over-ride Ill-define Site",1903,1903
-2070,"Over-ride Leuk, Lymphoma",1904,1904
-2071,"Over-ride Site/Behavior",1905,1905
-2072,"Over-ride Site/EOD/DX Dt",1906,1906
-2073,"Over-ride Site/Lat/EOD",1907,1907
-2074,"Over-ride Site/Lat/Morph",1908,1908
-1960,"Site (73-91) ICD-O-1",1909,1912
-1971,"Histology (73-91) ICD-O-1",1913,1916
-1972,"Behavior (73-91) ICD-O-1",1917,1917
-1973,"Grade (73-91) ICD-O-1",1918,1918
-1980,"ICD-O-2 Conversion Flag",1919,1919
-2081,"CRC CHECKSUM",1920,1929
-2120,"SEER Coding Sys--Current",1930,1930
-2130,"SEER Coding Sys--Original",1931,1931
-2140,"CoC Coding Sys--Current",1932,1933
-2150,"CoC Coding Sys--Original",1934,1935
-2170,"Vendor Name",1936,1945
-2180,"SEER Type of Follow-Up",1946,1946
-2190,"SEER Record Number",1947,1948
-2200,"Diagnostic Proc 73-87",1949,1950
-2085,"Date Case Initiated",1951,1958
-2090,"Date Case Completed",1959,1966
-2092,"Date Case Completed--CoC",1967,1974
-2100,"Date Case Last Changed",1975,1982
-2110,"Date Case Report Exported",1983,1990
-2111,"Date Case Report Received",1991,1998
-2112,"Date Case Report Loaded",1999,2006
-2113,"Date Tumor Record Availbl",2007,2014
-2116,"ICD-O-3 Conversion Flag",2015,2015
-3750,"Over-ride CS 1",2016,2016
-3751,"Over-ride CS 2",2017,2017
-3752,"Over-ride CS 3",2018,2018
-3753,"Over-ride CS 4",2019,2019
-3754,"Over-ride CS 5",2020,2020
-3755,"Over-ride CS 6",2021,2021
-3756,"Over-ride CS 7",2022,2022
-3757,"Over-ride CS 8",2023,2023
-3758,"Over-ride CS 9",2024,2024
-3759,"Over-ride CS 10",2025,2025
-3760,"Over-ride CS 11",2026,2026
-3761,"Over-ride CS 12",2027,2027
-3762,"Over-ride CS 13",2028,2028
-3763,"Over-ride CS 14",2029,2029
-3764,"Over-ride CS 15",2030,2030
-3765,"Over-ride CS 16",2031,2031
-3766,"Over-ride CS 17",2032,2032
-3767,"Over-ride CS 18",2033,2033
-3768,"Over-ride CS 19",2034,2034
-3769,"Over-ride CS 20",2035,2035
-1650,"Reserved 08",2036,2115
-1750,"Date of Last Contact",2116,2123
-1751,"Date of Last Contact Flag",2124,2125
-1760,"Vital Status",2126,2126
-1770,"Cancer Status",2127,2127
-1780,"Quality of Survival",2128,2128
-1790,"Follow-Up Source",2129,2129
-1800,"Next Follow-Up Source",2130,2130
-1810,"Addr Current--City",2131,2180
-1820,"Addr Current--State",2181,2182
-1830,"Addr Current--Postal Code",2183,2191
-1840,"County--Current",2192,2194
-2700,"Reserved 17",2195,2195
-1860,"Recurrence Date--1st",2196,2203
-1861,"Recurrence Date--1st Flag",2204,2205
-1880,"Recurrence Type--1st",2206,2207
-1842,"Follow-Up Contact--City",2208,2257
-1844,"Follow-Up Contact--State",2258,2259
-1846,"Follow-Up Contact--Postal",2260,2268
-1910,"Cause of Death",2269,2272
-1920,"ICD Revision Number",2273,2273
-1930,"Autopsy",2274,2274
-1940,"Place of Death",2275,2277
-1791,"Follow-up Source Central",2278,2279
-1755,"Date of Death--Canada",2280,2287
-1756,"Date of Death--CanadaFlag",2288,2289
-1850,"Unusual Follow-Up Method",2290,2291
-1740,"Reserved 09",2292,2339
-2230,"Name--Last",3340,3379
-2240,"Name--First",3380,3419
-2250,"Name--Middle",3420,3459
-2260,"Name--Prefix",3460,3462
-2270,"Name--Suffix",3463,3465
-2280,"Name--Alias",3466,3505
-2390,"Name--Maiden",3506,3545
-2290,"Name--Spouse/Parent",3546,3605
-2300,"Medical Record Number",3606,3616
-2310,"Military Record No Suffix",3617,3618
-2320,"Social Security Number",3619,3627
-2330,"Addr at DX--No & Street",3628,3687
-2335,"Addr at DX--Supplementl",3688,3747
-2350,"Addr Current--No & Street",3748,3807
-2355,"Addr Current--Supplementl",3808,3867
-2360,"Telephone",3868,3877
-2380,"DC State File Number",3878,3883
-2394,"Follow-Up Contact--Name",3884,3943
-2392,"Follow-Up Contact--No&St",3944,4003
-2393,"Follow-Up Contact--Suppl",4004,4063
-2352,"Latitude",4064,4073
-2354,"Longitude",4074,4084
-1835,"Reserved 10",4085,4284
-2445,"NPI--Following Registry",4285,4294
-2440,"Following Registry",4295,4304
-2415,"NPI--Inst Referred From",4305,4314
-2410,"Institution Referred From",4315,4324
-2425,"NPI--Inst Referred To",4325,4334
-2420,"Institution Referred To",4335,4344
-1900,"Reserved 11",4345,4394
-2465,"NPI--Physician--Managing",4395,4404
-2460,"Physician--Managing",4405,4412
-2475,"NPI--Physician--Follow-Up",4413,4422
-2470,"Physician--Follow-Up",4423,4430
-2485,"NPI--Physician--Primary Surg",4431,4440
-2480,"Physician--Primary Surg",4441,4448
-2495,"NPI--Physician 3",4449,4458
-2490,"Physician 3",4459,4466
-2505,"NPI--Physician 4",4467,4476
-2500,"Physician 4",4477,4484
-2510,"Reserved 12",4485,4534
-7010,"Path Reporting Fac ID 1",4535,4559
-7090,"Path Report Number 1",4560,4579
-7320,"Path Date Spec Collect 1",4580,4593
-7480,"Path Report Type 1",4594,4595
-7190,"Path Ordering Fac No 1",4596,4620
-7100,"Path Order Phys Lic No 1",4621,4640
-7011,"Path Reporting Fac ID 2",4641,4665
-7091,"Path Report Number 2",4666,4685
-7321,"Path Date Spec Collect 2",4686,4699
-7481,"Path Report Type 2",4700,4701
-7191,"Path Ordering Fac No 2",4702,4726
-7101,"Path Order Phys Lic No 2",4727,4746
-7012,"Path Reporting Fac ID 3",4747,4771
-7092,"Path Report Number 3",4772,4791
-7322,"Path Date Spec Collect 3",4792,4805
-7482,"Path Report Type 3",4806,4807
-7192,"Path Ordering Fac No 3",4808,4832
-7102,"Path Order Phys Lic No 3",4833,4852
-7013,"Path Reporting Fac ID 4",4853,4877
-7093,"Path Report Number 4",4878,4897
-7323,"Path Date Spec Collect 4",4898,4911
-7483,"Path Report Type 4",4912,4913
-7193,"Path Ordering Fac No 4",4914,4938
-7103,"Path Order Phys Lic No 4",4939,4958
-7014,"Path Reporting Fac ID 5",4959,4983
-7094,"Path Report Number 5",4984,5003
-7324,"Path Date Spec Collect 5",5004,5017
-7484,"Path Report Type 5",5018,5019
-7194,"Path Ordering Fac No 5",5020,5044
-7104,"Path Order Phys Lic No 5",5045,5064
-2520,"Text--DX Proc--PE",5565,6564
-2530,"Text--DX Proc--X-ray/Scan",6565,7564
-2540,"Text--DX Proc--Scopes",7565,8564
-2550,"Text--DX Proc--Lab Tests",8565,9564
-2560,"Text--DX Proc--Op",9565,10564
-2570,"Text--DX Proc--Path",10565,11564
-2580,"Text--Primary Site Title",11565,11664
-2590,"Text--Histology Title",11665,11764
-2600,"Text--Staging",11765,12764
-2610,"RX Text--Surgery",12765,13764
-2620,"RX Text--Radiation (Beam)",13765,14764
-2630,"RX Text--Radiation Other",14765,15764
-2640,"RX Text--Chemo",15765,16764
-2650,"RX Text--Hormone",16765,17764
-2660,"RX Text--BRM",17765,18764
-2670,"RX Text--Other",18765,19764
-2680,"Text--Remarks",19765,20764
-2690,"Text--Place of Diagnosis",20765,20824
-2210,"Reserved 14",20825,22824
+"item","name_literal","start_col","end_col","alignment","padding"
+10,"Record Type",1,1,"left"," "
+30,"Registry Type",2,2,"left"," "
+37,"Reserved 00",3,16,NA,NA
+50,"NAACCR Record Version",17,19,"left"," "
+45,"NPI--Registry ID",20,29,"left"," "
+40,"Registry ID",30,39,"right","0"
+60,"Tumor Record Number",40,41,"right","0"
+20,"Patient ID Number",42,49,"right","0"
+21,"Patient System ID-Hosp",50,57,"right","0"
+370,"Reserved 01",58,94,NA,NA
+70,"Addr at DX--City",95,144,"left"," "
+80,"Addr at DX--State",145,146,"left"," "
+100,"Addr at DX--Postal Code",147,155,"left"," "
+90,"County at DX",156,158,"right","0"
+110,"Census Tract 1970/80/90",159,164,"right","0"
+368,"Census Block Grp 1970-90",165,165,"left"," "
+120,"Census Cod Sys 1970/80/90",166,166,"left"," "
+364,"Census Tr Cert 1970/80/90",167,167,"left"," "
+130,"Census Tract 2000",168,173,"right","0"
+362,"Census Block Group 2000",174,174,"left"," "
+365,"Census Tr Certainty 2000",175,175,"left"," "
+150,"Marital Status at DX",176,176,"left"," "
+160,"Race 1",177,178,"right","0"
+161,"Race 2",179,180,"right","0"
+162,"Race 3",181,182,"right","0"
+163,"Race 4",183,184,"right","0"
+164,"Race 5",185,186,"right","0"
+170,"Race Coding Sys--Current",187,187,"left"," "
+180,"Race Coding Sys--Original",188,188,"left"," "
+190,"Spanish/Hispanic Origin",189,189,"left"," "
+200,"Computed Ethnicity",190,190,"left"," "
+210,"Computed Ethnicity Source",191,191,"left"," "
+220,"Sex",192,192,"left"," "
+230,"Age at Diagnosis",193,195,"right","0"
+240,"Date of Birth",196,203,"left"," "
+241,"Date of Birth Flag",204,205,"left"," "
+250,"Birthplace",206,208,"right","0"
+270,"Census Occ Code 1970-2000",209,211,"right","0"
+280,"Census Ind Code 1970-2000",212,214,"right","0"
+290,"Occupation Source",215,215,"left"," "
+300,"Industry Source",216,216,"left"," "
+310,"Text--Usual Occupation",217,316,"left"," "
+320,"Text--Usual Industry",317,416,"left"," "
+330,"Census Occ/Ind Sys 70-00",417,417,"left"," "
+191,"NHIA Derived Hisp Origin",418,418,"left"," "
+193,"Race--NAPIIA(derived API)",419,420,"right","0"
+192,"IHS Link",421,421,"left"," "
+366,"GIS Coordinate Quality",422,423,"left"," "
+3300,"RuralUrban Continuum 1993",424,425,"right","0"
+3310,"RuralUrban Continuum 2003",426,427,"right","0"
+135,"Census Tract 2010",428,433,"left"," "
+363,"Census Block Group 2010",434,434,"left"," "
+367,"Census Tr Certainty 2010",435,435,"left"," "
+102,"Addr at DX--Country",436,438,"left"," "
+1832,"Addr Current--Country",439,441,"left"," "
+252,"Birthplace--State",442,443,"left"," "
+254,"Birthplace--Country",444,446,"left"," "
+1847,"FollowUp Contact--Country",447,449,"left"," "
+1942,"Place of Death--State",450,451,"left"," "
+1944,"Place of Death--Country",452,454,"left"," "
+272,"Census Ind Code 2010",455,458,"left"," "
+282,"Census Occ Code 2010",459,462,"left"," "
+145,"Census Tr Poverty Indictr",463,463,"left"," "
+530,"Reserved 02",464,527,NA,NA
+380,"Sequence Number--Central",528,529,"right","0"
+390,"Date of Diagnosis",530,537,"left"," "
+391,"Date of Diagnosis Flag",538,539,"left"," "
+400,"Primary Site",540,543,"left"," "
+410,"Laterality",544,544,"left"," "
+420,"Histology (92-00) ICD-O-2",545,548,"left"," "
+430,"Behavior (92-00) ICD-O-2",549,549,"left"," "
+522,"Histologic Type ICD-O-3",550,553,"left"," "
+523,"Behavior Code ICD-O-3",554,554,"left"," "
+440,"Grade",555,555,"left"," "
+441,"Grade Path Value",556,556,"left"," "
+449,"Grade Path System",557,557,"left"," "
+450,"Site Coding Sys--Current",558,558,"left"," "
+460,"Site Coding Sys--Original",559,559,"left"," "
+470,"Morph Coding Sys--Current",560,560,"left"," "
+480,"Morph Coding Sys--Originl",561,561,"left"," "
+490,"Diagnostic Confirmation",562,562,"left"," "
+500,"Type of Reporting Source",563,563,"left"," "
+501,"Casefinding Source",564,565,"left"," "
+442,"Ambiguous Terminology DX",566,566,"left"," "
+443,"Date Conclusive DX",567,574,"left"," "
+448,"Date Conclusive DX Flag",575,576,"left"," "
+444,"Mult Tum Rpt as One Prim",577,578,"left"," "
+445,"Date of Mult Tumors",579,586,"left"," "
+439,"Date of Mult Tumors Flag",587,588,"left"," "
+446,"Multiplicity Counter",589,590,"left"," "
+680,"Reserved 03",591,690,NA,NA
+545,"NPI--Reporting Facility",691,700,"left"," "
+540,"Reporting Facility",701,710,"left"," "
+3105,"NPI--Archive FIN",711,720,"left"," "
+3100,"Archive FIN",721,730,"right","0"
+550,"Accession Number--Hosp",731,739,"left"," "
+560,"Sequence Number--Hospital",740,741,"right","0"
+570,"Abstracted By",742,744,"left"," "
+580,"Date of 1st Contact",745,752,"left"," "
+581,"Date of 1st Contact Flag",753,754,"left"," "
+590,"Date of Inpt Adm",755,762,"left"," "
+591,"Date of Inpt Adm Flag",763,764,"left"," "
+600,"Date of Inpt Disch",765,772,"left"," "
+601,"Date of Inpt Disch Flag",773,774,"left"," "
+605,"Inpatient Status",775,775,"left"," "
+610,"Class of Case",776,777,"left"," "
+630,"Primary Payer at DX",778,779,"right","0"
+2400,"Reserved 15",780,780,NA,NA
+668,"RX Hosp--Surg App 2010",781,781,"left"," "
+670,"RX Hosp--Surg Prim Site",782,783,"right","0"
+672,"RX Hosp--Scope Reg LN Sur",784,784,"left"," "
+674,"RX Hosp--Surg Oth Reg/Dis",785,785,"left"," "
+676,"RX Hosp--Reg LN Removed",786,787,"left"," "
+2450,"Reserved 16",788,788,NA,NA
+690,"RX Hosp--Radiation",789,789,"left"," "
+700,"RX Hosp--Chemo",790,791,"right","0"
+710,"RX Hosp--Hormone",792,793,"right","0"
+720,"RX Hosp--BRM",794,795,"right","0"
+730,"RX Hosp--Other",796,796,"left"," "
+740,"RX Hosp--DX/Stg Proc",797,798,"right","0"
+3280,"RX Hosp--Palliative Proc",799,799,"left"," "
+746,"RX Hosp--Surg Site 98-02",800,801,"right","0"
+747,"RX Hosp--Scope Reg 98-02",802,802,"left"," "
+748,"RX Hosp--Surg Oth 98-02",803,803,"left"," "
+750,"Reserved 04",804,903,NA,NA
+759,"SEER Summary Stage 2000",904,904,"left"," "
+760,"SEER Summary Stage 1977",905,905,"left"," "
+780,"EOD--Tumor Size",906,908,"right","0"
+790,"EOD--Extension",909,910,"right","0"
+800,"EOD--Extension Prost Path",911,912,"right","0"
+810,"EOD--Lymph Node Involv",913,913,"left"," "
+820,"Regional Nodes Positive",914,915,"right","0"
+830,"Regional Nodes Examined",916,917,"right","0"
+840,"EOD--Old 13 Digit",918,930,"left"," "
+850,"EOD--Old 2 Digit",931,932,"left"," "
+860,"EOD--Old 4 Digit",933,936,"left"," "
+870,"Coding System for EOD",937,937,"left"," "
+1060,"TNM Edition Number",938,939,"right","0"
+880,"TNM Path T",940,943,"left"," "
+890,"TNM Path N",944,947,"left"," "
+900,"TNM Path M",948,951,"left"," "
+910,"TNM Path Stage Group",952,955,"left"," "
+920,"TNM Path Descriptor",956,956,"left"," "
+930,"TNM Path Staged By",957,957,"left"," "
+940,"TNM Clin T",958,961,"left"," "
+950,"TNM Clin N",962,965,"left"," "
+960,"TNM Clin M",966,969,"left"," "
+970,"TNM Clin Stage Group",970,973,"left"," "
+980,"TNM Clin Descriptor",974,974,"left"," "
+990,"TNM Clin Staged By",975,975,"left"," "
+1120,"Pediatric Stage",976,977,"left"," "
+1130,"Pediatric Staging System",978,979,"left"," "
+1140,"Pediatric Staged By",980,980,"left"," "
+1150,"Tumor Marker 1",981,981,"left"," "
+1160,"Tumor Marker 2",982,982,"left"," "
+1170,"Tumor Marker 3",983,983,"left"," "
+1182,"Lymph-vascular Invasion",984,984,"left"," "
+2800,"CS Tumor Size",985,987,"right","0"
+2810,"CS Extension",988,990,"right","0"
+2820,"CS Tumor Size/Ext Eval",991,991,"left"," "
+2830,"CS Lymph Nodes",992,994,"right","0"
+2840,"CS Lymph Nodes Eval",995,995,"left"," "
+2850,"CS Mets at DX",996,997,"right","0"
+2860,"CS Mets Eval",998,998,"left"," "
+2851,"CS Mets at Dx-Bone",999,999,"left"," "
+2852,"CS Mets at Dx-Brain",1000,1000,"left"," "
+2853,"CS Mets at Dx-Liver",1001,1001,"left"," "
+2854,"CS Mets at Dx-Lung",1002,1002,"left"," "
+2880,"CS Site-Specific Factor 1",1003,1005,"right","0"
+2890,"CS Site-Specific Factor 2",1006,1008,"right","0"
+2900,"CS Site-Specific Factor 3",1009,1011,"right","0"
+2910,"CS Site-Specific Factor 4",1012,1014,"right","0"
+2920,"CS Site-Specific Factor 5",1015,1017,"right","0"
+2930,"CS Site-Specific Factor 6",1018,1020,"right","0"
+2861,"CS Site-Specific Factor 7",1021,1023,"right","0"
+2862,"CS Site-Specific Factor 8",1024,1026,"right","0"
+2863,"CS Site-Specific Factor 9",1027,1029,"right","0"
+2864,"CS Site-Specific Factor10",1030,1032,"right","0"
+2865,"CS Site-Specific Factor11",1033,1035,"right","0"
+2866,"CS Site-Specific Factor12",1036,1038,"right","0"
+2867,"CS Site-Specific Factor13",1039,1041,"right","0"
+2868,"CS Site-Specific Factor14",1042,1044,"right","0"
+2869,"CS Site-Specific Factor15",1045,1047,"right","0"
+2870,"CS Site-Specific Factor16",1048,1050,"right","0"
+2871,"CS Site-Specific Factor17",1051,1053,"right","0"
+2872,"CS Site-Specific Factor18",1054,1056,"right","0"
+2873,"CS Site-Specific Factor19",1057,1059,"right","0"
+2874,"CS Site-Specific Factor20",1060,1062,"right","0"
+2875,"CS Site-Specific Factor21",1063,1065,"right","0"
+2876,"CS Site-Specific Factor22",1066,1068,"right","0"
+2877,"CS Site-Specific Factor23",1069,1071,"right","0"
+2878,"CS Site-Specific Factor24",1072,1074,"right","0"
+2879,"CS Site-Specific Factor25",1075,1077,"right","0"
+2730,"CS PreRx Tumor Size",1078,1080,"left"," "
+2735,"CS PreRx Extension",1081,1083,"left"," "
+2740,"CS PreRx Tum Sz/Ext Eval",1084,1084,"left"," "
+2750,"CS PreRx Lymph Nodes",1085,1087,"left"," "
+2755,"CS PreRx Reg Nodes Eval",1088,1088,"left"," "
+2760,"CS PreRx Mets at DX",1089,1090,"left"," "
+2765,"CS PreRx Mets Eval",1091,1091,"left"," "
+2770,"CS PostRx Tumor Size",1092,1094,"left"," "
+2775,"CS PostRx Extension",1095,1097,"left"," "
+2780,"CS PostRx Lymph Nodes",1098,1100,"left"," "
+2785,"CS PostRx Mets at DX",1101,1102,"left"," "
+2940,"Derived AJCC-6 T",1103,1104,"left"," "
+2950,"Derived AJCC-6 T Descript",1105,1105,"left"," "
+2960,"Derived AJCC-6 N",1106,1107,"left"," "
+2970,"Derived AJCC-6 N Descript",1108,1108,"left"," "
+2980,"Derived AJCC-6 M",1109,1110,"left"," "
+2990,"Derived AJCC-6 M Descript",1111,1111,"left"," "
+3000,"Derived AJCC-6 Stage Grp",1112,1113,"left"," "
+3400,"Derived AJCC-7 T",1114,1116,"left"," "
+3402,"Derived AJCC-7 T Descript",1117,1117,"left"," "
+3410,"Derived AJCC-7 N",1118,1120,"left"," "
+3412,"Derived AJCC-7 N Descript",1121,1121,"left"," "
+3420,"Derived AJCC-7 M",1122,1124,"left"," "
+3422,"Derived AJCC-7 M Descript",1125,1125,"left"," "
+3430,"Derived AJCC-7 Stage Grp",1126,1128,"left"," "
+3440,"Derived PreRx-7 T",1129,1131,"left"," "
+3442,"Derived PreRx-7 T Descrip",1132,1132,"left"," "
+3450,"Derived PreRx-7 N",1133,1135,"left"," "
+3452,"Derived PreRx-7 N Descrip",1136,1136,"left"," "
+3460,"Derived PreRx-7 M",1137,1139,"left"," "
+3462,"Derived PreRx-7 M Descrip",1140,1140,"left"," "
+3470,"Derived PreRx-7 Stage Grp",1141,1143,"left"," "
+3480,"Derived PostRx-7 T",1144,1146,"left"," "
+3482,"Derived PostRx-7 N",1147,1149,"left"," "
+3490,"Derived PostRx-7 M",1150,1151,"left"," "
+3492,"Derived PostRx-7 Stge Grp",1152,1154,"left"," "
+3010,"Derived SS1977",1155,1155,"left"," "
+3020,"Derived SS2000",1156,1156,"left"," "
+3600,"Derived Neoadjuv Rx Flag",1157,1157,"left"," "
+3030,"Derived AJCC--Flag",1158,1158,"left"," "
+3040,"Derived SS1977--Flag",1159,1159,"left"," "
+3050,"Derived SS2000--Flag",1160,1160,"left"," "
+2937,"CS Version Input Current",1161,1166,"left"," "
+2935,"CS Version Input Original",1167,1172,"left"," "
+2936,"CS Version Derived",1173,1178,"left"," "
+3700,"SEER Site-Specific Fact 1",1179,1179,"left"," "
+3702,"SEER Site-Specific Fact 2",1180,1180,"left"," "
+3704,"SEER Site-Specific Fact 3",1181,1181,"left"," "
+3706,"SEER Site-Specific Fact 4",1182,1182,"left"," "
+3708,"SEER Site-Specific Fact 5",1183,1183,"left"," "
+3710,"SEER Site-Specific Fact 6",1184,1184,"left"," "
+3165,"ICD Revision Comorbid",1185,1185,"left"," "
+3110,"Comorbid/Complication 1",1186,1190,"left","0"
+3120,"Comorbid/Complication 2",1191,1195,"left","0"
+3130,"Comorbid/Complication 3",1196,1200,"left","0"
+3140,"Comorbid/Complication 4",1201,1205,"left","0"
+3150,"Comorbid/Complication 5",1206,1210,"left","0"
+3160,"Comorbid/Complication 6",1211,1215,"left","0"
+3161,"Comorbid/Complication 7",1216,1220,"left","0"
+3162,"Comorbid/Complication 8",1221,1225,"left","0"
+3163,"Comorbid/Complication 9",1226,1230,"left","0"
+3164,"Comorbid/Complication 10",1231,1235,"left","0"
+3720,"NPCR Specific Field 1",1325,1380,"left"," "
+3780,"Secondary Diagnosis 1",1236,1242,"left"," "
+3782,"Secondary Diagnosis 2",1243,1249,"left"," "
+3784,"Secondary Diagnosis 3",1250,1256,"left"," "
+3786,"Secondary Diagnosis 4",1257,1263,"left"," "
+3788,"Secondary Diagnosis 5",1264,1270,"left"," "
+3790,"Secondary Diagnosis 6",1271,1277,"left"," "
+3792,"Secondary Diagnosis 7",1278,1284,"left"," "
+3794,"Secondary Diagnosis 8",1285,1291,"left"," "
+3796,"Secondary Diagnosis 9",1292,1298,"left"," "
+3798,"Secondary Diagnosis 10",1299,1305,"left"," "
+1180,"Reserved 05",1381,1435,NA,NA
+1260,"Date Initial RX SEER",1436,1443,"left"," "
+1261,"Date Initial RX SEER Flag",1444,1445,"left"," "
+1270,"Date 1st Crs RX CoC",1446,1453,"left"," "
+1271,"Date 1st Crs RX CoC Flag",1454,1455,"left"," "
+1200,"RX Date Surgery",1456,1463,"left"," "
+1201,"RX Date Surgery Flag",1464,1465,"left"," "
+3170,"RX Date Mst Defn Srg",1466,1473,"left"," "
+3171,"RX Date Mst Defn Srg Flag",1474,1475,"left"," "
+3180,"RX Date Surg Disch",1476,1483,"left"," "
+3181,"RX Date Surg Disch Flag",1484,1485,"left"," "
+1210,"RX Date Radiation",1486,1493,"left"," "
+1211,"RX Date Radiation Flag",1494,1495,"left"," "
+3220,"RX Date Rad Ended",1496,1503,"left"," "
+3221,"RX Date Rad Ended Flag",1504,1505,"left"," "
+3230,"RX Date Systemic",1506,1513,"left"," "
+3231,"RX Date Systemic Flag",1514,1515,"left"," "
+1220,"RX Date Chemo",1516,1523,"left"," "
+1221,"RX Date Chemo Flag",1524,1525,"left"," "
+1230,"RX Date Hormone",1526,1533,"left"," "
+1231,"RX Date Hormone Flag",1534,1535,"left"," "
+1240,"RX Date BRM",1536,1543,"left"," "
+1241,"RX Date BRM Flag",1544,1545,"left"," "
+1250,"RX Date Other",1546,1553,"left"," "
+1251,"RX Date Other Flag",1554,1555,"left"," "
+1280,"RX Date DX/Stg Proc",1556,1563,"left"," "
+1281,"RX Date DX/Stg Proc Flag",1564,1565,"left"," "
+1285,"RX Summ--Treatment Status",1566,1566,"left"," "
+1290,"RX Summ--Surg Prim Site",1567,1568,"right","0"
+1292,"RX Summ--Scope Reg LN Sur",1569,1569,"left"," "
+1294,"RX Summ--Surg Oth Reg/Dis",1570,1570,"left"," "
+1296,"RX Summ--Reg LN Examined",1571,1572,"right","0"
+1310,"RX Summ--Surgical Approch",1573,1573,"left"," "
+1320,"RX Summ--Surgical Margins",1574,1574,"left"," "
+1330,"RX Summ--Reconstruct 1st",1575,1575,"left"," "
+1340,"Reason for No Surgery",1576,1576,"left"," "
+1350,"RX Summ--DX/Stg Proc",1577,1578,"right","0"
+3270,"RX Summ--Palliative Proc",1579,1579,"left"," "
+1360,"RX Summ--Radiation",1580,1580,"left"," "
+1370,"RX Summ--Rad to CNS",1581,1581,"left"," "
+1380,"RX Summ--Surg/Rad Seq",1582,1582,"left"," "
+3250,"RX Summ--Transplnt/Endocr",1583,1584,"right","0"
+1390,"RX Summ--Chemo",1585,1586,"right","0"
+1400,"RX Summ--Hormone",1587,1588,"right","0"
+1410,"RX Summ--BRM",1589,1590,"right","0"
+1420,"RX Summ--Other",1591,1591,"left"," "
+1430,"Reason for No Radiation",1592,1592,"left"," "
+1460,"RX Coding System--Current",1593,1594,"right","0"
+2161,"Reserved 18",1595,1595,NA,NA
+1510,"Rad--Regional Dose: cGy",1596,1600,"right","0"
+1520,"Rad--No of Treatment Vol",1601,1603,"right","0"
+1540,"Rad--Treatment Volume",1604,1605,"right","0"
+1550,"Rad--Location of RX",1606,1606,"left"," "
+1570,"Rad--Regional RX Modality",1607,1608,"right","0"
+3200,"Rad--Boost RX Modality",1609,1610,"right","0"
+3210,"Rad--Boost Dose cGy",1611,1615,"right","0"
+1639,"RX Summ--Systemic/Sur Seq",1616,1616,"left"," "
+1640,"RX Summ--Surgery Type",1617,1618,"right","0"
+3190,"Readm Same Hosp 30 Days",1619,1619,"left"," "
+1646,"RX Summ--Surg Site 98-02",1620,1621,"right","0"
+1647,"RX Summ--Scope Reg 98-02",1622,1622,"left"," "
+1648,"RX Summ--Surg Oth 98-02",1623,1623,"left"," "
+1190,"Reserved 06",1624,1723,NA,NA
+1660,"Subsq RX 2nd Course Date",1724,1731,"left"," "
+1661,"Subsq RX 2ndCrs Date Flag",1732,1733,"left"," "
+1671,"Subsq RX 2nd Course Surg",1734,1735,"right","0"
+1677,"Subsq RX 2nd--Scope LN SU",1736,1736,"left"," "
+1678,"Subsq RX 2nd--Surg Oth",1737,1737,"left"," "
+1679,"Subsq RX 2nd--Reg LN Rem",1738,1739,"right","0"
+1672,"Subsq RX 2nd Course Rad",1740,1740,"left"," "
+1673,"Subsq RX 2nd Course Chemo",1741,1741,"left"," "
+1674,"Subsq RX 2nd Course Horm",1742,1742,"left"," "
+1675,"Subsq RX 2nd Course BRM",1743,1743,"left"," "
+1676,"Subsq RX 2nd Course Oth",1744,1744,"left"," "
+1680,"Subsq RX 3rd Course Date",1745,1752,"left"," "
+1681,"Subsq RX 3rdCrs Date Flag",1753,1754,"left"," "
+1691,"Subsq RX 3rd Course Surg",1755,1756,"right","0"
+1697,"Subsq RX 3rd--Scope LN Su",1757,1757,"left"," "
+1698,"Subsq RX 3rd--Surg Oth",1758,1758,"left"," "
+1699,"Subsq RX 3rd--Reg LN Rem",1759,1760,"right","0"
+1692,"Subsq RX 3rd Course Rad",1761,1761,"left"," "
+1693,"Subsq RX 3rd Course Chemo",1762,1762,"left"," "
+1694,"Subsq RX 3rd Course Horm",1763,1763,"left"," "
+1695,"Subsq RX 3rd Course BRM",1764,1764,"left"," "
+1696,"Subsq RX 3rd Course Oth",1765,1765,"left"," "
+1700,"Subsq RX 4th Course Date",1766,1773,"left"," "
+1701,"Subsq RX 4thCrs Date Flag",1774,1775,"left"," "
+1711,"Subsq RX 4th Course Surg",1776,1777,"right","0"
+1717,"Subsq RX 4th--Scope LN Su",1778,1778,"left"," "
+1718,"Subsq RX 4th--Surg Oth",1779,1779,"left"," "
+1719,"Subsq RX 4th--Reg LN Rem",1780,1781,"right","0"
+1712,"Subsq RX 4th Course Rad",1782,1782,"left"," "
+1713,"Subsq RX 4th Course Chemo",1783,1783,"left"," "
+1714,"Subsq RX 4th Course Horm",1784,1784,"left"," "
+1715,"Subsq RX 4th Course BRM",1785,1785,"left"," "
+1716,"Subsq RX 4th Course Oth",1786,1786,"left"," "
+1741,"Subsq RX--Reconstruct Del",1787,1787,"left"," "
+1300,"Reserved 07",1788,1887,NA,NA
+1981,"Over-ride SS/NodesPos",1888,1888,"left"," "
+1982,"Over-ride SS/TNM-N",1889,1889,"left"," "
+1983,"Over-ride SS/TNM-M",1890,1890,"left"," "
+1985,"Over-ride Acsn/Class/Seq",1891,1891,"left"," "
+1986,"Over-ride HospSeq/DxConf",1892,1892,"left"," "
+1987,"Over-ride CoC-Site/Type",1893,1893,"left"," "
+1988,"Over-ride HospSeq/Site",1894,1894,"left"," "
+1989,"Over-ride Site/TNM-StgGrp",1895,1895,"left"," "
+1990,"Over-ride Age/Site/Morph",1896,1896,"left"," "
+2000,"Over-ride SeqNo/DxConf",1897,1897,"left"," "
+2010,"Over-ride Site/Lat/SeqNo",1898,1898,"left"," "
+2020,"Over-ride Surg/DxConf",1899,1899,"left"," "
+2030,"Over-ride Site/Type",1900,1900,"left"," "
+2040,"Over-ride Histology",1901,1901,"left"," "
+2050,"Over-ride Report Source",1902,1902,"left"," "
+2060,"Over-ride Ill-define Site",1903,1903,"left"," "
+2070,"Over-ride Leuk, Lymphoma",1904,1904,"left"," "
+2071,"Over-ride Site/Behavior",1905,1905,"left"," "
+2072,"Over-ride Site/EOD/DX Dt",1906,1906,"left"," "
+2073,"Over-ride Site/Lat/EOD",1907,1907,"left"," "
+2074,"Over-ride Site/Lat/Morph",1908,1908,"left"," "
+1960,"Site (73-91) ICD-O-1",1909,1912,"left"," "
+1971,"Histology (73-91) ICD-O-1",1913,1916,"left"," "
+1972,"Behavior (73-91) ICD-O-1",1917,1917,"left"," "
+1973,"Grade (73-91) ICD-O-1",1918,1918,"left"," "
+1980,"ICD-O-2 Conversion Flag",1919,1919,"left"," "
+2081,"CRC CHECKSUM",1920,1929,"left"," "
+2120,"SEER Coding Sys--Current",1930,1930,"left"," "
+2130,"SEER Coding Sys--Original",1931,1931,"left"," "
+2140,"CoC Coding Sys--Current",1932,1933,"right","0"
+2150,"CoC Coding Sys--Original",1934,1935,"right","0"
+2170,"Vendor Name",1936,1945,"left"," "
+2180,"SEER Type of Follow-Up",1946,1946,"left"," "
+2190,"SEER Record Number",1947,1948,"right","0"
+2200,"Diagnostic Proc 73-87",1949,1950,"left"," "
+2085,"Date Case Initiated",1951,1958,"left"," "
+2090,"Date Case Completed",1959,1966,"left"," "
+2092,"Date Case Completed--CoC",1967,1974,"left"," "
+2100,"Date Case Last Changed",1975,1982,"left"," "
+2110,"Date Case Report Exported",1983,1990,"left"," "
+2111,"Date Case Report Received",1991,1998,"left"," "
+2112,"Date Case Report Loaded",1999,2006,"left"," "
+2113,"Date Tumor Record Availbl",2007,2014,"left"," "
+2116,"ICD-O-3 Conversion Flag",2015,2015,"left"," "
+3750,"Over-ride CS 1",2016,2016,"left"," "
+3751,"Over-ride CS 2",2017,2017,"left"," "
+3752,"Over-ride CS 3",2018,2018,"left"," "
+3753,"Over-ride CS 4",2019,2019,"left"," "
+3754,"Over-ride CS 5",2020,2020,"left"," "
+3755,"Over-ride CS 6",2021,2021,"left"," "
+3756,"Over-ride CS 7",2022,2022,"left"," "
+3757,"Over-ride CS 8",2023,2023,"left"," "
+3758,"Over-ride CS 9",2024,2024,"left"," "
+3759,"Over-ride CS 10",2025,2025,"left"," "
+3760,"Over-ride CS 11",2026,2026,"left"," "
+3761,"Over-ride CS 12",2027,2027,"left"," "
+3762,"Over-ride CS 13",2028,2028,"left"," "
+3763,"Over-ride CS 14",2029,2029,"left"," "
+3764,"Over-ride CS 15",2030,2030,"left"," "
+3765,"Over-ride CS 16",2031,2031,"left"," "
+3766,"Over-ride CS 17",2032,2032,"left"," "
+3767,"Over-ride CS 18",2033,2033,"left"," "
+3768,"Over-ride CS 19",2034,2034,"left"," "
+3769,"Over-ride CS 20",2035,2035,"left"," "
+1650,"Reserved 08",2036,2115,NA,NA
+1750,"Date of Last Contact",2116,2123,"left"," "
+1751,"Date of Last Contact Flag",2124,2125,"left"," "
+1760,"Vital Status",2126,2126,"left"," "
+1770,"Cancer Status",2127,2127,"left"," "
+1780,"Quality of Survival",2128,2128,"left"," "
+1790,"Follow-Up Source",2129,2129,"left"," "
+1800,"Next Follow-Up Source",2130,2130,"left"," "
+1810,"Addr Current--City",2131,2180,"left"," "
+1820,"Addr Current--State",2181,2182,"left"," "
+1830,"Addr Current--Postal Code",2183,2191,"left"," "
+1840,"County--Current",2192,2194,"right","0"
+2700,"Reserved 17",2195,2195,NA,NA
+1860,"Recurrence Date--1st",2196,2203,"left"," "
+1861,"Recurrence Date--1st Flag",2204,2205,"left"," "
+1880,"Recurrence Type--1st",2206,2207,"right","0"
+1842,"Follow-Up Contact--City",2208,2257,"left"," "
+1844,"Follow-Up Contact--State",2258,2259,"left"," "
+1846,"Follow-Up Contact--Postal",2260,2268,"left"," "
+1910,"Cause of Death",2269,2272,"left"," "
+1920,"ICD Revision Number",2273,2273,"left"," "
+1930,"Autopsy",2274,2274,"left"," "
+1940,"Place of Death",2275,2277,"right","0"
+1791,"Follow-up Source Central",2278,2279,"left"," "
+1755,"Date of Death--Canada",2280,2287,"left"," "
+1756,"Date of Death--CanadaFlag",2288,2289,"left"," "
+1850,"Unusual Follow-Up Method",2290,2291,"left"," "
+1740,"Reserved 09",2292,2339,NA,NA
+2230,"Name--Last",3340,3379,"left"," "
+2240,"Name--First",3380,3419,"left"," "
+2250,"Name--Middle",3420,3459,"left"," "
+2260,"Name--Prefix",3460,3462,"left"," "
+2270,"Name--Suffix",3463,3465,"left"," "
+2280,"Name--Alias",3466,3505,"left"," "
+2390,"Name--Maiden",3506,3545,"left"," "
+2290,"Name--Spouse/Parent",3546,3605,"left"," "
+2300,"Medical Record Number",3606,3616,"right"," "
+2310,"Military Record No Suffix",3617,3618,"right","0"
+2320,"Social Security Number",3619,3627,"left"," "
+2330,"Addr at DX--No & Street",3628,3687,"left"," "
+2335,"Addr at DX--Supplementl",3688,3747,"left"," "
+2350,"Addr Current--No & Street",3748,3807,"left"," "
+2355,"Addr Current--Supplementl",3808,3867,"left"," "
+2360,"Telephone",3868,3877,"left"," "
+2380,"DC State File Number",3878,3883,"left"," "
+2394,"Follow-Up Contact--Name",3884,3943,"left"," "
+2392,"Follow-Up Contact--No&St",3944,4003,"left"," "
+2393,"Follow-Up Contact--Suppl",4004,4063,"left"," "
+2352,"Latitude",4064,4073,"right"," "
+2354,"Longitude",4074,4084,"right"," "
+1835,"Reserved 10",4085,4284,NA,NA
+2445,"NPI--Following Registry",4285,4294,"left"," "
+2440,"Following Registry",4295,4304,"right","0"
+2415,"NPI--Inst Referred From",4305,4314,"left"," "
+2410,"Institution Referred From",4315,4324,"right","0"
+2425,"NPI--Inst Referred To",4325,4334,"left"," "
+2420,"Institution Referred To",4335,4344,"right","0"
+1900,"Reserved 11",4345,4394,NA,NA
+2465,"NPI--Physician--Managing",4395,4404,"left"," "
+2460,"Physician--Managing",4405,4412,"left"," "
+2475,"NPI--Physician--Follow-Up",4413,4422,"left"," "
+2470,"Physician--Follow-Up",4423,4430,"left"," "
+2485,"NPI--Physician--Primary Surg",4431,4440,"left"," "
+2480,"Physician--Primary Surg",4441,4448,"left"," "
+2495,"NPI--Physician 3",4449,4458,"left"," "
+2490,"Physician 3",4459,4466,"left"," "
+2505,"NPI--Physician 4",4467,4476,"left"," "
+2500,"Physician 4",4477,4484,"left"," "
+2510,"Reserved 12",4485,4534,NA,NA
+7010,"Path Reporting Fac ID 1",4535,4559,"left"," "
+7090,"Path Report Number 1",4560,4579,"left"," "
+7320,"Path Date Spec Collect 1",4580,4593,"left"," "
+7480,"Path Report Type 1",4594,4595,"right","0"
+7190,"Path Ordering Fac No 1",4596,4620,"left"," "
+7100,"Path Order Phys Lic No 1",4621,4640,"left"," "
+7011,"Path Reporting Fac ID 2",4641,4665,"left"," "
+7091,"Path Report Number 2",4666,4685,"left"," "
+7321,"Path Date Spec Collect 2",4686,4699,"left"," "
+7481,"Path Report Type 2",4700,4701,"right","0"
+7191,"Path Ordering Fac No 2",4702,4726,"left"," "
+7101,"Path Order Phys Lic No 2",4727,4746,"left"," "
+7012,"Path Reporting Fac ID 3",4747,4771,"left"," "
+7092,"Path Report Number 3",4772,4791,"left"," "
+7322,"Path Date Spec Collect 3",4792,4805,"left"," "
+7482,"Path Report Type 3",4806,4807,"right","0"
+7192,"Path Ordering Fac No 3",4808,4832,"left"," "
+7102,"Path Order Phys Lic No 3",4833,4852,"left"," "
+7013,"Path Reporting Fac ID 4",4853,4877,"left"," "
+7093,"Path Report Number 4",4878,4897,"left"," "
+7323,"Path Date Spec Collect 4",4898,4911,"left"," "
+7483,"Path Report Type 4",4912,4913,"right","0"
+7193,"Path Ordering Fac No 4",4914,4938,"left"," "
+7103,"Path Order Phys Lic No 4",4939,4958,"left"," "
+7014,"Path Reporting Fac ID 5",4959,4983,"left"," "
+7094,"Path Report Number 5",4984,5003,"left"," "
+7324,"Path Date Spec Collect 5",5004,5017,"left"," "
+7484,"Path Report Type 5",5018,5019,"right","0"
+7194,"Path Ordering Fac No 5",5020,5044,"left"," "
+7104,"Path Order Phys Lic No 5",5045,5064,"left"," "
+2520,"Text--DX Proc--PE",5565,6564,"left"," "
+2530,"Text--DX Proc--X-ray/Scan",6565,7564,"left"," "
+2540,"Text--DX Proc--Scopes",7565,8564,"left"," "
+2550,"Text--DX Proc--Lab Tests",8565,9564,"left"," "
+2560,"Text--DX Proc--Op",9565,10564,"left"," "
+2570,"Text--DX Proc--Path",10565,11564,"left"," "
+2580,"Text--Primary Site Title",11565,11664,"left"," "
+2590,"Text--Histology Title",11665,11764,"left"," "
+2600,"Text--Staging",11765,12764,"left"," "
+2610,"RX Text--Surgery",12765,13764,"left"," "
+2620,"RX Text--Radiation (Beam)",13765,14764,"left"," "
+2630,"RX Text--Radiation Other",14765,15764,"left"," "
+2640,"RX Text--Chemo",15765,16764,"left"," "
+2650,"RX Text--Hormone",16765,17764,"left"," "
+2660,"RX Text--BRM",17765,18764,"left"," "
+2670,"RX Text--Other",18765,19764,"left"," "
+2680,"Text--Remarks",19765,20764,"left"," "
+2690,"Text--Place of Diagnosis",20765,20824,"left"," "
+2210,"Reserved 14",20825,22824,NA,NA

@@ -49,7 +49,7 @@ as.naaccr_record.list <- function(x, ...) {
 type_converters <- list(
   integer      = as.integer,
   numeric      = as.numeric,
-  character    = as.character,
+  character    = clean_text,
   age          = clean_age,
   icd_code     = clean_icd_code,
   postal       = clean_postal,
@@ -89,6 +89,9 @@ as.naaccr_record.data.frame <- function(x, ...) {
   ]
   record <- as.data.table(x)
   type_columns <- split(all_items[['name']], all_items[['type']])
+  sent_types <- c("sentineled_numeric", "sentineled_integer")
+  type_columns[["sentineled"]] <- unlist(type_columns[sent_types])
+  type_columns[sent_types] <- NULL
   simple_types <- setdiff(
     names(type_columns),
     c("factor", "sentineled", "count")
