@@ -3,6 +3,17 @@
 # read NAACCR files because they heavily use sentinel values. Columns which will
 # be converted to factors don't need cleaning.
 
+#' Clean free text
+#' @param text A character vector of free text values.
+#' @return An character vector, with \code{NA} for empty values of \code{text}.
+#'   All other values have whitespace trimmed from both sides.
+#' @export
+clean_text <- function(text) {
+  trimmed <- trimws(text)
+  trimmed[!nzchar(trimmed)] <- NA
+  trimmed
+}
+
 #' Clean patient ages
 #' @param age \code{Age_at_Diagnosis} values.
 #' @return An integer vector, with \code{NA} for unknown ages.

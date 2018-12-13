@@ -50,13 +50,10 @@ parse_records <- function(record_lines,
     stop("start_cols and end_cols must be the same length")
   }
   item_matrix <- mapply(
-    starts = start_cols,
-    ends   = end_cols,
-    FUN = function(starts, ends) {
-      values <- stringi::stri_sub(record_lines, starts, ends)
-      stringi::stri_subset_regex(values, "^\\s+") <- NA
-      values
-    },
+    FUN      = stringi::stri_sub,
+    from     = start_cols,
+    to       = end_cols,
+    MoreArgs = list(str = record_lines),
     SIMPLIFY = FALSE
   )
   names(item_matrix) <- col_names

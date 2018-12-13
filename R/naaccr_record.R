@@ -49,7 +49,7 @@ as.naaccr_record.list <- function(x, ...) {
 type_converters <- list(
   integer      = as.integer,
   numeric      = as.numeric,
-  character    = as.character,
+  character    = clean_text,
   age          = clean_age,
   icd_code     = clean_icd_code,
   postal       = clean_postal,
