@@ -3,6 +3,8 @@
 #' Replace NAACCR codes with understandable factors
 #' @param x Vector (usually character) of codes.
 #' @param field String giving the XML name of the NAACCR field to code.
+#' @param keep_unknown Logical indicating whether values of "unknown" should be
+#'   a level in the factor or \code{NA}.
 #' @param ... Additional arguments passed onto \code{\link[base]{factor}}.
 #' @return
 #'   A \code{factor} vector version of \code{x}. The levels are short
@@ -16,13 +18,16 @@
 #'   naaccr_factor(c("USA", "GER", "XEN"), "addrAtDxCountry")
 #' @import data.table
 #' @export
-naaccr_factor <- function(x, field, ...) {
+naaccr_factor <- function(x, field, keep_unknown = FALSE, ...) {
   if (length(field) != 1L) {
     stop("field should be single string")
   }
   if (field %in% field_code_scheme[["name"]]) {
     field_scheme <- field_code_scheme[list(name = field), on = "name"]
     codes <- field_codes[field_scheme, on = "scheme"]
+    if (isFALSE(keep_unknown)) {
+      codes <- codes[means_missing == FALSE]
+    }
     setorderv(codes, "code")
     factor(x, levels = codes[["code"]], labels = codes[["label"]], ...)
   } else {

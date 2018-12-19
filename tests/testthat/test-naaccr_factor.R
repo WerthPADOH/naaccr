@@ -15,12 +15,23 @@ test_that("naaccr_factor converts the input to a factor", {
     code = c("ZZA", "ZZU", "XNI", "FRA"),
     name = c("Asia, NOS", "unknown", "North American Islands", "France")
   )
-  country_factor <- naaccr_factor(countries[["code"]], "addrAtDxCountry")
+  country_factor <- naaccr_factor(
+    countries[["code"]], "addrAtDxCountry", keep_unknown = TRUE
+  )
   expect_identical(as.character(country_factor), countries[["name"]])
 })
 
 test_that("naaccr_factor warns for non-fields", {
   expect_warning(naaccr_factor("a", "foo"))
+})
+
+test_that("Users can keep or omit unknowns from levels", {
+  no_unknown  <- naaccr_factor("9", "laterality", keep_unknown = FALSE)
+  expect_true(is.na(no_unknown))
+  expect_false("unknown" %in% levels(no_unknown))
+  has_unknown <- naaccr_factor("9", "laterality", keep_unknown = TRUE)
+  expect_false(is.na(has_unknown))
+  expect_true("unknown" %in% levels(has_unknown))
 })
 
 test_that("split_sentineled returns a data.frame of the values and flags", {

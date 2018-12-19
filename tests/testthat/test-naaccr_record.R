@@ -121,3 +121,13 @@ test_that("as.naaccr_record creates fields with correct classes", {
   expect_is(record[["secondaryDiagnosis1"]] ,"character")
   expect_is(record[["latitude"]], "numeric")
 })
+
+test_that("naaccr_record allows users to keep 'unknown' levels", {
+  has_unknown <- naaccr_record(laterality = "9", keep_unknown = TRUE)
+  expect_false(is.na(has_unknown[["laterality"]]))
+  expect_true("unknown" %in% levels(has_unknown[["laterality"]]))
+
+  no_unknown <- naaccr_record(laterality = "9", keep_unknown = FALSE)
+  expect_true(is.na(no_unknown[["laterality"]]))
+  expect_false("unknown" %in% levels(no_unknown[["laterality"]]))
+})
