@@ -1,0 +1,15 @@
+# Change log
+
+## 0.3.0
+
+### New features
+
+-   New function: `write_naaccr` for writing `naaccr_record` data sets to text
+    files according to one of the NAACCR formats. For now, it writes all unknown
+    and missing values as blanks, not the standard codes. Still, `write_naaccr`
+    and `read_naaccr` are inverse functions.
+-   Fields with country codes are now converted to factors.
+
+### Backend
+
+-   Using package `ISOcodes` instead of `maps` for location code tables
