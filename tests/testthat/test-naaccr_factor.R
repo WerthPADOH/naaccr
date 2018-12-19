@@ -13,7 +13,7 @@ test_that("naaccr_factor converts the input to a factor", {
 
   countries <- list(
     code = c("ZZA", "ZZU", "XNI", "FRA"),
-    name = c("Asia, NOS", "Unknown", "North American Islands", "France")
+    name = c("Asia, NOS", "unknown", "North American Islands", "France")
   )
   country_factor <- naaccr_factor(countries[["code"]], "addrAtDxCountry")
   expect_identical(as.character(country_factor), countries[["name"]])
