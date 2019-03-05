@@ -56,9 +56,35 @@ test_that("split_sentineled returns double-NA for invalid codes with warning", {
 test_that("All required code/sentinel schemes exist", {
   specified_schemes <- unique(naaccr:::field_code_scheme[["scheme"]])
   defined_schemes   <- unique(naaccr:::field_codes[["scheme"]])
-  expect_setequal(defined_schemes, specified_schemes)
+  undefined <- setdiff(specified_schemes, defined_schemes)
+  expect_identical(
+    undefined, character(0),
+    info = paste("Undefined schemes:", paste0(undefined, collapse = ", "))
+  )
 
   specified_schemes <- unique(naaccr:::field_sentinel_scheme[["scheme"]])
   defined_schemes   <- unique(naaccr:::field_sentinels[["scheme"]])
-  expect_setequal(defined_schemes, specified_schemes)
+  undefined <- setdiff(specified_schemes, defined_schemes)
+  expect_identical(
+    undefined, character(0),
+    info = paste("Undefined schemes:", paste0(undefined, collapse = ", "))
+  )
+})
+
+test_that("No unused code/sentinel schemes exist", {
+  specified_schemes <- unique(naaccr:::field_code_scheme[["scheme"]])
+  defined_schemes   <- unique(naaccr:::field_codes[["scheme"]])
+  unused <- setdiff(defined_schemes, specified_schemes)
+  expect_identical(
+    unused, character(0),
+    info = paste("Unused schemes:", paste0(unused, collapse = ", "))
+  )
+
+  specified_schemes <- unique(naaccr:::field_sentinel_scheme[["scheme"]])
+  defined_schemes   <- unique(naaccr:::field_sentinels[["scheme"]])
+  unused <- setdiff(defined_schemes, specified_schemes)
+  expect_identical(
+    unused, character(0),
+    info = paste("Unused schemes:", paste0(unused, collapse = ", "))
+  )
 })
