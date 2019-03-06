@@ -1,6 +1,0 @@
-"code","label","means_missing","description"
-"","valid",FALSE,"A valid date value is provided in item Date 1st Crs RX CoC [1270], or the date was not expected to have been transmitted"
-"10","unknown",FALSE,"No information whatsoever can be inferred from this exceptional value (e.g, unknown whether treatment was administered)"
-"11","not applicable",FALSE,"No proper value is applicable in this context (Autopsy only)"
-"12","applicable but unknown",FALSE,"A proper value is applicable but not known (e.g., treatment administered but date is unknown)"
-"15","unknown but expected",FALSE,"Information is not available at this time, but it is expected that it will be available later (e.g., accessioned based on ambiguous terminology only (Code 1 in data item Ambiguous Terminology DX [442])."
