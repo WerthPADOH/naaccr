@@ -3,7 +3,7 @@ library(testthat)
 library(naaccr)
 
 
-context("naaccr_sentineled")
+context("naaccr_record")
 
 test_that("read_naaccr returns a 'naaccr_record', 'data.frame' object", {
   nr <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt", version = 18)
