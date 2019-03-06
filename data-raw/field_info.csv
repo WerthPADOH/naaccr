@@ -427,7 +427,7 @@
 2270,"nameSuffix","character"
 2280,"nameAlias","character"
 2290,"nameSpouseParent","character"
-2300,"medicalRecordNumber","factor"
+2300,"medicalRecordNumber","character"
 2310,"militaryRecordNoSuffix","factor"
 2315,"medicareBeneficiaryIdentifier","character"
 2320,"socialSecurityNumber","ssn"
