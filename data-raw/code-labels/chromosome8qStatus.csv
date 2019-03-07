@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"0","no gain",FALSE,"No gain in chromosome 8q"
+"1","gain",FALSE,"Gain in chromosome 8q"
+"7","test ordered, results not in chart",TRUE,"Test ordered, results not in chart"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",TRUE,"Not documented in medical record; Chromosome 8q status not assessed or unknown if assessed"

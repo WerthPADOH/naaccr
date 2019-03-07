@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"0","No loss of chromosome 3 ",FALSE,"No loss of chromosome 3 "
+"1","Partial loss of chromosome 3",FALSE,"Partial loss of chromosome 3"
+"2","Complete loss of chromosome 3",FALSE,"Complete loss of chromosome 3"
+"3","Loss of chromosome 3, NOS",FALSE,"Loss of chromosome 3, NOS"
+"7","Test ordered, results not in chart",FALSE,"Test ordered, results not in chart"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",TRUE,"Not documented in medical record; chromosome 3 status not assessed or unknown if assessed"

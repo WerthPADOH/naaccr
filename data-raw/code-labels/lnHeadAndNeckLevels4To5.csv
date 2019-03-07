@@ -1,0 +1,7 @@
+"code","label","means_missing","description"
+"0","none",FALSE,"No involvement in Levels IV or V lymph nodes"
+"1","IV",FALSE,"Level IV lymph node(s) involved"
+"2","V",FALSE,"Level V lymph node(s) involved"
+"3","IV, V",FALSE,"Levels IV and V lymph node(s) involved"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",TRUE,"Not documented in medical record; Positive nodes, but level of positive node(s) unknown; Lymph node levels IV-V not assessed, or unknown if assessed"

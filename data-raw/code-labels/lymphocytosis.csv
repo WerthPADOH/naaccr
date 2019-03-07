@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"0","not present",FALSE,"Lymphocytosis not present; Absolute lymphocyte count = 5,000 cells/ µL"
+"1","present",FALSE,"Lymphocytosis present; Absolute lymphocyte count > 5,000 cells/µL"
+"6","present, statement only",FALSE,"Lab value unknown, physician states lymphocytosis is present"
+"7","test ordered, results unknown",TRUE,"Test ordered, results not in chart"
+"9","unknown",TRUE,"Not documented in medical record; Lymphocytosis not assessed or unknown if assessed"

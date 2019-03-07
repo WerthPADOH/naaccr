@@ -1,0 +1,7 @@
+"code","label","means_missing","description"
+"0","negative",FALSE,"Negative mediastinal and scalene lymph nodes"
+"1","mediastinal",FALSE,"Positive mediastinal lymph nodes"
+"2","scalene",FALSE,"Positive scalene lymph nodes"
+"3","mediastinal and scalene",FALSE,"Positive mediastinal and scalene lymph nodes"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",TRUE,"Not documented in medical record; Mediastinal and scalene lymph nodes not assessed or unknown if assessed"

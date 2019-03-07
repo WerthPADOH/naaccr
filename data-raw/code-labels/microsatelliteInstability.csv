@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"0","stable",FALSE,"Microsatellite instability (MSI) stable; microsatellite stable (MSS); negative, NOS; AND/OR; Mismatch repair (MMR) intact, no loss of nuclear expression of MMR proteins"
+"1","unstable low",FALSE,"MSI unstable low (MSI-L)"
+"2","unstable high",FALSE,"MSI unstable high (MSI-H); AND/OR; MMR-D (loss of nuclear expression of one or more MMR proteins, MMR protein deficient)"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",TRUE,"Not documented in medical record; MSI-indeterminate; Microsatellite instability not assessed or unknown if assessed"

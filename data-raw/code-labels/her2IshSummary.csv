@@ -1,0 +1,7 @@
+"code","label","means_missing","description"
+"0","negative",FALSE,"Negative [not amplified]"
+"2","equivocal",FALSE,"Equivocal"
+"3","positive",FALSE,"Positive [amplified]"
+"7","test ordered, results unknown",TRUE,"Test ordered, results not in chart"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case; (If this item is required by your standard setter, use of code 8 will result in an edit error.)"
+"9","unknown",TRUE,"Not documented in medical record; Results cannot be determined (indeterminate); HER2 ISH Summary not assessed or unknown if assessed"
