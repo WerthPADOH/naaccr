@@ -5,5 +5,5 @@
 "3","PL3",FALSE,"Tumor invades into or through the parietal pleura OR chest wall; Stated as PL3"
 "4","visceral pleura, NOS",FALSE,"Invasion of visceral pleura present, NOS; not stated if PL1 or PL2"
 "6","pleura, NOS",FALSE,"Tumor extends to pleura, NOS; not stated if visceral or parietal"
-"8","not applicable",FALSE,"Not applicable: Information not collected for this case (If this item is required by your standard setter, use of code 8 will result in an edit error.)"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case (If this item is required by your standard setter, use of code 8 will result in an edit error.)"
 "9","unknown",TRUE,"Not documented in medical record; no surgical resection of primary site is performed; visceral Pleural Invasion not assessed or unknown if assessed or cannot be determined"

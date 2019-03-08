@@ -22,4 +22,4 @@
 "C","C",FALSE,"Stage C (neuroblastoma only)"
 "D","D",FALSE,"Stage D (neuroblastoma only)"
 "DS","DS",FALSE,"Stage DS (neuroblastoma only)"
-"88","not applicable",FALSE,"Not applicable (not pediatric case)"
+"88","not applicable",TRUE,"Not applicable (not pediatric case)"

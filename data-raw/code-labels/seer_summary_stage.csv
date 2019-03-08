@@ -6,5 +6,5 @@
 "4","regional, direct extension and lymph nodes",FALSE,"Regional, direct extension and regional lymph nodes"
 "5","regional, NOS",FALSE,"Regional, NOS"
 "7","distant",FALSE,"Distant"
-"8","not applicable",FALSE,"Not applicable"
+"8","not applicable",TRUE,"Not applicable"
 "9","unstaged",TRUE,"Unstaged"

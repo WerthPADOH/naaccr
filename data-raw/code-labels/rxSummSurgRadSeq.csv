@@ -1,5 +1,5 @@
 "code","label","means_missing","description"
-"0","not applicable",FALSE,"No radiation and/or no surgery; unknown if surgery and/or radiation given"
+"0","not applicable",TRUE,"No radiation and/or no surgery; unknown if surgery and/or radiation given"
 "2","radiation before surgery",FALSE,"Radiation before surgery"
 "3","radiation after surgery",FALSE,"Radiation after surgery"
 "4","radiation before and after surgery",FALSE,"Radiation both before and after surgery"

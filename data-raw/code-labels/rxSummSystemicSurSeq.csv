@@ -1,5 +1,5 @@
 "code","label","means_missing","description"
-"0","not applicable",FALSE,"No systemic therapy and/or surgical procedures; unknown if surgery and/or systemic therapy given"
+"0","not applicable",TRUE,"No systemic therapy and/or surgical procedures; unknown if surgery and/or systemic therapy given"
 "2","systemic before surgery",FALSE,"Systemic therapy before surgery"
 "3","systemic after surgery",FALSE,"Systemic therapy after surgery"
 "4","systemic before and after surgery",FALSE,"Systemic therapy both before and after surgery"

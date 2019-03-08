@@ -7,4 +7,4 @@
 "5","range 2",FALSE,"Range 2 (S2)"
 "6","range 3",FALSE,"Range 3 (S3)"
 "8","ordered, but unknown",FALSE,"Ordered, but results not in chart"
-"9","not applicable",FALSE,"Not applicable"
+"9","not applicable",TRUE,"Not applicable"

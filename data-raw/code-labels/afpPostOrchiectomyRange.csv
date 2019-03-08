@@ -4,6 +4,6 @@
 "2","1,000-10,000 ng/mL",FALSE,"1,000 -10,000 ng/mL"
 "3","10,000+ ng/mL",FALSE,"Greater than 10,000 ng/mL"
 "4","elevated, NOS",FALSE,"Post-Orchiectomy alpha fetoprotein (AFP) stated to be elevated"
-"7","test ordered, results unknown",FALSE,"Test ordered, results not in chart"
-"8","not applicable",FALSE,"Not applicable: Information not collected for this case"
+"7","test ordered, results unknown",TRUE,"Test ordered, results not in chart"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
 "9","unknown",TRUE,"Not documented in medical record; No orchiectomy performed; AFP (Alpha Fetoprotein) Post-Orchiectomy Range not assessed or unknown if assessed "

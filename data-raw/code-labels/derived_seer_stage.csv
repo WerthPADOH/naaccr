@@ -30,5 +30,5 @@
 "4B","IVB",FALSE,"Stage 4B"
 "4C","IVC",FALSE,"Stage 4C"
 "OC","OC",FALSE,"Stage OC"
-"88","not applicable",FALSE,"not applicable"
+"88","not applicable",TRUE,"not applicable"
 "99","unknown",TRUE,"unknown"

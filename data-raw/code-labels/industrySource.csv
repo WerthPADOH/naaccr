@@ -3,5 +3,5 @@
 "2","death certificate",FALSE,"Death certificate"
 "3","interview",FALSE,"Interview"
 "7","other",FALSE,"Other source"
-"8","not applicable",FALSE,"Not applicable, patient less than 14 years of age at diagnosis"
+"8","not applicable",TRUE,"Not applicable, patient less than 14 years of age at diagnosis"
 "9","unknown",TRUE,"Unknown source"

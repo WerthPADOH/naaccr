@@ -11,5 +11,5 @@
 "40","non-physician",FALSE,"Nurse, physician assistant, or other non-physician medical staff"
 "50","other facility",FALSE,"Staging assigned at another facility"
 "60","central registry",FALSE,"Staging by Central Registry"
-"88","not applicable",FALSE,"Case is not eligible for staging"
+"88","not applicable",TRUE,"Case is not eligible for staging"
 "99","unknown",TRUE,"Staged but unknown who assigned stage"

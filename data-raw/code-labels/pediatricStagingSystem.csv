@@ -15,6 +15,6 @@
 "13","Pediatric Oncology Group",FALSE,"Pediatric Oncology Group (POG)"
 "14","Reese-Ellsworth",FALSE,"Reese-Ellsworth"
 "15","SEER extent of disease",FALSE,"SEER Extent of Disease"
-"88","not applicable",FALSE,"Not applicable (not pediatric case)"
+"88","not applicable",TRUE,"Not applicable (not pediatric case)"
 "97","other",FALSE,"Other"
 "99","unknown",TRUE,"Unknown"
