@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"0","regional lymph nodes involved, ENE not present",FALSE,"Regional lymph nodes involved, ENE not present/not identified from surgical resection"
+"1","regional lymph nodes involved, ENE present",FALSE,"Regional lymph nodes involved, ENE present/identified from surgical resection"
+"7","no lymph node involvement",FALSE,"No lymph node involvement from surgical resection (pN0)"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",FALSE,"Not documented in medical record; no surgical resection of regional lymph nodes; cannot be determined; pathological assessment of lymph nodes not done, or unknown if done; extranodal Extension Pathological not assessed or unknown if assessed"

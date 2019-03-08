@@ -14,32 +14,36 @@
 #' @param ... Arguments of the form \code{tag = value}, where \code{tag} is a
 #'   valid NAACCR data item name and \code{value} is the vector of the item's
 #'   values.
+#' @param keep_unknown Logical indicating whether values of "unknown" should be
+#'   a level in the factor or \code{NA}.
 #' @param version An integer specifying which NAACCR format should be
 #'   used to parse the records. Only used if \code{input} is given.
 #' @return A \code{data.frame} with columns named using the NAACCR XML scheme.
 #' @export
-naaccr_record <- function(x, ..., version = NULL) {
+naaccr_record <- function(x, ..., keep_unknown = FALSE, version = NULL) {
   input_data <- lapply(list(...), as.character)
   setDF(input_data)
-  as.naaccr_record(input_data)
+  as.naaccr_record(input_data, keep_unknown = keep_unknown)
 }
 
 
 #' Coerce to a naaccr_record dataset
 #' Convert objects into \code{naaccr_record} objects, if a method exists.
 #' @param x An R object.
+#' @param keep_unknown Logical indicating whether values of "unknown" should be
+#'   a level in the factor or \code{NA}.
 #' @param ... Additional arguments passed to or from methods.
 #' @return An object of class \code{\link{naaccr_record}}
 #' @seealso \code{\link{naaccr_record}}
 #' @export
-as.naaccr_record <- function(x, ...) {
+as.naaccr_record <- function(x, keep_unknown = FALSE, ...) {
   UseMethod('as.naaccr_record')
 }
 
 
 #' @rdname as.naaccr_record
 #' @export
-as.naaccr_record.list <- function(x, ...) {
+as.naaccr_record.list <- function(x, keep_unknown = FALSE, ...) {
   x_df <- as.data.frame(x, stringsAsFactors = FALSE)
   as.naaccr_record(x_df)
 }
@@ -80,7 +84,7 @@ type_converters <- list(
 #' @rdname as.naaccr_record
 #' @import data.table
 #' @export
-as.naaccr_record.data.frame <- function(x, ...) {
+as.naaccr_record.data.frame <- function(x, keep_unknown = FALSE, ...) {
   all_items <- naaccr_format[
     list(name = names(x)),
     on = "name",
@@ -107,7 +111,11 @@ as.naaccr_record.data.frame <- function(x, ...) {
     set(
       x     = record,
       j     = column,
-      value = naaccr_factor(record[[column]], field = column)
+      value = naaccr_factor(
+        x            = record[[column]],
+        field        = column,
+        keep_unknown = keep_unknown
+      )
     )
   }
   for (column in type_columns[["sentineled"]]) {

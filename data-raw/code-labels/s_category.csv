@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"0","S0",FALSE,"S0: Marker study levels within normal levels"
+"1","S1",FALSE,"S1: At least one of these values is elevated AND; LDH less than 1.5 x N* AND; hCG (mIU/L) less than 5,000 AND; AFP (ng/mL) less than 1,000"
+"2","S2",FALSE,"S2:; LDH 1.5 x N* to 10 x N* OR; hCG (mIU/L) 5,000 to 50,000 OR; AFP (ng/mL) 1,000 to 10,000"
+"3","S3",FALSE,"S3: Only one elevated test is needed; LDH greater than 10 x N* OR; hcG (mIU/mL) greater than 50,000 OR; AFP (ng/mL) greater than 10,000"
+"9","SX",TRUE,"SX: Not documented in medical record; S Category Clinical not assessed or unknown if assessed"

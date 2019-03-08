@@ -17,9 +17,10 @@ country_codes <- country_codes[
 ][
   ,
   list(
-    code        = Alpha_3,
-    label       = Common_name,
-    description = Official_name
+    code          = Alpha_3,
+    label         = Common_name,
+    means_missing = FALSE,
+    description   = Official_name
   )
 ]
 custom_countries <- fread("data-raw/custom-country-codes.csv")

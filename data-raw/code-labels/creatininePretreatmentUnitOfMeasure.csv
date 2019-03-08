@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"1","mg/dL",FALSE,"Milligrams/deciliter (mg/dL)"
+"2","umol/L",FALSE,"Micromoles/liter (umol/L)"
+"7","test ordered, results not in chart",TRUE,"Test ordered, results not in chart"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",TRUE,"Not documented in medical record; creatinine unit of measure not assessed or unknown if assessed"

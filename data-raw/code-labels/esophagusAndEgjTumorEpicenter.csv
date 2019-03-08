@@ -1,0 +1,5 @@
+"code","label","means_missing","description"
+"0","upper",FALSE,"U: Upper (Cervical/Proximal esophagus to lower border of azygos vein)"
+"1","middle",FALSE,"M: Middle (Lower border of azygos vein to lower border of inferior pulmonary vein)"
+"2","lower",FALSE,"L: Lower (Lower border of inferior pulmonary vein to stomach, including gastroesophageal junction)"
+"9","unknown",TRUE,"X: Esophagus, NOS; Specific location of epicenter not documented in medical record; Specific location of epicenter not assessed or unknown if assessed"

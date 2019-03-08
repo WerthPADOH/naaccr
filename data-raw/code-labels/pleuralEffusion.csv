@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"0","not present",FALSE,"Pleural effusion not identified/not present"
+"1","non-malignant",FALSE,"Pleural effusion present, non-malignant (negative)"
+"2","malignant",FALSE,"Pleural effusion present, malignant (positive)"
+"3","atypical",FALSE,"Pleural effusion, atypical/atypical mesothelial cells"
+"4","present, NOS",FALSE,"Pleural effusion, NOS"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",TRUE,"Not documented in medical record; Pleural Effusion not assessed or unknown if assessed"

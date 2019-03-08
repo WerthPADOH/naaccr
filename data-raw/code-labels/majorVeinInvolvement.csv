@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"0","none",FALSE,"Major vein involvement not present/not identified"
+"1","renal vein",FALSE,"Renal vein or its segmental branches"
+"2","inferior vena cava",FALSE,"Inferior vena cava (IVC)"
+"3","major vein, NOS",FALSE,"Major vein invasion, NOS"
+"4","multiple",FALSE,"Any combination of codes 1-3"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",TRUE,"Not documented in medical record; Vein involvement not assessed or unknown if assessed No surgical resection of primary site is performed"

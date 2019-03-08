@@ -1,0 +1,5 @@
+"code","label","means_missing","description"
+"0","< 3.5 g/dL",FALSE,"Serum albumin <3.5 g/dL"
+"1","3.5 g/dL",FALSE,"Serum albumin =3.5 g/dL"
+"7","test ordered, results unknown",TRUE,"Test ordered, results not in chart"
+"9","unknown",TRUE,"Not documented in medical record; serum Albumin Pretreatment Level not assessed or unknown if assessed"

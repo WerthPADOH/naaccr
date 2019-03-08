@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"0","low risk",FALSE,"Low risk (recurrence score 0-17)"
+"1","intermediate risk",FALSE,"Intermediate risk (recurrence score 18-30)"
+"2","high risk",FALSE,"High risk (recurrence score greater than or equal to 31)"
+"6","not applicable, DCIS",TRUE,"Not applicable: DCIS case"
+"7","test ordered, results unknown",TRUE,"Test done, results not in chart"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",TRUE,"Not documented in medical record; Oncotype Dx Risk Level-Invasive not assessed or unknown if assessed"

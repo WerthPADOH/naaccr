@@ -1,0 +1,7 @@
+"code","label","means_missing","description"
+"0","radiography, imaging, or physical exam",FALSE,"Radiography, imaging; (Ultrasound (US), computed tomography scan (CT), magnetic resonance imaging (MRI), positron emission tomography scan (PET)); ; Physical exam only"
+"1","fine needle aspiration",FALSE,"Incisional biopsy; fine needle aspiration (FNA)"
+"2","lymphadenectomy",FALSE,"Lymphadenectomy; Excisional biopsy or resection with microscopic confirmation"
+"7","assessed, unknown method",FALSE,"Regional lymph node(s) assessed, unknown assessment method"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",TRUE,"Not documented in medical record; Regional lymph nodes not assessed or unknown if assessed"

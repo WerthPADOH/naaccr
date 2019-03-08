@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"0",< 3.5 mg/L",FALSE,"ß2-microglobulin <3.5 mg/L"
+"1","3.5 mg/L to <5.5 mg/L",FALSE,"ß2-microglobulin =3.5 mg/L <5.5 mg/L"
+"2","5.5 mg/L",FALSE,"ß2-microglobulin =5.5 mg/L"
+"7","test ordered, results unknown",TRUE,"Test ordered, results not in chart"
+"9","unknown",TRUE,"Not documented in medical record; serum Beta-2 Microglobulin Pretreatment Level not assessed or unknown if assessed"

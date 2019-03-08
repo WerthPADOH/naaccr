@@ -1,0 +1,5 @@
+"code","label","means_missing","description"
+"0","low or normal",FALSE,"Normal LDH level; Low, below normal"
+"1","high",FALSE,"Above normal LDH level; High"
+"7","test ordered, results unknown",TRUE,"Test ordered, results not in chart"
+"9","unknown",TRUE,"Not documented in medical record; LDH (Lactate Dehydrogenase) Pretreatment Level not assessed or unknown if assessed"
