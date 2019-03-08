@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"0","not present",FALSE,"Thrombocytopenia not present; Platelets (Plt) = 100,000/µL"
+"1","present",FALSE,"Thrombocytopenia present; Platelets (Plt) < 100,000/µL"
+"6","present, statement only",FALSE,"Lab value unknown, physician states thrombocytopenia is present"
+"7","test ordered, results unknown",TRUE,"Test ordered, results not in chart"
+"9","unknown",TRUE,"Not documented in medical record; Thrombocytopenia not assessed or unknown if assessed"
