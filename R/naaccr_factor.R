@@ -19,6 +19,8 @@
 #' @import data.table
 #' @export
 naaccr_factor <- function(x, field, keep_unknown = FALSE, ...) {
+  # Avoid R CMD check notes about unbound global variables
+  means_missing <- NULL
   if (length(field) != 1L) {
     stop("field should be single string")
   }
