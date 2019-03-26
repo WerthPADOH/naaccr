@@ -1,8 +1,8 @@
 Package: naaccr
 Type: Package
 Title: Read cancer records in the NAACCR format
-Version: 0.3.0
-Date: 2018-12-13
+Version: 0.3.1
+Date: 2019-03-26
 Author: Nathan Werth [aut, cre]
 Maintainer: Nathan Werth <nwerth@pa.gov>
 Description: Functions for reading cancer record files which follow a format
@@ -25,4 +25,4 @@ Suggests:
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
