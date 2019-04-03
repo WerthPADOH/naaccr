@@ -25,23 +25,21 @@ as.connection <- function(input) {
 }
 
 
-#' Split record lines into fields
 #' @param record_lines Character vector of entire NAACCR record lines.
 #' @param start_cols   Integer vector of the first index of fields in the
 #'   records. Must be the same length as \code{end_cols}.
 #' @param end_cols     Integer vector of the last index of fields in the
 #'   records. Must be the same length as \code{start_cols}.
 #' @param col_names    Character vector of field names.  Must be the same length
-#'   as \code{start_cols}.
 #' @return A \code{data.frame} with the columns specified by \code{start_cols},
 #'   \code{end_cols}, and \code{col_names}. All columns are character vectors.
+#' @noRd
 #' @import stringi
 #' @import data.table
-#' @noRd
-parse_records <- function(record_lines,
-                          start_cols,
-                          end_cols,
-                          col_names = NULL) {
+split_fields <- function(record_lines,
+                         start_cols,
+                         end_cols,
+                         col_names = NULL) {
   if (length(start_cols) != length(end_cols)) {
     stop("start_cols and end_cols must be the same length")
   }
@@ -68,7 +66,22 @@ parse_records <- function(record_lines,
 }
 
 
-#' Read records from a NAACCR file
+#' Read NAACCR records
+#'
+#' Read and parse cancer incidence records according to a NAACCR format.
+#' \code{read_naaccr} returns a data set suited for analysis in R, and
+#' \code{read_naaccr_plain} returns a data set with the unchanged record values.
+#'
+#' Anyone who wants to analyze the records in R should use \code{read_naaccr}.
+#' In the returned \code{data.frame}, columns are of appropriate classes, coded
+#' values are replaced with factors, and unknowns are replaced with \code{NA}.
+#'
+#' \code{read_naaccr_plain} is a "format strict" way to read incidence records.
+#' All values returned are the literal character values from the records.
+#' The only processing done is that leading and trailing whitespace is trimmed.
+#' This is useful if the values will be passed to other software that expects
+#' the plain NAACCR values.
+#'
 #' @param input Either a string with a file name (containing no \code{\\n}
 #'   character), a \code{\link[base]{connection}} object, or the text records
 #'   themselves as a character vector.
@@ -77,15 +90,22 @@ parse_records <- function(record_lines,
 #' @param format A \code{\link{record_format}} object for parsing the records.
 #' @param keep_fields Character vector of XML field names to keep in the
 #'   dataset. If \code{NULL} (default), all columns are kept.
-#' @return A \code{data.frame} of the records. The columns included depend on
-#'   the NAACCR record format version. All columns are character vectors.
-#' @import data.table
+#' @return
+#'   For \code{read_naaccr}, a \code{data.frame} of the records.
+#'   The columns included depend on the NAACCR record format version.
+#'   Columns are atomic vectors; there are too many to describe them all.
+#'
+#'   For \code{read_naaccr_plain}, a \code{data.frame} with the columns
+#'   specified by \code{start_cols}, \code{end_cols}, and \code{col_names}.
+#'   All columns are character vectors.
 #' @import stringi
+#' @import data.table
+#' @rdname read_naaccr
 #' @export
-read_naaccr <- function(input,
-                        version = NULL,
-                        format = NULL,
-                        keep_fields = NULL) {
+read_naaccr_plain <- function(input,
+                              version = NULL,
+                              format = NULL,
+                              keep_fields = NULL) {
   if (!inherits(input, "connection")) {
     input <- as.connection(input)
     on.exit(
@@ -114,13 +134,29 @@ read_naaccr <- function(input,
     width = record_width - line_lengths
   )
   record_lines <- stringi::stri_sub(record_lines, 1L, record_width)
-  records <- parse_records(
+  records <- split_fields(
     record_lines = record_lines,
     start_cols   = read_format[["start_col"]],
     end_cols     = read_format[["end_col"]],
     col_names    = read_format[["name"]]
   )
-  setDT(records)
   setcolorder(records, keep_fields)
+  setDF(records)
+  records
+}
+
+
+#' @rdname read_naaccr
+#' @export
+read_naaccr <- function(input,
+                        version = NULL,
+                        format = NULL,
+                        keep_fields = NULL) {
+  records <- read_naaccr_plain(
+    input = input,
+    version = version,
+    format = format,
+    keep_fields = keep_fields
+  )
   as.naaccr_record(records)
 }

@@ -2,20 +2,20 @@
 #'
 #' Subclass of \code{data.frame} for doing analysis with NAACCR records.
 #'
-#' While \code{\link{read_naaccr}} creates a \code{data.frame} of only NAACCR
-#' fields as \code{character} columns, \code{naaccr_record} creates a
-#' \code{data.frame} ready for analysis: columns are of appropriate classes,
-#' coded values are replaced with factors, and unknowns are replaced with
-#' \code{NA}.
+#' \code{naaccr_record} creates a \code{data.frame} of cancer incidence records
+#' ready for analysis:
+#' columns are of appropriate classes, coded values are replaced with factors,
+#' and unknowns are replaced with \code{NA}.
 #'
 #' @param ... Arguments of the form \code{tag = value}, where \code{tag} is a
 #'   valid NAACCR data item name and \code{value} is the vector of the item's
-#'   values.
+#'   values from the NAACCR format.
 #' @param keep_unknown Logical indicating whether values of "unknown" should be
 #'   a level in the factor or \code{NA}.
 #' @param version An integer specifying which NAACCR format should be
 #'   used to parse the records. Only used if \code{input} is given.
 #' @return A \code{data.frame} with columns named using the NAACCR XML scheme.
+#' @import data.table
 #' @export
 naaccr_record <- function(..., keep_unknown = FALSE, version = NULL) {
   input_data <- lapply(list(...), as.character)

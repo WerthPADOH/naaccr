@@ -139,3 +139,14 @@ test_that("naaccr_record allows users to keep 'unknown' levels", {
   expect_true(is.na(no_unknown[["laterality"]]))
   expect_false("unknown" %in% levels(no_unknown[["laterality"]]))
 })
+
+test_that("read_naaccr_plain returns a data.frame with no NAs", {
+  rabs16 <- read_naaccr_plain("../data/synthetic-naaccr-16-abstract.txt", version = 16)
+  expect_false(anyNA(rabs16))
+  rinc16 <- read_naaccr_plain("../data/synthetic-naaccr-16-incidence.txt", version = 16)
+  expect_false(anyNA(rinc16))
+  rabs18 <- read_naaccr_plain("../data/synthetic-naaccr-18-abstract.txt", version = 18)
+  expect_false(anyNA(rabs18))
+  rinc18 <- read_naaccr_plain("../data/synthetic-naaccr-18-incidence.txt", version = 18)
+  expect_false(anyNA(rinc18))
+})
