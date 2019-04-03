@@ -98,6 +98,20 @@ split_fields <- function(record_lines,
 #'   For \code{read_naaccr_plain}, a \code{data.frame} with the columns
 #'   specified by \code{start_cols}, \code{end_cols}, and \code{col_names}.
 #'   All columns are character vectors.
+#' @seealso \code{\link{naaccr_record}}
+#' @examples
+#'   # This file has synthetic abstract records
+#'   incfile <- system.file(
+#'     "extdata", "synthetic-naaccr-18-abstract.txt",
+#'     package = "naaccr"
+#'   )
+#'   fields <- c("ageAtDx", "sex", "sequenceNumberCentral")
+#'   read_naaccr(incfile, version = 18, keep_fields = fields)
+#'   recs <- read_naaccr_plain(incfile, version = 18, keep_fields = fields)
+#'   recs
+#'   # Note sequenceNumberCentral has been split in two: a number and a flag
+#'   summary(recs[["sequenceNumberCentral"]])
+#'   summary(recs[["sequenceNumberCentralFlag"]])
 #' @import stringi
 #' @import data.table
 #' @rdname read_naaccr
