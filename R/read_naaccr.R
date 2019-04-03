@@ -34,8 +34,7 @@ as.connection <- function(input) {
 #' @param col_names    Character vector of field names.  Must be the same length
 #'   as \code{start_cols}.
 #' @return A \code{data.frame} with the columns specified by \code{start_cols},
-#'   \code{end_cols}, and \code{col_names}. All columns are character vectors,
-#'   and values of just spaces in the records are replaced with \code{NA}.
+#'   \code{end_cols}, and \code{col_names}. All columns are character vectors.
 #' @import stringi
 #' @import data.table
 #' @noRd
@@ -58,6 +57,13 @@ parse_records <- function(record_lines,
   )
   setDT(item_matrix)
   setnames(item_matrix, col_names)
+  for (column in names(item_matrix)) {
+    set(
+      item_matrix,
+      j = column,
+      value = stringi::stri_trim_both(item_matrix[[column]])
+    )
+  }
   item_matrix
 }
 
