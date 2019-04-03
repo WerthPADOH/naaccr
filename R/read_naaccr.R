@@ -90,6 +90,8 @@ split_fields <- function(record_lines,
 #' @param format A \code{\link{record_format}} object for parsing the records.
 #' @param keep_fields Character vector of XML field names to keep in the
 #'   dataset. If \code{NULL} (default), all columns are kept.
+#' @param skip An integer specifying the number of lines of the data file to
+#'   skip before beginning to read data.
 #' @return
 #'   For \code{read_naaccr}, a \code{data.frame} of the records.
 #'   The columns included depend on the NAACCR record format version.
@@ -119,7 +121,8 @@ split_fields <- function(record_lines,
 read_naaccr_plain <- function(input,
                               version = NULL,
                               format = NULL,
-                              keep_fields = NULL) {
+                              keep_fields = NULL,
+                              skip = 0) {
   if (!inherits(input, "connection")) {
     input <- as.connection(input)
     on.exit(
@@ -140,6 +143,9 @@ read_naaccr_plain <- function(input,
   }
   read_format <- as.record_format(read_format)
   # Read all record types as the longest type, padding and then truncating
+  if (skip > 0L) {
+    readLines(input, skip)
+  }
   record_lines <- readLines(input)
   line_lengths <- stringi::stri_width(record_lines)
   record_width <- max(read_format[["end_col"]])
@@ -165,12 +171,14 @@ read_naaccr_plain <- function(input,
 read_naaccr <- function(input,
                         version = NULL,
                         format = NULL,
-                        keep_fields = NULL) {
+                        keep_fields = NULL,
+                        skip = 0) {
   records <- read_naaccr_plain(
     input = input,
     version = version,
     format = format,
-    keep_fields = keep_fields
+    keep_fields = keep_fields,
+    skip = skip
   )
   as.naaccr_record(records)
 }
