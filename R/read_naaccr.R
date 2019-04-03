@@ -56,8 +56,9 @@ parse_records <- function(record_lines,
     MoreArgs = list(str = record_lines),
     SIMPLIFY = FALSE
   )
-  names(item_matrix) <- col_names
-  as.data.table(item_matrix, stringsAsFactors = FALSE)
+  setDT(item_matrix)
+  setnames(item_matrix, col_names)
+  item_matrix
 }
 
 
