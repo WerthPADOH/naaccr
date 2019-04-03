@@ -98,7 +98,7 @@ read_naaccr <- function(input,
     read_format <- read_format[list(name = keep_fields), on = "name"]
   }
   read_format <- as.record_format(read_format)
-  # Read all record types as the longest type, with padding
+  # Read all record types as the longest type, padding and then truncating
   record_lines <- readLines(input)
   line_lengths <- stringi::stri_width(record_lines)
   record_width <- max(read_format[["end_col"]])
@@ -106,6 +106,7 @@ read_naaccr <- function(input,
     record_lines,
     width = record_width - line_lengths
   )
+  record_lines <- stringi::stri_sub(record_lines, 1L, record_width)
   records <- parse_records(
     record_lines = record_lines,
     start_cols   = read_format[["start_col"]],
