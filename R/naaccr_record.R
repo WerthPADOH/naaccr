@@ -8,9 +8,6 @@
 #' coded values are replaced with factors, and unknowns are replaced with
 #' \code{NA}.
 #'
-#' @param x Either a string with a file name (containing no \code{\\n}
-#'   character), a \code{\link[base]{connection}} object, or the
-#'   text records themselves as a character vector.
 #' @param ... Arguments of the form \code{tag = value}, where \code{tag} is a
 #'   valid NAACCR data item name and \code{value} is the vector of the item's
 #'   values.
@@ -20,7 +17,7 @@
 #'   used to parse the records. Only used if \code{input} is given.
 #' @return A \code{data.frame} with columns named using the NAACCR XML scheme.
 #' @export
-naaccr_record <- function(x, ..., keep_unknown = FALSE, version = NULL) {
+naaccr_record <- function(..., keep_unknown = FALSE, version = NULL) {
   input_data <- lapply(list(...), as.character)
   setDF(input_data)
   as.naaccr_record(input_data, keep_unknown = keep_unknown)
