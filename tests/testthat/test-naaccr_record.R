@@ -70,6 +70,14 @@ test_that("read_naaccr only keeps requested columns and their flags", {
   )
 })
 
+test_that("read_naaccr fills in fields beyond end of lines", {
+  records <- readLines("../data/synthetic-naaccr-18-incidence.txt")
+  subformat <- naaccr_format_18[1:3, ]
+  shorn <- substr(records, 1, subformat[["end_col"]][2])
+  result <- read_naaccr(shorn, format = subformat)
+  expect_true(all(is.na(result[[3]])))
+})
+
 test_that("naaccr_record can be used to create a new naaccr_record object", {
   nr <- naaccr_record(
     sex             = c(1, 9),
