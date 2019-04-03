@@ -92,6 +92,8 @@ split_fields <- function(record_lines,
 #'   dataset. If \code{NULL} (default), all columns are kept.
 #' @param skip An integer specifying the number of lines of the data file to
 #'   skip before beginning to read data.
+#' @param nrows An integer specifying the maximum number of records to read.
+#'   A negative number means "all records."
 #' @return
 #'   For \code{read_naaccr}, a \code{data.frame} of the records.
 #'   The columns included depend on the NAACCR record format version.
@@ -122,7 +124,8 @@ read_naaccr_plain <- function(input,
                               version = NULL,
                               format = NULL,
                               keep_fields = NULL,
-                              skip = 0) {
+                              skip = 0,
+                              nrows = -1) {
   if (!inherits(input, "connection")) {
     input <- as.connection(input)
     on.exit(
@@ -146,7 +149,7 @@ read_naaccr_plain <- function(input,
   if (skip > 0L) {
     readLines(input, skip)
   }
-  record_lines <- readLines(input)
+  record_lines <- readLines(input, n = nrows)
   line_lengths <- stringi::stri_width(record_lines)
   record_width <- max(read_format[["end_col"]])
   record_lines <- stringi::stri_pad_right(
@@ -172,13 +175,15 @@ read_naaccr <- function(input,
                         version = NULL,
                         format = NULL,
                         keep_fields = NULL,
-                        skip = 0) {
+                        skip = 0,
+                        nrows = -1) {
   records <- read_naaccr_plain(
     input = input,
     version = version,
     format = format,
     keep_fields = keep_fields,
-    skip = skip
+    skip = skip,
+    nrows = nrows
   )
   as.naaccr_record(records)
 }

@@ -157,3 +157,11 @@ test_that("read_naaccr allows skipping lines", {
   rec_some <- read_naaccr(inc_file, version = 16, skip = 5)
   expect_equivalent(rec_all[-(1:5), ], rec_some)
 })
+
+
+test_that("read_naaccr can read only a subset of lines", {
+  inc_file <- "../data/synthetic-naaccr-16-incidence.txt"
+  rec_all <- read_naaccr(inc_file, version = 16)
+  rec_some <- read_naaccr(inc_file, version = 16, nrows = 3)
+  expect_equivalent(rec_all[1:3, ], rec_some)
+})
