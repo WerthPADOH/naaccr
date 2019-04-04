@@ -164,4 +164,8 @@ test_that("read_naaccr can read only a subset of lines", {
   rec_all <- read_naaccr(inc_file, version = 16)
   rec_some <- read_naaccr(inc_file, version = 16, nrows = 3)
   expect_equivalent(rec_some, rec_all[1:3, ])
+  rec_beyond <- read_naaccr(inc_file, version = 16, nrows = 100)
+  expect_equivalent(rec_beyond, rec_all)
+})
+
 })
