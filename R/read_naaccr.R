@@ -103,6 +103,10 @@ split_fields <- function(record_lines,
 #'   For \code{read_naaccr_plain}, a \code{data.frame} with the columns
 #'   specified by \code{start_cols}, \code{end_cols}, and \code{col_names}.
 #'   All columns are character vectors.
+#' @note
+#'   Some of the parameter text was shamelessly copied from the
+#'   \code{\link[utils]{read.table}} and \code{\link[utils]{read.fwf}} help
+#'   pages.
 #' @seealso \code{\link{naaccr_record}}
 #' @examples
 #'   # This file has synthetic abstract records
