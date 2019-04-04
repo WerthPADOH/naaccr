@@ -158,7 +158,6 @@ test_that("read_naaccr allows skipping lines", {
   expect_equivalent(rec_all[-(1:5), ], rec_some)
 })
 
-
 test_that("read_naaccr can read only a subset of lines", {
   inc_file <- "../data/synthetic-naaccr-16-incidence.txt"
   rec_all <- read_naaccr(inc_file, version = 16)
@@ -168,4 +167,21 @@ test_that("read_naaccr can read only a subset of lines", {
   expect_equivalent(rec_beyond, rec_all)
 })
 
+test_that("read_naaccr can read data in chunks", {
+  inc_file <- "../data/synthetic-naaccr-18-incidence.txt"
+  fields <- c("ageAtDiagnosis", "patientIdNumber", "primarySite")
+  recs <- read_naaccr(inc_file, version = 18, keep_fields = fields)
+  for (buffer in c(1, 7, 10, 20, 100)) {
+    chunked <- read_naaccr(
+      inc_file, version = 18, keep_fields = fields, buffersize = buffer
+    )
+    expect_equivalent(chunked, recs)
+  }
+  for (buffer in c(1, 7, 10, 20, 100)) {
+    chunked <- read_naaccr(
+      inc_file, version = 18, keep_fields = fields, buffersize = buffer,
+      nrows = 13
+    )
+    expect_equivalent(chunked, recs[1:13, ])
+  }
 })

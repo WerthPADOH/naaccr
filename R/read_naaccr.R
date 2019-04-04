@@ -92,8 +92,9 @@ split_fields <- function(record_lines,
 #'   dataset. If \code{NULL} (default), all columns are kept.
 #' @param skip An integer specifying the number of lines of the data file to
 #'   skip before beginning to read data.
-#' @param nrows An integer specifying the maximum number of records to read.
-#'   A negative number means "all records."
+#' @param nrows A number specifying the maximum number of records to read.
+#'   \code{Inf} (the default) means "all records."
+#' @param buffersize Maximum number of lines to read at one time.
 #' @return
 #'   For \code{read_naaccr}, a \code{data.frame} of the records.
 #'   The columns included depend on the NAACCR record format version.
@@ -125,7 +126,8 @@ read_naaccr_plain <- function(input,
                               format = NULL,
                               keep_fields = NULL,
                               skip = 0,
-                              nrows = -1) {
+                              nrows = Inf,
+                              buffersize = 10000) {
   if (!inherits(input, "connection")) {
     input <- as.connection(input)
     on.exit(
@@ -133,11 +135,12 @@ read_naaccr_plain <- function(input,
       add = TRUE
     )
   }
-  read_format <- if (!is.null(version)) {
+  if (!is.null(version)) {
     key_data <- list(version = version)
-    naaccr_format[key_data, on = "version"]
+    read_format <- naaccr_format[key_data, on = "version"]
+    setorderv(read_format, "item")
   } else if (!is.null(format)) {
-    format
+    read_format <- format
   } else {
     stop("Must specify either version or format")
   }
@@ -148,23 +151,44 @@ read_naaccr_plain <- function(input,
   }
   read_format <- as.record_format(read_format)
   # Read all record types as the longest type, padding and then truncating
+  # Break the reading into chunks because of the typically large files.
+  # "Growing" vectors is inefficient, so allocate many new spaces when needed
   if (skip > 0L) {
     readLines(input, skip)
   }
-  record_lines <- readLines(input, n = nrows)
-  line_lengths <- stringi::stri_width(record_lines)
-  record_width <- max(read_format[["end_col"]])
-  record_lines <- stringi::stri_pad_right(
-    record_lines,
-    width = record_width - line_lengths
-  )
-  record_lines <- stringi::stri_sub(record_lines, 1L, record_width)
-  records <- split_fields(
-    record_lines = record_lines,
-    start_cols   = read_format[["start_col"]],
-    end_cols     = read_format[["end_col"]],
-    col_names    = read_format[["name"]]
-  )
+  chunks <- if (is.finite(nrows)) {
+    vector("list", ceiling(nrows / buffersize))
+  } else {
+    vector("list", 1000L)
+  }
+  index <- 0L
+  rows_read <- 0L
+  while (rows_read < nrows) {
+    chunk_size <- min(buffersize, nrows - rows_read)
+    record_lines <- readLines(input, n = chunk_size)
+    if (length(record_lines) == 0L) {
+      break
+    }
+    rows_read <- rows_read + length(record_lines)
+    index <- index + 1L
+    line_lengths <- stringi::stri_width(record_lines)
+    record_width <- max(read_format[["end_col"]])
+    record_lines <- stringi::stri_pad_right(
+      record_lines,
+      width = record_width - line_lengths
+    )
+    record_lines <- stringi::stri_sub(record_lines, 1L, record_width)
+    chunks[[index]] <- split_fields(
+      record_lines = record_lines,
+      start_cols   = read_format[["start_col"]],
+      end_cols     = read_format[["end_col"]],
+      col_names    = read_format[["name"]]
+    )
+    if (index >= length(chunks)) {
+      chunks <- c(chunks, vector("list", 1000L))
+    }
+  }
+  records <- data.table::rbindlist(chunks)
   setcolorder(records, keep_fields)
   setDF(records)
   records
@@ -178,14 +202,16 @@ read_naaccr <- function(input,
                         format = NULL,
                         keep_fields = NULL,
                         skip = 0,
-                        nrows = -1) {
+                        nrows = Inf,
+                        buffersize = 10000) {
   records <- read_naaccr_plain(
     input = input,
     version = version,
     format = format,
     keep_fields = keep_fields,
     skip = skip,
-    nrows = nrows
+    nrows = nrows,
+    buffersize = buffersize
   )
   as.naaccr_record(records)
 }
