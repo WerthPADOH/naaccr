@@ -141,7 +141,9 @@ read_naaccr_plain <- function(input,
   } else {
     stop("Must specify either version or format")
   }
-  if (!is.null(keep_fields)) {
+  if (is.null(keep_fields)) {
+    keep_fields <- read_format[["name"]]
+  } else {
     read_format <- read_format[list(name = keep_fields), on = "name"]
   }
   read_format <- as.record_format(read_format)
