@@ -2,17 +2,25 @@
 #' @param input Either a string with a file name (containing no \code{\\n}
 #'   character), a \code{\link[base]{connection}} object, or the
 #'   text records themselves as a character vector.
+#' @param encoding String giving the input's encoding. See the 'Encoding'
+#'   section of \code{\link[base]{file}} in the \pkg{base} package.
 #' @return An open \code{connection} object
 #' @seealso
 #'   \code{\link[base]{connection}},
 #'   \code{\link[base]{textConnection}}
-as.connection <- function(input) {
+#' @noRd
+as.connection <- function(input, encoding) {
   # Based on logic in utils::read.table
   if (is.character(input)) {
+    value <- input
     input <- if (length(input) > 1L || grepl('\n', input[1L], fixed = TRUE)) {
-      textConnection(input)
+      if (identical(as.character(encoding), "native.enc")) {
+        textConnection(value)
+      } else {
+        textConnection(value, encoding = encoding)
+      }
     } else {
-      file(input, 'rt')
+      file(input, open = 'rt', encoding = encoding)
     }
   }
   if (!inherits(input, 'connection')) {
@@ -95,6 +103,8 @@ split_fields <- function(record_lines,
 #' @param nrows A number specifying the maximum number of records to read.
 #'   \code{Inf} (the default) means "all records."
 #' @param buffersize Maximum number of lines to read at one time.
+#' @param encoding String giving the input's encoding. See the 'Encoding'
+#'   section of \code{\link[base]{file}} in the \pkg{base} package.
 #' @return
 #'   For \code{read_naaccr}, a \code{data.frame} of the records.
 #'   The columns included depend on the NAACCR record format version.
@@ -131,9 +141,10 @@ read_naaccr_plain <- function(input,
                               keep_fields = NULL,
                               skip = 0,
                               nrows = Inf,
-                              buffersize = 10000) {
+                              buffersize = 10000,
+                              encoding = getOption("encoding")) {
   if (!inherits(input, "connection")) {
-    input <- as.connection(input)
+    input <- as.connection(input, encoding = encoding)
     on.exit(
       if (isOpen(input)) close(input),
       add = TRUE
@@ -158,7 +169,7 @@ read_naaccr_plain <- function(input,
   # Break the reading into chunks because of the typically large files.
   # "Growing" vectors is inefficient, so allocate many new spaces when needed
   if (skip > 0L) {
-    readLines(input, skip)
+    readLines(input, n = skip, encoding = encoding)
   }
   chunks <- if (is.finite(nrows)) {
     vector("list", ceiling(nrows / buffersize))
@@ -169,7 +180,7 @@ read_naaccr_plain <- function(input,
   rows_read <- 0L
   while (rows_read < nrows) {
     chunk_size <- min(buffersize, nrows - rows_read)
-    record_lines <- readLines(input, n = chunk_size)
+    record_lines <- readLines(input, n = chunk_size, encoding = encoding)
     if (length(record_lines) == 0L) {
       break
     }
@@ -207,7 +218,8 @@ read_naaccr <- function(input,
                         keep_fields = NULL,
                         skip = 0,
                         nrows = Inf,
-                        buffersize = 10000) {
+                        buffersize = 10000,
+                        encoding = getOption("encoding")) {
   records <- read_naaccr_plain(
     input = input,
     version = version,
@@ -215,7 +227,8 @@ read_naaccr <- function(input,
     keep_fields = keep_fields,
     skip = skip,
     nrows = nrows,
-    buffersize = buffersize
+    buffersize = buffersize,
+    encoding = encoding
   )
   as.naaccr_record(records)
 }

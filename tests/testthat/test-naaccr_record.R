@@ -185,3 +185,25 @@ test_that("read_naaccr can read data in chunks", {
     expect_equivalent(chunked, recs[1:13, ])
   }
 })
+
+test_that("read_naaccr can handle different file encodings", {
+  rec_lines <- readLines("../data/synthetic-naaccr-16-incidence.txt")
+  write_and_read_encoding <- function(enc) {
+    tf <- tempfile()
+    on.exit(if (file.exists(tf)) file.remove(tf), add = TRUE)
+    write_con <- file(tf, open = "w", encoding = enc)
+    writeLines(rec_lines, con = write_con)
+    close(write_con)
+    read_naaccr(tf, version = 16, encoding = enc)
+  }
+  encodings <- c("native.enc", "latin1", "UTF-8", "UTF-16")
+  results <- lapply(encodings, write_and_read_encoding)
+  for (ii in seq_along(encodings)[-1]) {
+    expect_identical(
+      results[[1]], results[[ii]],
+      info = paste0(
+        "Results from 'native.enc' and '", encodings[ii], "' not identical"
+      )
+    )
+  }
+})
