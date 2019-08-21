@@ -270,4 +270,4 @@
 "9870","military reserves or national guard",FALSE,"military reserves or national guard"
 "9880","retired",FALSE,"retired"
 "9890","non-paid worker",FALSE,"non-paid worker"
-"9990","insufficient information",FALSE,"insufficient information"
+"9990","insufficient information",TRUE,"insufficient information"
