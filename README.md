@@ -1,23 +1,30 @@
 naaccr
 ================
 
-[![Build status](https://travis-ci.org/WerthPADOH/naaccr.svg?branch=master)](https://travis-ci.org/WerthPADOH/naaccr)
+[![Build
+status](https://travis-ci.org/WerthPADOH/naaccr.svg?branch=master)](https://travis-ci.org/WerthPADOH/naaccr)
 
-Summary
--------
+## Summary
 
-The `naaccr` R package enables researchers to easily read and begin analyzing cancer incidence records stored in the [North American Association of Central Cancer Registries](https://www.naaccr.org/) (NAACCR) file format.
+The `naaccr` R package enables researchers to easily read and begin
+analyzing cancer incidence records stored in the [North American
+Association of Central Cancer Registries](https://www.naaccr.org/)
+(NAACCR) file format.
 
-Usage
------
+## Usage
 
-`naaccr` focuses on two tasks: arranging the records and preparing the fields for analysis.
+`naaccr` focuses on two tasks: arranging the records and preparing the
+fields for analysis.
 
 ### Records
 
-The `naaccr_record` class defines objects which store cancer incidence records. It inherits from `data.frame`, and for now only makes sure a dataset has a standard set of columns. While `naaccr_record` has a singular-sounding name, it can contain multiple records as rows.
+The `naaccr_record` class defines objects which store cancer incidence
+records. It inherits from `data.frame`, and for now only makes sure a
+dataset has a standard set of columns. While `naaccr_record` has a
+singular-sounding name, it can contain multiple records as rows.
 
-The `read_naaccr` function creates a `naaccr_record` object from a NAACCR-formatted file.
+The `read_naaccr` function creates a `naaccr_record` object from a
+NAACCR-formatted file.
 
 ``` r
 record_file <- system.file(
@@ -53,13 +60,16 @@ records[1:5, c("maritalStatusAtDx", "race1", "race2", "race3")]
 #> 5 no further race documented
 ```
 
-By default, `read_naaccr` reads all fields defined in a format. For example, the NAACCR 18 format used above has 791 fields. Rarely would an analysis need even 100 fields. By specifying which fields to keep, one can improve time and memory efficiency.
+By default, `read_naaccr` reads all fields defined in a format. For
+example, the NAACCR 18 format used above has 791 fields. Rarely would an
+analysis need even 100 fields. By specifying which fields to keep, one
+can improve time and memory efficiency.
 
 ``` r
 dim(records)
 #> [1]  20 862
 format(object.size(records))
-#> [1] "939416 bytes"
+#> [1] "940240 bytes"
 records_slim <- read_naaccr(
   input       = record_file,
   version     = 18,
@@ -71,7 +81,8 @@ format(object.size(records_slim))
 #> [1] "2368 bytes"
 ```
 
-Like with most classes, one can create a new `naaccr_record` object with the function of the same name. The result will have the given columns.
+Like with most classes, one can create a new `naaccr_record` object with
+the function of the same name. The result will have the given columns.
 
 ``` r
 nr <- naaccr_record(
@@ -83,7 +94,8 @@ nr[, c("primarySite", "dateOfBirth")]
 #> 1        C010  1945-05-21
 ```
 
-The `as.naaccr_record` function can transform an existing data frame. It does require any existing columns to use NAACCR's XML names.
+The `as.naaccr_record` function can transform an existing data frame. It
+does require any existing columns to use NAACCR’s XML names.
 
 ``` r
 prefab <- data.frame(
@@ -100,16 +112,19 @@ converted[, c("ageAtDiagnosis", "race1")]
 
 ### Code translation
 
-The NAACCR format uses similar schemes for a lot of fields, and the `naaccr` package includes functions to help translate them.
+The NAACCR format uses similar schemes for a lot of fields, and the
+`naaccr` package includes functions to help translate them.
 
-`naaccr_boolean` translates "yes/no" fields. By default, it assumes `"0"` stands for "no", and `"1"` stands for "yes."
+`naaccr_boolean` translates “yes/no” fields. By default, it assumes
+`"0"` stands for “no”, and `"1"` stands for “yes.”
 
 ``` r
 naaccr_boolean(c("0", "1", "2"))
 #> [1] FALSE  TRUE    NA
 ```
 
-Some fields use `"1"` for `FALSE` and `"2"` for `TRUE`. Use the `false_value` parameter to work with these.
+Some fields use `"1"` for `FALSE` and `"2"` for `TRUE`. Use the
+`false_value` parameter to work with these.
 
 ``` r
 naaccr_boolean(c("0", "1", "2"), false_value = "1")
@@ -118,7 +133,8 @@ naaccr_boolean(c("0", "1", "2"), false_value = "1")
 
 #### Categorical fields
 
-The `naaccr_factor` function translates values using a specific field's category codes.
+The `naaccr_factor` function translates values using a specific field’s
+category codes.
 
 ``` r
 naaccr_factor(c("01", "31", "65"), "primaryPayerAtDx")
@@ -128,7 +144,10 @@ naaccr_factor(c("01", "31", "65"), "primaryPayerAtDx")
 
 #### Numeric with special missing
 
-Some fields contain primarily continuous or count data but also use special codes. One name for this type of code is a "sentinel value." The `split_sentineled` function splits these fields in two.
+Some fields contain primarily continuous or count data but also use
+special codes. One name for this type of code is a “sentinel value.” The
+`split_sentineled` function splits these fields in
+two.
 
 ``` r
 rnp <- split_sentineled(c(10, 20, 90, 95, 99, NA), "regionalNodesPositive")
