@@ -101,6 +101,7 @@ format_integer <- function(x, width) {
 #' @import stringi
 #' @export
 write_naaccr <- function(records, con, version = NULL, format = NULL) {
+  records <- if (is.data.table(records)) copy(records) else as.data.table(records)
   if (is.null(format)) {
     if (length(version) > 1L) {
       stop("'version' must a single integer")
@@ -112,16 +113,42 @@ write_naaccr <- function(records, con, version = NULL, format = NULL) {
     format <- naaccr_format[version_key, on = "version"]
   }
   line_length <- max(format[["end_col"]])
+  type <- NULL # Avoid unmatched variable name warning in R Check
   write_format <- format[
     list(name = names(records)),
     on      = "name",
     nomatch = 0L
+  ][
+    field_code_scheme,
+    on = "name",
+    type := "factor"
+  ][
+    field_sentinel_scheme,
+    on = "name",
+    type := paste0("sentineled_", type)
   ]
   set(
     write_format,
     j = "width",
     value = write_format[["end_col"]] - write_format[["start_col"]] + 1L
   )
+  # Combine the "reportable" and "only tumor" fields back into sequence number
+  for (ii in seq_len(ncol(sequence_number_columns))) {
+    number_name <- sequence_number_columns[["number", ii]]
+    if (number_name %in% write_format[["name"]]) {
+      only_name <- sequence_number_columns[["only", ii]]
+      only_tumor <- which(records[[only_name]])
+      set(x = records, i = only_tumor, j = number_name, value = 0L)
+      reportable_name <- sequence_number_columns[["reportable", ii]]
+      non_reportable <- which(!records[[reportable_name]])
+      set(
+        x = records,
+        i = non_reportable,
+        j = number_name,
+        value = records[["name"]][non_reportable] + 60L
+      )
+    }
+  }
   blank_line <- stri_pad_left("", width = line_length, pad = " ")
   text_lines <- rep(blank_line, nrow(records))
   for (column in write_format[["name"]]) {

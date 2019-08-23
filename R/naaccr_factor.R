@@ -94,3 +94,66 @@ split_sentineled <- function(x, field) {
     out
   }
 }
+
+
+#' Unpack tumor sequence number data
+#'
+#' Separate the multiple types of information in \code{sequenceNumberCentral}
+#' and \code{sequenceNumberHospital} into multiple columns.
+#'
+#' @param x Vector (usually character) of sequence number codes.
+#' @return A \code{data.frame} with three columns:
+#'   \describe{
+#'     \item{sequenceNumber}{
+#'       (\code{integer}) The number of the tumor in chronological sequence for
+#'       the patient.
+#'     }
+#'     \item{reportable}{
+#'       (\code{logical}) If \code{TRUE}, then the tumor is required to be
+#'       reported by SEER/NPCR standards. If \code{FALSE}, it is either
+#'       non-malignant or defined as reportable by the registry.
+#'     }
+#'     \item{onlyTumor}{
+#'       (\code{logical}) If \code{TRUE}, this is the only known
+#'        SEER/NPCR-reportable or the only known non-SEER/NPCR-reportable tumor
+#'        for the patient.
+#'     }
+#'     \item{sequenceFlag}{
+#'       (\code{factor}) Special flags, such as unknowns or changes in reporting
+#'       requirements. Created using \code{\link{split_sentineled}}.
+#'     }
+#'   }
+#' @seealso \code{\link{split_sentineled}}
+#' @import data.table
+#' @export
+split_sequence_number <- function(x) {
+  out <- split_sentineled(x, "sequenceNumberCentral")
+  setDT(out)
+  setnames(out, c("sequenceNumber", "sequenceFlag"))
+  # Avoid R Check warnings for unbound variables
+  sequenceNumber <- npcrReportable <- onlyTumor <- flag <- NULL
+  out[
+    between(sequenceNumber, 0L, 59L) |
+      flag == "unknown, malignant",
+    npcrReportable := TRUE
+  ][
+    between(sequenceNumber, 60L, 87L) |
+      flag %in% c("unknown, non-malignant", "cervix carcinoma in situ"),
+    npcrReportable := FALSE
+  ][
+    npcrReportable == FALSE,
+    sequenceNumber := sequenceNumber - 60L
+  ][
+    ,
+    onlyTumor := sequenceNumber == 0L
+  ][
+    onlyTumor == TRUE,
+    sequenceNumber := 1L
+  ][
+    between(sequenceNumber, 89L, 97L),
+    ":="(sequenceNumber = NA_integer_, npcrReportable = NA, onlyTumor = NA)
+  ]
+  setcolorder(out, c("sequenceNumber", "npcrReportable", "onlyTumor", "sequenceFlag"))
+  setDF(out)
+  out
+}
