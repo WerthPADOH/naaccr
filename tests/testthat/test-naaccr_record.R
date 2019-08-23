@@ -1,9 +1,27 @@
 library(data.table)
 library(testthat)
 library(naaccr)
+library(stringi)
 
 
 context("naaccr_record")
+
+
+expected_column_names <- function(format_data) {
+  nm <- format_data[["name"]]
+  if ("sequenceNumberCentral" %in% nm) {
+    nm <- c(nm, naaccr:::sequence_number_columns[, "central"])
+  }
+  if ("sequenceNumberHospital" %in% nm) {
+    nm <- c(nm, naaccr:::sequence_number_columns[, "hospital"])
+  }
+  flag_columns <- stri_join(
+    intersect(naaccr:::field_sentinel_scheme[["name"]], format_data[["name"]]),
+    "Flag"
+  )
+  unique(c(nm, flag_columns))
+}
+
 
 test_that("read_naaccr returns a 'naaccr_record', 'data.frame' object", {
   nr <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt", version = 18)
@@ -14,13 +32,7 @@ test_that("read_naaccr returns a 'naaccr_record', 'data.frame' object", {
 test_that("read_naaccr returns all columns by default", {
   abst <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt",  version = 18)
   inc  <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt", version = 18)
-  flag_column_count <- naaccr:::field_sentinel_scheme[
-    naaccr_format_18,
-    on = "name",
-    nomatch = 0,
-    .N
-  ]
-  expected_ncol <- nrow(naaccr_format_18) + flag_column_count
+  expected_ncol <- length(expected_column_names(naaccr_format_18))
   expect_identical(ncol(abst), expected_ncol)
   expect_identical(ncol(abst), expected_ncol)
 })
@@ -33,10 +45,33 @@ test_that("read_naaccr reads the data", {
 })
 
 test_that("read_naaccr only creates the columns from the format", {
-  nr <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt", version = 18)
-  flag_names <- paste0(naaccr:::field_sentinel_scheme[["name"]], "Flag")
-  expected_names <- naaccr_format_18[, c(name, flag_names)]
-  expect_named(nr, expected_names, ignore.order = TRUE)
+  nr <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt", format = naaccr_format_18)
+  expected_names <- expected_column_names(naaccr_format_18)
+  expect_named(
+    nr, expected_names, ignore.order = TRUE,
+    info = stri_join(
+      "Mismatches: ",
+      stri_join(
+        c(
+          stri_join("+", setdiff(names(nr), expected_names)),
+          stri_join("-", setdiff(expected_names, names(nr)))
+        ),
+        collapse = ", "
+      )
+    )
+  )
+
+  small_format <- naaccr_format_18[1:10]
+  nr_small <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt", format = small_format)
+  expected_names <- expected_column_names(small_format)
+  expect_named(
+    nr_small, expected_names, ignore.order = TRUE,
+    info = stri_join(
+      "Mismatches: ",
+      stri_join("+", setdiff(names(nr), expected_names), collapse = ", "),
+      stri_join("-", setdiff(expected_names, names(nr)), collapse = ", ")
+    )
+  )
 })
 
 test_that("read_naaccr can handle different versions", {

@@ -101,6 +101,7 @@ format_integer <- function(x, width) {
 #' @import stringi
 #' @export
 write_naaccr <- function(records, con, version = NULL, format = NULL) {
+  records <- if (is.data.table(records)) copy(records) else as.data.table(records)
   if (is.null(format)) {
     if (length(version) > 1L) {
       stop("'version' must a single integer")
@@ -131,6 +132,23 @@ write_naaccr <- function(records, con, version = NULL, format = NULL) {
     j = "width",
     value = write_format[["end_col"]] - write_format[["start_col"]] + 1L
   )
+  # Combine the "reportable" and "only tumor" fields back into sequence number
+  for (ii in seq_len(ncol(sequence_number_columns))) {
+    number_name <- sequence_number_columns[["number", ii]]
+    if (number_name %in% write_format[["name"]]) {
+      only_name <- sequence_number_columns[["only", ii]]
+      only_tumor <- which(records[[only_name]])
+      set(x = records, i = only_tumor, j = number_name, value = 0L)
+      reportable_name <- sequence_number_columns[["reportable", ii]]
+      non_reportable <- which(!records[[reportable_name]])
+      set(
+        x = records,
+        i = non_reportable,
+        j = number_name,
+        value = records[["name"]][non_reportable] + 60L
+      )
+    }
+  }
   blank_line <- stri_pad_left("", width = line_length, pad = " ")
   text_lines <- rep(blank_line, nrow(records))
   for (column in write_format[["name"]]) {

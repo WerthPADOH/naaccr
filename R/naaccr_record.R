@@ -80,6 +80,21 @@ type_converters <- list(
   }
 )
 
+#' @noRd
+sequence_number_columns <- matrix(
+  c(
+    "sequenceNumberCentral", "npcrReportableCentral",
+    "onlyTumorCentral", "sequenceNumberCentralFlag",
+    "sequenceNumberHospital", "npcrReportableHospital",
+    "onlyTumorHospital", "sequenceNumberHospitalFlag"
+  ),
+  ncol = 2,
+  dimnames = list(
+    c("number", "reportable", "only", "flag"),
+    c("central", "hospital")
+  )
+)
+
 
 #' @rdname as.naaccr_record
 #' @import data.table
@@ -111,6 +126,10 @@ as.naaccr_record.data.frame <- function(x, keep_unknown = FALSE, ...) {
     )
   }
   sentinel_fields <- intersect(all_items[["name"]], field_sentinel_scheme[["name"]])
+  sentinel_fields <- setdiff(
+    sentinel_fields,
+    c("sequenceNumberCentral", "sequenceNumberHospital")
+  )
   for (column in sentinel_fields) {
     flag_column <- paste0(column, "Flag")
     if (flag_column %in% names(record)) {
@@ -122,7 +141,18 @@ as.naaccr_record.data.frame <- function(x, keep_unknown = FALSE, ...) {
       value = split_sentineled(record[[column]], field = column)
     )
   }
+  for (ii in seq_len(ncol(sequence_number_columns))) {
+    number_name <- sequence_number_columns[["number", ii]]
+    if (number_name %in% all_items[["name"]]) {
+      set(
+        x = record,
+        j = sequence_number_columns[, ii],
+        value = split_sequence_number(record[[number_name]])
+      )
+    }
+  }
   unresolved <- setdiff(all_items[["name"]], c(count_items[["name"]], coded_fields))
+  name <- NULL
   type_groups <- all_items[
     list(name = unresolved),
     on = "name"

@@ -67,9 +67,9 @@ can improve time and memory efficiency.
 
 ``` r
 dim(records)
-#> [1]  20 862
+#> [1]  20 866
 format(object.size(records))
-#> [1] "940240 bytes"
+#> [1] "949624 bytes"
 records_slim <- read_naaccr(
   input       = record_file,
   version     = 18,
