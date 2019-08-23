@@ -112,10 +112,19 @@ write_naaccr <- function(records, con, version = NULL, format = NULL) {
     format <- naaccr_format[version_key, on = "version"]
   }
   line_length <- max(format[["end_col"]])
+  type <- NULL # Avoid unmatched variable name warning in R Check
   write_format <- format[
     list(name = names(records)),
     on      = "name",
     nomatch = 0L
+  ][
+    field_code_scheme,
+    on = "name",
+    type := "factor"
+  ][
+    field_sentinel_scheme,
+    on = "name",
+    type := paste0("sentineled_", type)
   ]
   set(
     write_format,

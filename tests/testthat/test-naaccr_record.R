@@ -14,11 +14,15 @@ test_that("read_naaccr returns a 'naaccr_record', 'data.frame' object", {
 test_that("read_naaccr returns all columns by default", {
   abst <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt",  version = 18)
   inc  <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt", version = 18)
-  expect_identical(ncol(abst), ncol(inc))
-  expect_identical(
-    ncol(abst),
-    naaccr_format_18[, .N + sum(startsWith(type, "sentineled"))]
-  )
+  flag_column_count <- naaccr:::field_sentinel_scheme[
+    naaccr_format_18,
+    on = "name",
+    nomatch = 0,
+    .N
+  ]
+  expected_ncol <- nrow(naaccr_format_18) + flag_column_count
+  expect_identical(ncol(abst), expected_ncol)
+  expect_identical(ncol(abst), expected_ncol)
 })
 
 test_that("read_naaccr reads the data", {
@@ -30,10 +34,8 @@ test_that("read_naaccr reads the data", {
 
 test_that("read_naaccr only creates the columns from the format", {
   nr <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt", version = 18)
-  expected_names <- naaccr_format_18[
-    ,
-    c(name, paste0(name[startsWith(type, "sentineled")], "Flag"))
-  ]
+  flag_names <- paste0(naaccr:::field_sentinel_scheme[["name"]], "Flag")
+  expected_names <- naaccr_format_18[, c(name, flag_names)]
   expect_named(nr, expected_names, ignore.order = TRUE)
 })
 

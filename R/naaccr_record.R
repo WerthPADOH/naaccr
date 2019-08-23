@@ -66,7 +66,6 @@ type_converters <- list(
   county       = clean_county_fips,
   physician    = clean_physician_id,
   override     = naaccr_override,
-  sentineled   = as.numeric,
   boolean01    = naaccr_boolean,
   telephone    = clean_telephone,
   count        = clean_count,
@@ -91,23 +90,15 @@ as.naaccr_record.data.frame <- function(x, keep_unknown = FALSE, ...) {
     .SD[1],
     by = "item"
   ]
-  record <- as.data.table(x)
-  type_columns <- split(all_items[['name']], all_items[['type']])
-  sent_types <- c("sentineled_numeric", "sentineled_integer")
-  type_columns[["sentineled"]] <- unlist(type_columns[sent_types])
-  type_columns[sent_types] <- NULL
-  simple_types <- setdiff(
-    names(type_columns),
-    c("factor", "sentineled", "count")
-  )
-  for (type in simple_types) {
-    columns <- intersect(type_columns[[type]], names(record))
-    converter_fun <- type_converters[[type]]
-    for (column in columns) {
-      set(record, j = column, value = converter_fun(record[[column]]))
-    }
+  record <- if (is.data.table(x)) copy(x) else as.data.table(x)
+  count_items <- all_items[list(type = "count"), on = "type", nomatch = 0L]
+  for (ii in seq_len(nrow(count_items))) {
+    column <- count_items[["name"]][ii]
+    width <- count_items[["end_col"]][ii] - count_items[["start_col"]][ii] + 1L
+    set(x = record, j = column, value = clean_count(record[[column]], width))
   }
-  for (column in type_columns[["factor"]]) {
+  coded_fields <- intersect(all_items[["name"]], field_code_scheme[["name"]])
+  for (column in coded_fields) {
     set(
       x     = record,
       j     = column,
@@ -118,7 +109,8 @@ as.naaccr_record.data.frame <- function(x, keep_unknown = FALSE, ...) {
       )
     )
   }
-  for (column in type_columns[["sentineled"]]) {
+  sentinel_fields <- intersect(all_items[["name"]], field_sentinel_scheme[["name"]])
+  for (column in sentinel_fields) {
     flag_column <- paste0(column, "Flag")
     if (flag_column %in% names(record)) {
       warning(flag_column, " already exists in dataset, will not be overwritten")
@@ -128,6 +120,23 @@ as.naaccr_record.data.frame <- function(x, keep_unknown = FALSE, ...) {
       j     = c(column, flag_column),
       value = split_sentineled(record[[column]], field = column)
     )
+  }
+  unresolved <- setdiff(all_items[["name"]], c(count_items[["name"]], coded_fields))
+  type_groups <- all_items[
+    list(name = unresolved),
+    on = "name"
+  ][
+    ,
+    list(fields = list(name)),
+    by = "type"
+  ]
+  for (ii in seq_len(nrow(type_groups))) {
+    type <- type_groups[["type"]][[ii]]
+    converter_fun <- type_converters[[type]]
+    columns <- type_groups[["fields"]][[ii]]
+    for (column in columns) {
+      set(x = record, j = column, value = converter_fun(record[[column]]))
+    }
   }
   # Have each "Flag" column following the one it describes
   possible_names <- paste0(

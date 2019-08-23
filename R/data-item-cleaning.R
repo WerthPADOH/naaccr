@@ -175,16 +175,20 @@ clean_telephone <- function(number) {
 #' integers.
 #'
 #' @param count A character vector of counts (integer characters only).
-#' @param field XML name of the field. Necessary to know the field width.
+#' @param width Integer giving the character width of the field.
 #' @return An integer vector of \code{count}, but with values of all 9's
 #'   replaced with \code{NA}.
 #' @import stringi
 #' @export
-clean_count <- function(count, field) {
+clean_count <- function(count, width) {
   count <- trimws(count)
-  info <- naaccr_format[list(name = field), on = "name"]
-  width <- info[["end_col"]][[1]] - info[["start_col"]][[1]] + 1L
-  na_code <- stri_join(rep("9", width), collapse = "")
+  tryCatch(
+    na_code <- stri_join(rep("9", width), collapse = ""),
+    error = function(err) {
+      browser()
+      stop(conditionMessage(err))
+    }
+  )
   count[count == na_code] <- NA
   as.integer(count)
 }
