@@ -9,6 +9,9 @@ afpPretreatmentInterpretation,pretreatment_interpretation
 ambiguousTerminologyDx,ambiguousTerminologyDx
 anemia,anemia
 autopsy,autopsy
+behaviorCodeIcdO3,behavior
+behaviorIcdO1,behavior
+behaviorIcdO2,behavior
 bilirubinPretxUnitOfMeasure,bilirubinPretxUnitOfMeasure
 birthplace,place
 birthplaceCountry,iso_country
