@@ -37,6 +37,7 @@ naaccr_record <- function(x, ..., keep_unknown = FALSE, version = NULL) {
 #' @seealso \code{\link{naaccr_record}}
 #' @export
 as.naaccr_record <- function(x, keep_unknown = FALSE, ...) {
+  if (inherits(x, "naaccr_record")) return(x)
   UseMethod('as.naaccr_record')
 }
 
