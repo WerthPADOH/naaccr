@@ -1,6 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-ignore/*
+external/*
 .travis.yml
 README.Rmd
 data-raw/*
