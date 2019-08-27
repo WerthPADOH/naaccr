@@ -2,7 +2,11 @@ Package: naaccr
 Type: Package
 Title: Read cancer records in the NAACCR format
 Version: 0.5.0
-Author: Nathan Werth [aut, cre]
+Author: Nathan Werth [aut, cre],
+    Pennsylvania Department of Health [cph],
+    North American Association of Cancer Registries [cph],
+    World Health Organization [cph],
+    American Joint Committee on Cancer [cph]
 Maintainer: Nathan Werth <nwerth@pa.gov>
 Description: Functions for reading cancer record files which follow a format
     defined by the North American Association of Central Cancer Registries
@@ -23,6 +27,7 @@ Suggests:
     roxygen2,
     rvest
 License: MIT + file LICENSE
+Copyright: file COPYRIGHTS
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
