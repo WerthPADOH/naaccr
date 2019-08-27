@@ -1,0 +1,7 @@
+"code","label","means_missing","description"
+"0","benign",FALSE,"benign"
+"1","borderline",FALSE,"Uncertain whether benign or malignant; borderline malignancy; low malignant potential; uncertain malignant potential"
+"2","in situ",FALSE,"Carcinoma in situ; intraepithelial; noninfiltrating; noninvasive"
+"3","malignant, primary",FALSE,"Malignant, primary site"
+"6","malignant, metastatic",FALSE,"Malignant, metastatic site; malignant, secondary site"
+"9","malignant, NOS",TRUE,"Malignant, uncertain whether primary or metastatic site"
