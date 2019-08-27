@@ -124,7 +124,7 @@ split_fields <- function(record_lines,
 #'     "extdata", "synthetic-naaccr-18-abstract.txt",
 #'     package = "naaccr"
 #'   )
-#'   fields <- c("ageAtDx", "sex", "sequenceNumberCentral")
+#'   fields <- c("ageAtDiagnosis", "sex", "sequenceNumberCentral")
 #'   read_naaccr(incfile, version = 18, keep_fields = fields)
 #'   recs <- read_naaccr_plain(incfile, version = 18, keep_fields = fields)
 #'   recs
