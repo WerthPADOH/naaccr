@@ -88,3 +88,35 @@ test_that("No unused code/sentinel schemes exist", {
     info = paste("Unused schemes:", paste0(unused, collapse = ", "))
   )
 })
+
+test_that("unknown_to_na removes levels if and only if they are 'unknown'", {
+  v <- naaccr_factor(c("1", "4", "9"), field = "sex", keep_unknown = TRUE)
+  v2 <- unknown_to_na(v, field = "sex")
+  expect_identical(setdiff(levels(v), levels(v2)), "unknown")
+  expect_identical(is.na(v2), c(FALSE, FALSE, TRUE))
+
+  w <- naaccr_factor(c("0", "8", "9"), field = "her2IshSummary", keep_unknown = TRUE)
+  w2 <- unknown_to_na(w, field = "her2IshSummary")
+  expect_identical(
+    setdiff(levels(w), levels(w2)),
+    c("test ordered, results unknown", "not applicable", "unknown")
+  )
+  expect_identical(is.na(w2), c(FALSE, TRUE, TRUE))
+})
+
+test_that("unknown_to_na works on naaccr_record objects", {
+  r <- naaccr_record(
+    autopsy = c("2", "9"),
+    ageAtDiagnosis = c("001", "100"),
+    psaLabValue = c("123.4", "XXX.1"),
+    sex = c("2", "9"),
+    keep_unknown = TRUE
+  )
+  r2 <- unknown_to_na(r)
+  expect_identical(is.na(r2[["autopsy"]]), c(FALSE, TRUE))
+  expect_identical(is.na(r2[["sex"]]), c(FALSE, TRUE))
+  expect_identical(
+    r[, c("ageAtDiagnosis", "psaLabValue")],
+    r2[, c("ageAtDiagnosis", "psaLabValue")]
+  )
+})

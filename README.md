@@ -69,7 +69,7 @@ can improve time and memory efficiency.
 dim(records)
 #> [1]  20 866
 format(object.size(records))
-#> [1] "951720 bytes"
+#> [1] "951744 bytes"
 records_slim <- read_naaccr(
   input       = record_file,
   version     = 18,
@@ -140,6 +140,25 @@ category codes.
 naaccr_factor(c("01", "31", "65"), "primaryPayerAtDx")
 #> [1] not insured Medicaid    TRICARE    
 #> 16 Levels: not insured self-pay ... Indian/Public Health Service
+```
+
+Some fields have multiple codes explaining why an actual value isn’t
+known. By default, they’ll all be converted to `NA` so they can
+propagate that information in R. But the reasons can be useful, so
+`naaccr_factor` and `naaccr_record` both have a `keep_unknown`
+parameter.
+
+``` r
+naaccr_factor(c("1", "9"), field = "sex")
+#> [1] male <NA>
+#> 6 Levels: male female other transsexual, NOS ... transsexual, natal female
+naaccr_factor(c("1", "9"), field = "sex", keep_unknown = TRUE)
+#> [1] male    unknown
+#> 7 Levels: male female other transsexual, NOS ... unknown
+naaccr_record(sex = c("1", "9"), race1 = c("01", "99"), keep_unknown = TRUE)
+#>       sex   race1
+#> 1    male   white
+#> 2 unknown unknown
 ```
 
 #### Numeric with special missing

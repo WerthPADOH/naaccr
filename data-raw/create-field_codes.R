@@ -31,7 +31,16 @@ fwrite(country_codes, "data-raw/code-labels/iso_country.csv", quote = TRUE)
 code_files <- list.files("data-raw/code-labels", full.names = TRUE)
 names(code_files) <- stri_replace_last_fixed(basename(code_files), ".csv", "")
 field_codes <- rbindlist(
-  lapply(code_files, fread, colClasses = "character"),
+  lapply(
+    code_files,
+    fread,
+    colClasses = c(
+      code = "character",
+      label = "character",
+      means_missing = "logical",
+      description = "character"
+    )
+  ),
   idcol = "scheme"
 )
 field_codes[, description := NULL]
