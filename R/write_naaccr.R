@@ -172,6 +172,7 @@ write_naaccr <- function(records, con, version = NULL, format = NULL) {
       integer            = format_integer(values, field_def[["width"]]),
       boolean01          = ifelse(values, "1", "0"),
       boolean12          = ifelse(values, "2", "1"),
+      override           = ifelse(values, "1", ""),
       as.character(values)
     )
     too_wide <- stri_width(value_text) > field_def[["width"]]

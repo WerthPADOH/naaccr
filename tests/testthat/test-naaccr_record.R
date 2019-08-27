@@ -107,6 +107,14 @@ test_that("read_naaccr only keeps requested columns and their flags", {
   )
 })
 
+test_that("read_naaccr fills in fields beyond end of lines", {
+  records <- readLines("../data/synthetic-naaccr-18-incidence.txt")
+  subformat <- naaccr_format_18[1:3, ]
+  shorn <- substr(records, 1, subformat[["end_col"]][2])
+  result <- read_naaccr(shorn, format = subformat)
+  expect_true(all(is.na(result[[3]])))
+})
+
 test_that("naaccr_record can be used to create a new naaccr_record object", {
   nr <- naaccr_record(
     sex             = c(1, 9),
@@ -167,4 +175,72 @@ test_that("naaccr_record allows users to keep 'unknown' levels", {
   no_unknown <- naaccr_record(laterality = "9", keep_unknown = FALSE)
   expect_true(is.na(no_unknown[["laterality"]]))
   expect_false("unknown" %in% levels(no_unknown[["laterality"]]))
+})
+
+test_that("read_naaccr_plain returns a data.frame with no NAs", {
+  rabs16 <- read_naaccr_plain("../data/synthetic-naaccr-16-abstract.txt", version = 16)
+  expect_false(anyNA(rabs16))
+  rinc16 <- read_naaccr_plain("../data/synthetic-naaccr-16-incidence.txt", version = 16)
+  expect_false(anyNA(rinc16))
+  rabs18 <- read_naaccr_plain("../data/synthetic-naaccr-18-abstract.txt", version = 18)
+  expect_false(anyNA(rabs18))
+  rinc18 <- read_naaccr_plain("../data/synthetic-naaccr-18-incidence.txt", version = 18)
+  expect_false(anyNA(rinc18))
+})
+
+test_that("read_naaccr allows skipping lines", {
+  inc_file <- "../data/synthetic-naaccr-16-incidence.txt"
+  rec_all <- read_naaccr(inc_file, version = 16)
+  rec_some <- read_naaccr(inc_file, version = 16, skip = 5)
+  expect_equivalent(rec_all[-(1:5), ], rec_some)
+})
+
+test_that("read_naaccr can read only a subset of lines", {
+  inc_file <- "../data/synthetic-naaccr-16-incidence.txt"
+  rec_all <- read_naaccr(inc_file, version = 16)
+  rec_some <- read_naaccr(inc_file, version = 16, nrows = 3)
+  expect_equivalent(rec_some, rec_all[1:3, ])
+  rec_beyond <- read_naaccr(inc_file, version = 16, nrows = 100)
+  expect_equivalent(rec_beyond, rec_all)
+})
+
+test_that("read_naaccr can read data in chunks", {
+  inc_file <- "../data/synthetic-naaccr-18-incidence.txt"
+  fields <- c("ageAtDiagnosis", "patientIdNumber", "primarySite")
+  recs <- read_naaccr(inc_file, version = 18, keep_fields = fields)
+  for (buffer in c(1, 7, 10, 20, 100)) {
+    chunked <- read_naaccr(
+      inc_file, version = 18, keep_fields = fields, buffersize = buffer
+    )
+    expect_equivalent(chunked, recs)
+  }
+  for (buffer in c(1, 7, 10, 20, 100)) {
+    chunked <- read_naaccr(
+      inc_file, version = 18, keep_fields = fields, buffersize = buffer,
+      nrows = 13
+    )
+    expect_equivalent(chunked, recs[1:13, ])
+  }
+})
+
+test_that("read_naaccr can handle different file encodings", {
+  rec_lines <- readLines("../data/synthetic-naaccr-16-incidence.txt")
+  write_and_read_encoding <- function(enc) {
+    tf <- tempfile()
+    on.exit(if (file.exists(tf)) file.remove(tf), add = TRUE)
+    write_con <- file(tf, open = "w", encoding = enc)
+    writeLines(rec_lines, con = write_con)
+    close(write_con)
+    read_naaccr(tf, version = 16, encoding = enc)
+  }
+  encodings <- c("native.enc", "latin1", "UTF-8", "UTF-16")
+  results <- lapply(encodings, write_and_read_encoding)
+  for (ii in seq_along(encodings)[-1]) {
+    expect_identical(
+      results[[1]], results[[ii]],
+      info = paste0(
+        "Results from 'native.enc' and '", encodings[ii], "' not identical"
+      )
+    )
+  }
 })
