@@ -122,6 +122,17 @@ codes.
 naaccr_factor(c("01", "31", "65"), "primaryPayerAtDx")
 ```
 
+Some fields have multiple codes explaining why an actual value isn't known.
+By default, they'll all be converted to `NA` so they can propagate that information in R.
+But the reasons can be useful, so `naaccr_factor` and `naaccr_record` both have
+a `keep_unknown` parameter.
+
+```{r keepUnknown}
+naaccr_factor(c("1", "9"), field = "sex")
+naaccr_factor(c("1", "9"), field = "sex", keep_unknown = TRUE)
+naaccr_record(sex = c("1", "9"), race1 = c("01", "99"), keep_unknown = TRUE)
+```
+
 #### Numeric with special missing
 
 Some fields contain primarily continuous or count data but also use special
