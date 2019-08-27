@@ -1,5 +1,71 @@
 # Factorizing columns
 
+#' Replace labels for unknown with NA
+#' @param x Either a factor created with \code{\link{naaccr_factor}}, or a
+#'   \code{\link{naaccr_record}} object.
+#' @param field String giving the XML name of the NAACCR field to code.
+#' @param ... Further arguments passed to or from other methods.
+#' @return If \code{x} was a \code{factor}, then the result is a vector with the
+#'   values of \code{x}, except all levels which effectively mean "unknown" are
+#'   replaced with \code{NA}.
+#'   The returned factor won't have those in its levels, either.
+#'
+#'   If \code{x} is a \code{naaccr_record} object, then the result is the
+#'   \code{naaccr_record} created by applying this function to all columns of
+#'   \code{x}.
+#' @examples
+#'   r <- naaccr_record(
+#'     sex = c("1", "2", "9"),
+#'     kras = c("8", "9", "3"),
+#'     keep_unknown = TRUE
+#'   )
+#'   r
+#'   unknown_to_na(r[["sex"]], field = "sex")
+#'   unknown_to_na(r)
+#' @export
+unknown_to_na <- function(x, ...) {
+  UseMethod("unknown_to_na")
+}
+
+#' @rdname unknown_to_na
+#' @export
+unknown_to_na.naaccr_record <- function(x, ...) {
+  code_fields <- intersect(names(x), field_code_scheme[["name"]])
+  x[code_fields] <- mapply(
+    FUN = unknown_to_na,
+    x = x[code_fields],
+    field = code_fields,
+    SIMPLIFY = FALSE
+  )
+  x
+}
+
+#' @import data.table
+#' @rdname unknown_to_na
+#' @export
+unknown_to_na.factor <- function(x, field, ...) {
+  if (length(field) != 1L) {
+    stop("field should be single string")
+  }
+  field_scheme <- field_code_scheme[
+    list(name = field),
+    on = "name",
+    nomatch = 0L
+  ][[
+    "scheme"
+  ]]
+  if (length(field_scheme) == 0L) {
+    warning('"', field, '" not a coded field')
+    return(x)
+  }
+  level_info <- field_codes[
+    list(scheme = field_scheme, label = levels(x)),
+    on = c("scheme", "label")
+  ]
+  known_levels <- levels(x)[!level_info[["means_missing"]]]
+  factor(x, levels = known_levels, ordered = is.ordered(x))
+}
+
 #' Replace NAACCR codes with understandable factors
 #' @param x Vector (usually character) of codes.
 #' @param field String giving the XML name of the NAACCR field to code.
@@ -16,28 +82,29 @@
 #' @examples
 #'   naaccr_factor(c("20", "43", "99"), "radRegionalRxModality")
 #'   naaccr_factor(c("USA", "GER", "XEN"), "addrAtDxCountry")
+#'   # Default: NA for unknowns,
+#'   naaccr_factor(c("1", "8", "9"), "tumorGrowthPattern")
+#'   naaccr_factor(c("1", "8", "9"), "tumorGrowthPattern", keep_unknown = TRUE)
 #' @import data.table
 #' @export
 naaccr_factor <- function(x, field, keep_unknown = FALSE, ...) {
-  # Avoid R CMD check notes about unbound global variables
-  means_missing <- NULL
   if (length(field) != 1L) {
     stop("field should be single string")
   }
   if (field %in% field_code_scheme[["name"]]) {
     field_scheme <- field_code_scheme[list(name = field), on = "name"]
     codes <- field_codes[field_scheme, on = "scheme"]
-    if (isFALSE(keep_unknown)) {
-      codes <- codes[means_missing == FALSE]
-    }
     setorderv(codes, "code")
-    factor(x, levels = codes[["code"]], labels = codes[["label"]], ...)
+    out <- factor(x, levels = codes[["code"]], labels = codes[["label"]], ...)
+    if (isFALSE(keep_unknown)) {
+      out <- unknown_to_na(out, field = field)
+    }
   } else {
     warning('"', field, '" not a coded field')
     out <- as.character(x)
     names(out) <- names(x)
-    out
   }
+  out
 }
 
 
