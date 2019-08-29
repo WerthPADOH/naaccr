@@ -4,35 +4,60 @@ library(stringi)
 
 format_files <- list.files(
   path       = "data-raw/record-formats",
-  pattern    = "\\.csv$",
+  pattern    = "^version-\\d+\\.csv$",
   full.names = TRUE
 )
 names(format_files) <- stri_extract_last_regex(format_files, "\\d+")
-format_list <- lapply(format_files, fread, sep = ",", header = TRUE)
+format_list <- lapply(
+  X = format_files,
+  FUN = fread,
+  sep = ",",
+  header = TRUE,
+  na.strings = "",
+  colClasses = c(
+    name = "character",
+    item = "integer",
+    start_col = "integer",
+    end_col = "integer",
+    alignment = "character",
+    padding = "character",
+    name_literal = "character",
+    default = "character",
+    parent = "character",
+    section = "character",
+    source = "character",
+    year_added = "integer",
+    version_added = "character",
+    year_retired = "integer",
+    version_retired = "character"
+  )
+)
 naaccr_format <- rbindlist(format_list, idcol = "version")
 naaccr_format[, version := as.integer(version)]
 
-# Add non-format-specific info
+# Add non-official data used by the package
 field_info <- fread("data-raw/field_info.csv")
 naaccr_format[
   field_info,
   on = "item",
-  ":="(name = name, type = type)
+  type := type
 ]
-
+setcolorder(
+  naaccr_format,
+  c(
+    "version", "name", "item", "start_col", "end_col", "type", "alignment",
+    "padding", "name_literal", "default", "parent", "section", "source",
+    "year_added", "version_added", "year_retired", "version_retired"
+  )
+)
 save(naaccr_format, file = "data-raw/sys-data/naaccr_format.RData")
 
 format_env <- new.env()
 for (number in unique(naaccr_format[["version"]])) {
-  sub_format <- naaccr_format[version == number]
-  set(sub_format, j = "version", value = NULL)
-  setcolorder(
-    sub_format,
-    c(
-      "name", "item", "start_col", "end_col", "type", "alignment", "padding",
-      "name_literal"
-    )
-  )
+  sub_format <- naaccr_format[
+    version == number,
+    list(name, item, start_col, end_col, type, alignment, padding, name_literal)
+  ]
   setattr(sub_format, "class", c("record_format", class(sub_format)))
   format_name <- sprintf("naaccr_format_%.0f", number)
   format_env[[format_name]] <- sub_format

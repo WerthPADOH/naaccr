@@ -179,3 +179,68 @@ rnp
 #> 5                    NA                   unknown
 #> 6                    NA                      <NA>
 ```
+
+## Building
+
+``` r
+library(devtools)
+
+deps <- packageDescription("naaccr", fields = c("Depends", "Imports", "Suggests"))
+deps <- Filter(function(x) any(!is.na(x)), deps)
+dep_names <- lapply(deps, function(x) devtools::parse_deps(x)[["name"]])
+dep_names <- sort(unlist(dep_names))
+dep_list <- paste0("- `", dep_names, "`", collapse = "\n")
+```
+
+To build the `naaccr` package, you’ll need the following R packages:
+
+  - `data.table`
+  - `devtools`
+  - `httr`
+  - `ISOcodes`
+  - `jsonlite`
+  - `magrittr`
+  - `rmarkdown`
+  - `roxygen2`
+  - `rvest`
+  - `stringi`
+  - `testthat`
+  - `utils`
+  - `xml2`
+
+To document, build, and test the package, run the `build.R` script with
+the package’s root as the working directory.
+
+## Project files
+
+First, know this project fills two roles:
+
+1.  Creating a package to work with NAACCR data in R.
+2.  Collecting the data needed to process NAACCR files in plain-text and
+    machine-readable formats.
+
+<!-- end list -->
+
+    naaccr/
+    ├ R/                  # R files to create the package objects
+    ├ data-raw/           # Plain-text data files and scripts for processing them
+    │ ├ code-labels/      # Mappings of codes to understandable labels
+    │ ├ sentinel-labels/  # Mappings of sentinel values to understandable labels
+    │ └ record-formats/   # Tables defining each NAACCR file format
+    ├ external/           # Downloaded files and scripts to create files in `data-raw`
+    ├ inst/
+    │ └ extdata/          # Data files for examples in the documentation
+    └ tests/              # tests and data using the `testthat` package
+
+Files in `external` only need to be updated or run when NAACCR publishes
+a new or revised format. In that case, refer to the comments in the `.R`
+scripts in that directory for where to download the new files.
+
+Think of these scripts as handy tools for generating `data-raw` files.
+Some cleaning of their output may be required.
+
+To run `create-record-format-files.R`, you’ll need to create an account
+for the [SEER API](https://api.seer.cancer.gov/) from the National
+Cancer Institute’s Surveillance, Epidemiology and End Results (SEER)
+program. Store the API key as an environment variable named
+`SEER_API_KEY`.
