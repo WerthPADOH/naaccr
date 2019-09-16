@@ -244,3 +244,25 @@ test_that("read_naaccr can handle different file encodings", {
     )
   }
 })
+
+test_that("read_naaccr can handle a custom format", {
+  new_format <- rbind(
+    naaccr_format_18[1:5],
+    record_format(
+      name = "1 very % unusual name `",
+      item = -2,
+      start_col = 45, # spans two numeric fields
+      end_col = 55,
+      type = "integer",
+      alignment = "left",
+      padding = " ",
+      name_literal = "blah"
+    )
+  )
+  recs <- read_naaccr(
+    "../data/synthetic-naaccr-18-incidence.txt",
+    format = new_format
+  )
+  expect_identical(names(recs), new_format[["name"]])
+  expect_is(recs[["1 very % unusual name `"]], "integer")
+})

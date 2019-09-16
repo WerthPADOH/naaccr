@@ -75,3 +75,33 @@ test_that("write_naaccr -> read_naaccr will give the same values", {
   expect_equivalent(records_18, records_18_2)
   file.remove(tf18)
 })
+
+test_that("write_naaccr can handle custom formats", {
+  new_format <- naaccr_format_16[
+    list(name = c("recordType", "patientIdNumber", "reserved00")),
+    on = "name"
+  ][
+    name == "reserved00",
+    ":="(
+      name = "newField",
+      item = -2,
+      type = "Date",
+      alignment = "left",
+      padding = " ",
+      name_literal = "new new new"
+    )
+  ]
+  recs <- read_naaccr(
+    "../data/synthetic-naaccr-16-incidence.txt",
+    version = 16,
+    keep_fields = c("recordType", "patientIdNumber", "reserved00")
+  )
+  recs[["newField"]] <- as.Date("1900-01-01") + seq_len(nrow(recs))
+  tf <- tempfile()
+  on.exit(file.remove(tf), add = TRUE)
+  write_naaccr(recs, tf, format = new_format)
+  recs_2 <- read_naaccr(tf, format = new_format)
+  for (column in names(recs_2)) {
+    expect_equivalent(recs_2[[column]], recs[[column]])
+  }
+})
