@@ -12,28 +12,40 @@
 #'   values from the NAACCR format.
 #' @param keep_unknown Logical indicating whether values of "unknown" should be
 #'   a level in the factor or \code{NA}.
-#' @param version An integer specifying which NAACCR format should be
-#'   used to parse the records. Only used if \code{input} is given.
+#' @param version An integer specifying the NAACCR format version for parsing
+#'   the records. Use this or \code{format}, not both.
+#' @param format A \code{\link{record_format}} object for parsing the records.
 #' @return A \code{data.frame} with columns named using the NAACCR XML scheme.
 #' @import data.table
 #' @export
-naaccr_record <- function(..., keep_unknown = FALSE, version = NULL) {
+naaccr_record <- function(...,
+                          keep_unknown = FALSE,
+                          version = NULL,
+                          format = NULL) {
   input_data <- lapply(list(...), as.character)
   setDF(input_data)
-  as.naaccr_record(input_data, keep_unknown = keep_unknown)
+  as.naaccr_record(
+    x = input_data,
+    keep_unknown = keep_unknown,
+    version = version,
+    format = format
+  )
 }
 
 
 #' Coerce to a naaccr_record dataset
 #' Convert objects into \code{naaccr_record} objects, if a method exists.
 #' @param x An R object.
-#' @param keep_unknown Logical indicating whether values of "unknown" should be
-#'   a level in the factor or \code{NA}.
 #' @param ... Additional arguments passed to or from methods.
+#' @inheritParams naaccr_record
 #' @return An object of class \code{\link{naaccr_record}}
 #' @seealso \code{\link{naaccr_record}}
 #' @export
-as.naaccr_record <- function(x, keep_unknown = FALSE, ...) {
+as.naaccr_record <- function(x,
+                             keep_unknown = FALSE,
+                             version = NULL,
+                             format = NULL,
+                             ...) {
   if (inherits(x, "naaccr_record")) return(x)
   UseMethod('as.naaccr_record')
 }
@@ -41,7 +53,11 @@ as.naaccr_record <- function(x, keep_unknown = FALSE, ...) {
 
 #' @rdname as.naaccr_record
 #' @export
-as.naaccr_record.list <- function(x, keep_unknown = FALSE, ...) {
+as.naaccr_record.list <- function(x,
+                                  keep_unknown = FALSE,
+                                  version = NULL,
+                                  format = NULL,
+                                  ...) {
   x_df <- as.data.frame(x, stringsAsFactors = FALSE)
   as.naaccr_record(x_df)
 }
@@ -96,10 +112,25 @@ sequence_number_columns <- matrix(
 #' @rdname as.naaccr_record
 #' @import data.table
 #' @export
-as.naaccr_record.data.frame <- function(x, keep_unknown = FALSE, ...) {
-  all_items <- naaccr_format[
+as.naaccr_record.data.frame <- function(x,
+                                        keep_unknown = FALSE,
+                                        version = NULL,
+                                        format = NULL,
+                                        ...) {
+  convert_format <- if (!is.null(version)) {
+    key_data <- list(version = version)
+    naaccr_format[key_data, on = "version"]
+  } else if (!is.null(format)) {
+    format
+  } else {
+    latest_version <- max(naaccr_format[["version"]])
+    naaccr_format[list(version = latest_version), on = "version"]
+  }
+  all_items <- convert_format[
     list(name = names(x)),
     on = "name",
+  ][
+    ,
     .SD[1],
     by = "item"
   ]

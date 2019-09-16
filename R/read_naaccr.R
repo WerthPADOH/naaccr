@@ -93,9 +93,6 @@ split_fields <- function(record_lines,
 #' @param input Either a string with a file name (containing no \code{\\n}
 #'   character), a \code{\link[base]{connection}} object, or the text records
 #'   themselves as a character vector.
-#' @param version An integer specifying the NAACCR format version for parsing
-#'   the records. Use this or \code{format}, not both.
-#' @param format A \code{\link{record_format}} object for parsing the records.
 #' @param keep_fields Character vector of XML field names to keep in the
 #'   dataset. If \code{NULL} (default), all columns are kept.
 #' @param skip An integer specifying the number of lines of the data file to
@@ -105,6 +102,8 @@ split_fields <- function(record_lines,
 #' @param buffersize Maximum number of lines to read at one time.
 #' @param encoding String giving the input's encoding. See the 'Encoding'
 #'   section of \code{\link[base]{file}} in the \pkg{base} package.
+#' @param ... Additional arguments passed onto \code{\link{as.naaccr_record}}.
+#' @inheritParams naaccr_record
 #' @return
 #'   For \code{read_naaccr}, a \code{data.frame} of the records.
 #'   The columns included depend on the NAACCR record format version.
@@ -216,10 +215,12 @@ read_naaccr <- function(input,
                         version = NULL,
                         format = NULL,
                         keep_fields = NULL,
+                        keep_unknown = FALSE,
                         skip = 0,
                         nrows = Inf,
                         buffersize = 10000,
-                        encoding = getOption("encoding")) {
+                        encoding = getOption("encoding"),
+                        ...) {
   records <- read_naaccr_plain(
     input = input,
     version = version,
@@ -230,5 +231,11 @@ read_naaccr <- function(input,
     buffersize = buffersize,
     encoding = encoding
   )
-  as.naaccr_record(records)
+  as.naaccr_record(
+    x = records,
+    keep_unknown = keep_unknown,
+    version = version,
+    format = format,
+    ...
+  )
 }
