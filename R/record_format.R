@@ -94,7 +94,7 @@ record_format <- function(name,
     stop("'padding' must only contain single-character values")
   }
   # Create the format
-  record_format <- data.table(
+  fmt <- data.table(
     name         = as.character(name),
     item         = as.integer(item),
     start_col    = as.integer(start_col),
@@ -104,8 +104,8 @@ record_format <- function(name,
     padding      = as.character(padding),
     name_literal = as.character(name_literal)
   )
-  setattr(record_format, "class", c("record_format", class(record_format)))
-  record_format
+  setattr(fmt, "class", c("record_format", class(fmt)))
+  fmt
 }
 
 
