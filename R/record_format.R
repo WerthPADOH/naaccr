@@ -1,3 +1,34 @@
+#' @noRd
+type_converters <- list(
+  integer      = as.integer,
+  numeric      = as.numeric,
+  character    = clean_text,
+  age          = clean_age,
+  icd_code     = clean_icd_code,
+  postal       = clean_postal,
+  city         = clean_address_city,
+  address      = clean_address_number_and_street,
+  facility     = clean_facility_id,
+  census_block = clean_census_block,
+  census_tract = clean_census_tract,
+  icd_9        = clean_icd_9_cm,
+  county       = clean_county_fips,
+  physician    = clean_physician_id,
+  override     = naaccr_override,
+  boolean01    = naaccr_boolean,
+  telephone    = clean_telephone,
+  count        = clean_count,
+  ssn          = clean_ssn,
+  boolean12    = function(x) naaccr_boolean(x, false_value = '1'),
+  Date         = function(x) as.Date(x, format = '%Y%m%d'),
+  datetime     = function(x) {
+    x <- stri_trim_both(x)
+    x <- stri_pad_right(x, width = 14L, pad = "0", use_length = TRUE)
+    as.POSIXct(x, format = "%Y%m%d%H%M%S")
+  }
+)
+
+
 #' Define custom fields for NAACCR records
 #'
 #' Create a \code{record_format} object, which is used to read NAACCR records.
@@ -51,13 +82,109 @@
 #'     }
 #'   }
 #'
+#' @section Format Types:
+#'
+#'   The levels \code{type} can take, along with the functions used to process
+#'   them when reading a file:
+#'
+#'   \describe{
+#'     \item{\code{address}}{
+#'       (\code{\link{clean_address_number_and_street}})
+#'       Street number and street name parts of an address.
+#'     }
+#'     \item{\code{age}}{
+#'       (\code{\link{clean_age}})
+#'       Age in years.
+#'     }
+#'     \item{\code{boolean01}}{
+#'       (\code{\link{naaccr_boolean}}, with \code{false_value = "0"})
+#'       True/false, where \code{"0"} means false and \code{"1"} means true.
+#'     }
+#'     \item{\code{boolean12}}{
+#'       (\code{\link{naaccr_boolean}}, with \code{false_value = "1"})
+#'       True/false, where \code{"1"} means false and \code{"2"} means true.
+#'     }
+#'     \item{\code{census_block}}{
+#'       (\code{\link{clean_census_block}})
+#'       Census Block ID number.
+#'     }
+#'     \item{\code{census_tract}}{
+#'       (\code{\link{clean_census_tract}})
+#'       Census Tract ID number.
+#'     }
+#'     \item{\code{character}}{
+#'       (\code{\link{clean_text}})
+#'       Miscellaneous text.
+#'     }
+#'     \item{\code{city}}{
+#'       (\code{\link{clean_address_city}})
+#'       City name.
+#'     }
+#'     \item{\code{count}}{
+#'       (\code{\link{clean_count}})
+#'       Integer count.
+#'     }
+#'     \item{\code{county}}{
+#'       (\code{\link{clean_county_fips}})
+#'       County FIPS code.
+#'     }
+#'     \item{\code{Date}}{
+#'       (\code{\link{as.Date}}, with \code{format = "%Y%m%d"})
+#'       NAACCR-formatted date (YYYYMMDD).
+#'     }
+#'     \item{\code{datetime}}{
+#'       (\code{\link{as.POSIXct}}, with \code{format = "%Y%m%d%H%M%S"})
+#'       NAACCR-formatted datetime (YYYYMMDDHHMMSS)
+#'     }
+#'     \item{\code{facility}}{
+#'       (\code{\link{clean_facility_id}})
+#'       Facility ID number.
+#'     }
+#'     \item{\code{icd_9}}{
+#'       (\code{\link{clean_icd_9_cm}})
+#'       ICD-9-CM code.
+#'     }
+#'     \item{\code{icd_code}}{
+#'       (\code{\link{clean_icd_code}})
+#'       ICD-9 or ICD-10 code.
+#'     }
+#'     \item{\code{integer}}{
+#'       (\code{\link{as.integer}})
+#'       Miscellaneous whole number.
+#'     }
+#'     \item{\code{numeric}}{
+#'       (\code{\link{as.numeric}})
+#'       Miscellaneous decimal number.
+#'     }
+#'     \item{\code{override}}{
+#'       (\code{\link{naaccr_override}})
+#'       Field describing why another field's value was over-ridden.
+#'     }
+#'     \item{\code{physician}}{
+#'       (\code{\link{clean_physician_id}})
+#'       Physician ID number.
+#'     }
+#'     \item{\code{postal}}{
+#'       (\code{\link{clean_postal}})
+#'       Postal code for an address (a.k.a. ZIP code in the United States).
+#'     }
+#'     \item{\code{ssn}}{
+#'       (\code{\link{clean_ssn}})
+#'       Social Security Number.
+#'     }
+#'     \item{\code{telephone}}{
+#'       (\code{\link{clean_telephone}})
+#'       10-digit telephone number.
+#'     }
+#'   }
+#'
 #' @examples
 #'   my_fields <- record_format(
 #'     name      = c("foo", "bar"),
 #'     item      = c(2163, 1180),
 #'     start_col = c(975, 1381),
 #'     end_col   = c(975, 1435),
-#'     type      = c("numeric", "character")
+#'     type      = c("numeric", "facility")
 #'   )
 #'   my_format <- rbind(naaccr_format_16, my_fields)
 #' @import data.table
@@ -99,11 +226,17 @@ record_format <- function(name,
     item         = as.integer(item),
     start_col    = as.integer(start_col),
     end_col      = as.integer(end_col),
-    type         = as.character(type),
     alignment    = as.character(alignment),
+    type         = factor(as.character(type), sort(names(type_converters))),
     padding      = as.character(padding),
     name_literal = as.character(name_literal)
   )
+  if (anyNA(fmt[["type"]])) {
+    stop(
+      "'type' must be one of ",
+      paste0("'", levels(fmt[["type"]]), "'", collapse = ", ")
+    )
+  }
   setattr(fmt, "class", c("record_format", class(fmt)))
   fmt
 }
