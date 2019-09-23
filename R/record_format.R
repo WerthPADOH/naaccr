@@ -244,6 +244,7 @@ record_format <- function(name,
 
 #' @inheritParams record_format
 #' @rdname record_format
+#' @export
 as.record_format <- function(x, ...) {
   if (inherits(x, "record_format")) {
     return(x)
