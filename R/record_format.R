@@ -209,12 +209,6 @@ record_format <- function(name,
   } else if (is.null(name_literal)) {
     name_literal <- NA_character_
   }
-  # Check for valid values
-  alignment <- as.character(alignment)
-  not_left_right <- !(alignment %in% c("left", "right"))
-  if (any(not_left_right, na.rm = TRUE)) {
-    stop("'alignment' must only contain values of \"left\" or \"right\"")
-  }
   padding   <- as.character(padding)
   padding_width <- nchar(padding)
   if (any(padding_width > 1L, na.rm = TRUE)) {
@@ -226,11 +220,14 @@ record_format <- function(name,
     item         = as.integer(item),
     start_col    = as.integer(start_col),
     end_col      = as.integer(end_col),
-    alignment    = as.character(alignment),
     type         = factor(as.character(type), sort(names(type_converters))),
+    alignment    = factor(as.character(alignment), c("left", "right")),
     padding      = as.character(padding),
     name_literal = as.character(name_literal)
   )
+  if (anyNA(fmt[["alignment"]])) {
+    stop("'alignment' must only contain values of \"left\" or \"right\"")
+  }
   if (anyNA(fmt[["type"]])) {
     stop(
       "'type' must be one of ",
