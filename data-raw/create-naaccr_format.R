@@ -2,6 +2,7 @@
 library(data.table)
 library(stringi)
 
+
 format_files <- list.files(
   path       = "data-raw/record-formats",
   pattern    = "^version-\\d+\\.csv$",
@@ -33,14 +34,20 @@ format_list <- lapply(
   )
 )
 naaccr_format <- rbindlist(format_list, idcol = "version")
-naaccr_format[, version := as.integer(version)]
+naaccr_format[
+  ,
+  ":="(
+    version = as.integer(version),
+    alignment = factor(alignment, c("left", "right"))
+  )
+]
 
 # Add non-official data used by the package
 field_info <- fread("data-raw/field_info.csv")
 naaccr_format[
   field_info,
   on = "item",
-  type := type
+  type := factor(type, sort(unique(type)))
 ]
 setcolorder(
   naaccr_format,
@@ -50,7 +57,6 @@ setcolorder(
     "year_added", "version_added", "year_retired", "version_retired"
   )
 )
-save(naaccr_format, file = "data-raw/sys-data/naaccr_format.RData")
 
 format_env <- new.env()
 for (number in unique(naaccr_format[["version"]])) {
@@ -63,8 +69,19 @@ for (number in unique(naaccr_format[["version"]])) {
   format_env[[format_name]] <- sub_format
 }
 
+for (column in names(sub_format)) {
+  if (is.factor(sub_format[[column]])) {
+    set(
+      naaccr_format,
+      j = column,
+      value = factor(naaccr_format[[column]], levels(sub_format[[column]]))
+    )
+  }
+}
+
+save(naaccr_format, file = "data-raw/sys-data/naaccr_format.RData")
 save(
   list  = ls(envir = format_env),
   envir = format_env,
-  file  = "data/naaccr-formats.RData"
+  file  = "data-raw/sys-data/naaccr-formats.RData"
 )
