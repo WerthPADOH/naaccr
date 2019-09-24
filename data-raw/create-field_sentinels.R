@@ -12,5 +12,6 @@ field_sentinels <- rbindlist(
 field_sentinel_scheme <- fread("data-raw/field_sentinel_scheme.csv")
 save(
   field_sentinels, field_sentinel_scheme,
-  file = "data-raw/sys-data/field_sentinels.RData"
+  file = "data-raw/sys-data/field_sentinels.RData",
+  version = 2
 )
