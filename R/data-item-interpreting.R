@@ -99,8 +99,8 @@ naaccr_datetime <- function(datetime) {
   }
   original <- stri_pad_right(datetime, width = 14L, pad = " ")
   out <- trimws(datetime)
-  out <- stri_pad_right(datetime, width = 14L, pad = "0")
-  out <- as.POSIXct(datetime, format = "%Y%m%d%H%M%S")
+  out <- stri_pad_right(out, width = 14L, pad = "0")
+  out <- as.POSIXct(out, format = "%Y%m%d%H%M%S")
   attr(out, "original") <- original
   out
 }

@@ -107,6 +107,15 @@ format_datetime <- function(x) {
     expanded[is_na] <- original[is_na]
   }
   expanded[is.na(expanded)] <- "              "
+  # Account for when zeros are added in naaccr_datetime
+  if (!is.null(original)) {
+    ends_blanks <- which(endsWith(original, " "))
+    zeroed <- gsub(" ", "0", original[ends_blanks], fixed = TRUE)
+    zero_swapped <- which(
+      x[ends_blanks] == as.POSIXct(zeroed, format = "%Y%m%d%H%M%S")
+    )
+    expanded[ends_blanks][zero_swapped] <- original[ends_blanks][zero_swapped]
+  }
   expanded
 }
 
