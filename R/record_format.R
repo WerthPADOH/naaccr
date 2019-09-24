@@ -20,12 +20,8 @@ type_converters <- list(
   count        = clean_count,
   ssn          = clean_ssn,
   boolean12    = function(x) naaccr_boolean(x, false_value = '1'),
-  Date         = function(x) as.Date(x, format = '%Y%m%d'),
-  datetime     = function(x) {
-    x <- stri_trim_both(x)
-    x <- stri_pad_right(x, width = 14L, pad = "0", use_length = TRUE)
-    as.POSIXct(x, format = "%Y%m%d%H%M%S")
-  }
+  Date         = naaccr_date,
+  datetime     = naaccr_datetime
 )
 
 
