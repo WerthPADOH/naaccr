@@ -270,19 +270,25 @@ rbind.record_format <- function(..., stringsAsFactors = FALSE) {
 #' @description See \code{\link{record_format}}.
 #'
 #' @rdname naaccr_format
+#' @export
 "naaccr_format_12"
 
 #' @rdname naaccr_format
+#' @export
 "naaccr_format_13"
 
 #' @rdname naaccr_format
+#' @export
 "naaccr_format_14"
 
 #' @rdname naaccr_format
+#' @export
 "naaccr_format_15"
 
 #' @rdname naaccr_format
+#' @export
 "naaccr_format_16"
 
 #' @rdname naaccr_format
+#' @export
 "naaccr_format_18"
