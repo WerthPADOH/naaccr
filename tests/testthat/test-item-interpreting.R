@@ -13,4 +13,13 @@ test_that("Date columns are properly parsed and re-encoded", {
     format = "%Y%m%d"
   )
   expect_equivalent(d, expected)
+  expect_identical(
+    naaccr_encode(d, "dateOfDiagnosis"),
+    input
+  )
+  d[3] <- as.Date("20040101", "%Y%m%d")
+  expect_identical(
+    naaccr_encode(d, "dateOfDiagnosis"),
+    c(input[1:2], "20040101", input[4])
+  )
 })

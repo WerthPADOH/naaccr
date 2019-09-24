@@ -159,6 +159,7 @@ as.naaccr_record.data.frame <- function(x,
     list(fields = list(name)),
     by = "type"
   ]
+  set(type_groups, j = "type", value = as.character(type_groups[["type"]]))
   for (ii in seq_len(nrow(type_groups))) {
     type <- type_groups[["type"]][[ii]]
     converter_fun <- type_converters[[type]]

@@ -85,6 +85,102 @@ format_integer <- function(x, width) {
 }
 
 
+#' @noRd
+format_date <- function(x) {
+  original <- attr(x, "original")
+  expanded <- format(x, format = "%Y%m%d")
+  if (!is.null(original)) {
+    is_na <- is.na(expanded)
+    expanded[is_na] <- original[is_na]
+  }
+  expanded[is.na(expanded)] <- "        "
+  expanded
+}
+
+
+#' @noRd
+format_datetime <- function(x) {
+  original <- attr(x, "original")
+  expanded <- format(x, format = "%Y%m%d%H%M%S")
+  if (!is.null(original)) {
+    is_na <- is.na(expanded)
+    expanded[is_na] <- original[is_na]
+  }
+  expanded[is.na(expanded)] <- "              "
+  expanded
+}
+
+
+#' Format a value as a string according to the NAACCR format
+#' @param x Vector of values.
+#' @param field Character string naming the field.
+#' @param flag Character vector of flags for the field. Only needed if the
+#'   field contains sentinel values.
+#' @inheritParams write_naaccr
+#' @return Character vector of the values as they would be encoded in a
+#'   NAACCR-formatted text file
+#' @seealso \code{\link{split_sentineled}}
+#' @examples
+#'   r <- naaccr_record(
+#'     ageAtDiagnosis = c("089", "000", "200"),
+#'     dateOfDiagnosis = c("20070402", "201709  ", "        ")
+#'   )
+#'   r
+#'   mapply(FUN = naaccr_encode, x = r, field = names(r))
+#' @import data.table
+#' @export
+naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) {
+  if (!is.null(version) && !is.null(format)) {
+    stop("Specify either 'version' or 'format', not both.")
+  }
+  if (is.null(format)) {
+    if (is.null(version)) {
+      version <- max(naaccr_format[["version"]])
+    }
+    version_key <- list(version = version)
+    format <- naaccr_format[version_key, on = "version"]
+  }
+  field_def <- format[list(name = field), on = "name", nomatch = 0L]
+  if (nrow(field_def) == 0L) {
+    warning("No format for field '", field, "'; defaulting to character")
+    return(as.character(x))
+  }
+  width <- field_def[["end_col"]] - field_def[["start_col"]] + 1L
+  codes <- switch(as.character(field_def[["type"]]),
+    factor = naaccr_unfactor(x, field),
+    sentineled_integer = naaccr_unsentinel(x, flag, field, width, "integer"),
+    sentineled_numeric = naaccr_unsentinel(x, flag, field, width, "numeric"),
+    Date = format_date(x),
+    datetime = format_datetime(x),
+    numeric = format_decimal(x, width),
+    count = format_integer(x, width),
+    integer = format_integer(x, width),
+    boolean01 = ifelse(x, "1", "0"),
+    boolean12 = ifelse(x, "2", "1"),
+    override = ifelse(x, "1", ""),
+    as.character(x)
+  )
+  codes <- as.character(codes)
+  too_wide <- stri_width(codes) > width
+  if (any(too_wide, na.rm = TRUE)) {
+    codes[too_wide] <- NA
+    warning(
+      sum(too_wide), " values of '", field,
+      "' field were too wide and set to NA"
+    )
+  }
+  if (!is.na(field_def[["alignment"]])) {
+    pad_side <- switch(as.character(field_def[["alignment"]]),
+      left = "right",
+      right = "left"
+    )
+    codes <- stri_pad(codes, width, pad_side, field_def[["padding"]])
+  }
+  codes[is.na(codes)] <- stri_pad_left("", width, pad = " ")
+  codes
+}
+
+
 #' Write records in NAACCR format
 #'
 #' Write records from a \code{\link{naaccr_record}} object to a connection in
@@ -118,6 +214,9 @@ write_naaccr <- function(records, con, version = NULL, format = NULL) {
     list(name = names(records)),
     on      = "name",
     nomatch = 0L
+  ][
+    ,
+    type := as.character(type)
   ][
     field_code_scheme,
     on = "name",
@@ -153,54 +252,18 @@ write_naaccr <- function(records, con, version = NULL, format = NULL) {
   text_lines <- rep(blank_line, nrow(records))
   for (column in write_format[["name"]]) {
     field_def <- write_format[list(name = column), on = "name"]
-    values <- records[[column]]
-    if (startsWith(field_def[["type"]], "sentineled")) {
-      flags <- records[[paste0(column, "Flag")]]
+    flags <- if (startsWith(field_def[["type"]], "sentineled")) {
+      records[[paste0(column, "Flag")]]
+    } else {
+      NULL
     }
-    value_text <- switch(field_def[["type"]],
-      factor             = naaccr_unfactor(values, column),
-      sentineled_integer = naaccr_unsentinel(
-        values, flags, column, field_def[["width"]], "integer"
-      ),
-      sentineled_numeric = naaccr_unsentinel(
-        values, flags, column, field_def[["width"]], "numeric"
-      ),
-      Date               = strftime(values, format = "%Y%m%d"),
-      datetime           = strftime(values, format = "%Y%m%d%H%M%S"),
-      numeric            = format_decimal(values, field_def[["width"]]),
-      count              = format_integer(values, field_def[["width"]]),
-      integer            = format_integer(values, field_def[["width"]]),
-      boolean01          = ifelse(values, "1", "0"),
-      boolean12          = ifelse(values, "2", "1"),
-      override           = ifelse(values, "1", ""),
-      as.character(values)
+    v <- naaccr_encode(
+      x = records[[column]],
+      field = column,
+      flag = flags,
+      format = write_format
     )
-    too_wide <- stri_width(value_text) > field_def[["width"]]
-    if (any(too_wide, na.rm = TRUE)) {
-      value_text[too_wide] <- NA
-      warning(
-        sum(too_wide), " values of '", column,
-        "' field were too wide and set to NA"
-      )
-    }
-    if (!is.na(field_def[["alignment"]])) {
-      pad_side <- switch(field_def[["alignment"]],
-        left  = "right",
-        right = "left"
-      )
-      value_text <- stri_pad(
-        str   = value_text,
-        width = field_def[["width"]],
-        side  = pad_side,
-        pad   = field_def[["padding"]]
-      )
-    }
-    value_text[is.na(value_text)] <- stri_pad_left(
-      "", width = field_def[["width"]], pad = " "
-    )
-    stri_sub(text_lines, field_def[["start_col"]], field_def[["end_col"]]) <- {
-      value_text
-    }
+    stri_sub(text_lines, field_def[["start_col"]], field_def[["end_col"]]) <- v
   }
   writeLines(text_lines, con)
 }
