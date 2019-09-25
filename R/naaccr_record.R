@@ -64,36 +64,6 @@ as.naaccr_record.list <- function(x,
 
 
 #' @noRd
-type_converters <- list(
-  integer      = as.integer,
-  numeric      = as.numeric,
-  character    = clean_text,
-  age          = clean_age,
-  icd_code     = clean_icd_code,
-  postal       = clean_postal,
-  city         = clean_address_city,
-  address      = clean_address_number_and_street,
-  facility     = clean_facility_id,
-  census_block = clean_census_block,
-  census_tract = clean_census_tract,
-  icd_9        = clean_icd_9_cm,
-  county       = clean_county_fips,
-  physician    = clean_physician_id,
-  override     = naaccr_override,
-  boolean01    = naaccr_boolean,
-  telephone    = clean_telephone,
-  count        = clean_count,
-  ssn          = clean_ssn,
-  boolean12    = function(x) naaccr_boolean(x, false_value = '1'),
-  Date         = function(x) as.Date(x, format = '%Y%m%d'),
-  datetime     = function(x) {
-    x <- stri_trim_both(x)
-    x <- stri_pad_right(x, width = 14L, pad = "0", use_length = TRUE)
-    as.POSIXct(x, format = "%Y%m%d%H%M%S")
-  }
-)
-
-#' @noRd
 sequence_number_columns <- matrix(
   c(
     "sequenceNumberCentral", "npcrReportableCentral",
@@ -189,6 +159,7 @@ as.naaccr_record.data.frame <- function(x,
     list(fields = list(name)),
     by = "type"
   ]
+  set(type_groups, j = "type", value = as.character(type_groups[["type"]]))
   for (ii in seq_len(nrow(type_groups))) {
     type <- type_groups[["type"]][[ii]]
     converter_fun <- type_converters[[type]]

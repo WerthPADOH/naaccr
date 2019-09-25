@@ -43,3 +43,64 @@ naaccr_override <- function(flag) {
   bool[flag == '']  <- FALSE
   bool
 }
+
+
+#' Parse NAACCR-formatted dates
+#' @param date Character vector of dates in NAACCR format (\code{"YYYYMMDD"}).
+#' @return A \code{Date} vector. Any incomplete or invalid dates are converted
+#'   to \code{NA}. The original strings can be retrieved with the
+#'   \code{\link{naaccr_encode}} function.
+#' @examples
+#'   input <- c("20151031", "201408  ", "99999999")
+#'   d <- naaccr_date(input)
+#'   d
+#'   naaccr_encode(d, "dateOfDiagnosis")
+#' @import stringi
+#' @export
+naaccr_date <- function(date) {
+  if (!is.character(date) && !is.factor(date)) {
+    out <- as.Date(date)
+    names(out) <- names(date)
+    atts <- attributes(date)
+    if ("original" %in% names(atts)) {
+      attr(out, "original") <- atts[["original"]]
+    }
+    return(out)
+  }
+  original <- stri_pad_right(date, width = 8L, pad = " ")
+  out <- as.Date(date, format = "%Y%m%d")
+  attr(out, "original") <- original
+  out
+}
+
+
+#' Parse NAACCR-formatted datetimes
+#' @param datetime Character vector of datetimes in NAACCR format
+#'   (\code{"YYYYMMDDHHMMSS"}).
+#' @return A \code{POSIXct} vector. Any incomplete or invalid datetimes are
+#'   converted to \code{NA}. The original strings can be retrieved with the
+#'   \code{\link{naaccr_encode}} function.
+#' @examples
+#'   input <- c("20151031100856", "20140822    ", "99999999")
+#'   d <- naaccr_datetime(input)
+#'   d
+#'   naaccr_encode(d, "pathDateSpecCollect1")
+#' @import stringi
+#' @export
+naaccr_datetime <- function(datetime) {
+  if (!is.character(datetime) && !is.factor(datetime)) {
+    out <- as.POSIXct(datetime)
+    names(out) <- names(datetime)
+    atts <- attributes(datetime)
+    if ("original" %in% names(atts)) {
+      attr(out, "original") <- atts[["original"]]
+    }
+    return(out)
+  }
+  original <- stri_pad_right(datetime, width = 14L, pad = " ")
+  out <- trimws(datetime)
+  out <- stri_pad_right(out, width = 14L, pad = "0")
+  out <- as.POSIXct(out, format = "%Y%m%d%H%M%S")
+  attr(out, "original") <- original
+  out
+}
