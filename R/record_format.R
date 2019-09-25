@@ -63,10 +63,10 @@ type_converters <- list(
 #'       (\code{integer}) Last column of the field in a fixed-width text file.
 #'     }
 #'     \item{\code{type}}{
-#'       (\code{character}) R class for the column vector.
+#'       (\code{factor}) R class for the column vector.
 #'     }
 #'     \item{\code{alignment}}{
-#'       (\code{character}) Alignment of the field's values in a fixed-width
+#'       (\code{factor}) Alignment of the field's values in a fixed-width
 #'       text file.
 #'     }
 #'     \item{\code{padding}}{
