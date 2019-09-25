@@ -54,7 +54,7 @@ naaccr_override <- function(flag) {
 #'   input <- c("20151031", "201408  ", "99999999")
 #'   d <- naaccr_date(input)
 #'   d
-#'   naaccr_encode(d)
+#'   naaccr_encode(d, "dateOfDiagnosis")
 #' @import stringi
 #' @export
 naaccr_date <- function(date) {
@@ -84,7 +84,7 @@ naaccr_date <- function(date) {
 #'   input <- c("20151031100856", "20140822    ", "99999999")
 #'   d <- naaccr_datetime(input)
 #'   d
-#'   naaccr_encode(d)
+#'   naaccr_encode(d, "pathDateSpecCollect1")
 #' @import stringi
 #' @export
 naaccr_datetime <- function(datetime) {
