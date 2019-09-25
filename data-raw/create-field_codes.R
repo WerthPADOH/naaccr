@@ -45,6 +45,8 @@ field_codes <- rbindlist(
 )
 field_codes[, description := NULL]
 field_code_scheme <- fread("data-raw/field_code_scheme.csv")
+setkeyv(field_codes, c("scheme", "code"))
+setkeyv(field_code_scheme, "name")
 save(
   field_codes, field_code_scheme,
   file = "data-raw/sys-data/field_codes.RData",

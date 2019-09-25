@@ -94,7 +94,6 @@ naaccr_factor <- function(x, field, keep_unknown = FALSE, ...) {
   if (field %in% field_code_scheme[["name"]]) {
     field_scheme <- field_code_scheme[list(name = field), on = "name"]
     codes <- field_codes[field_scheme, on = "scheme"]
-    setorderv(codes, "code")
     out <- factor(x, levels = codes[["code"]], labels = codes[["label"]], ...)
     if (isFALSE(keep_unknown)) {
       out <- unknown_to_na(out, field = field)
@@ -138,7 +137,6 @@ split_sentineled <- function(x, field) {
   if (field %in% field_sentinel_scheme[["name"]]) {
     field_scheme <- field_sentinel_scheme[list(field), on = "name"]
     sents <- field_sentinels[field_scheme, on = "scheme"]
-    setorderv(sents, "sentinel")
     x <- as.character(x)
     x <- trimws(x)
     is_empty <- !nzchar(x)

@@ -141,7 +141,6 @@ read_naaccr_plain <- function(input,
   if (!is.null(version)) {
     key_data <- list(version = version)
     read_format <- naaccr_format[key_data, on = "version"]
-    setorderv(read_format, "item")
   } else if (!is.null(format)) {
     read_format <- format
   } else {
