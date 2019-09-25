@@ -54,22 +54,11 @@ split_fields <- function(record_lines,
   if (!is.null(col_names) && length(start_cols) != length(col_names)) {
     stop("start_cols and end_cols must be the same length")
   }
-  item_matrix <- mapply(
-    FUN      = stringi::stri_sub,
-    from     = start_cols,
-    to       = end_cols,
-    MoreArgs = list(str = record_lines),
-    SIMPLIFY = FALSE
-  )
-  setDT(item_matrix)
+  item_matrix <- stringi::stri_sub_all(record_lines, start_cols, end_cols)
+  item_matrix <- do.call(rbind, item_matrix)
+  item_matrix[] <- stringi::stri_trim_both(item_matrix)
+  item_matrix <- as.data.table(item_matrix)
   setnames(item_matrix, col_names)
-  for (column in names(item_matrix)) {
-    set(
-      item_matrix,
-      j = column,
-      value = stringi::stri_trim_both(item_matrix[[column]])
-    )
-  }
   item_matrix
 }
 
