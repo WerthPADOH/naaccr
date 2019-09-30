@@ -125,11 +125,11 @@ type_converters <- list(
 #'       County FIPS code.
 #'     }
 #'     \item{\code{Date}}{
-#'       (\code{\link{as.Date}}, with \code{format = "%Y%m%d"})
+#'       (\code{\link{as.Date}}, with \code{format = "\%Y\%m\%d"})
 #'       NAACCR-formatted date (YYYYMMDD).
 #'     }
 #'     \item{\code{datetime}}{
-#'       (\code{\link{as.POSIXct}}, with \code{format = "%Y%m%d%H%M%S"})
+#'       (\code{\link{as.POSIXct}}, with \code{format = "\%Y\%m\%d\%H\%M\%S"})
 #'       NAACCR-formatted datetime (YYYYMMDDHHMMSS)
 #'     }
 #'     \item{\code{facility}}{
