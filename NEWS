@@ -1,8 +1,43 @@
 # Change log
 
+## 0.5.0
+
+-   Processed date and time fields now store their original text values in the
+    `"original"` attribute. Partial dates and times are still useful.
+-   New functions
+    -   `unknown_to_na`: Convert levels of NAACCR factor to `NA` if they mean
+        the value is unknown.
+    -   `naaccr_encode`: Convert processed values back to their NAACCR text
+        codes.
+    -   `as.record_format`: Create a custom record format from an object
+        (this was incorrectly an internal function before).
+    -   `naaccr_date`, `naaccr_datetime`: Parse NAACCR-formatted dates and times.
+    -   `read_naaccr_plain`: Read a NAACCR file and divide it into fields, but
+        don't do any more processing.
+    -   `split_sequence_number`: Divide the different pieces of information in a
+        tumor sequence number into multiple columns (i.e., order, uniqueness,
+        and invasiveness).
+-   Revamped `read_naaccr` and `write_naaccr`
+    -   *Much* faster!
+    -   `read_naaccr` has more parameters to handle how a file is read:
+        `skip`, `nrows`, and `encoding` like in `read.table`, and `buffersize`
+        to ease the pain of reading large files.
+-   `naaccr_record` and its kin now have a `format` parameter to use custom
+    formats.
+-   Treat behavior fields as coded factor, as they should've been
+-   **Potentially breaking changes**
+    -   Cleaning functions (e.g., `clean_count`) no longer use a field name to
+        retrieve cleaning parameters (e.g., field width).
+        Those parameters now need to passed directly.
+    -   The `type` and `alignment` columns of `record_format` objects are now
+        factors.
+    -   The standard NAACCR record format objects (`naaccr_format_12`, ...)
+        are no longer lazy-loaded. They are now immediately loaded.
+-   Improved documentation throughout.
+
 ## 0.4.0
 
-- Major improvements to handling of field-specific codes
+-   Major improvements to handling of field-specific codes
 
 ## 0.3.0
 

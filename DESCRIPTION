@@ -1,7 +1,7 @@
 Package: naaccr
 Type: Package
 Title: Read cancer records in the NAACCR format
-Version: 0.4.0
+Version: 0.5.0
 Author: Nathan Werth [aut, cre]
 Maintainer: Nathan Werth <nwerth@pa.gov>
 Description: Functions for reading cancer record files which follow a format
