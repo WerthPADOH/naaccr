@@ -61,14 +61,12 @@ can improve time and memory efficiency.
 
 ```{r readKeepColumns}
 dim(records)
-format(object.size(records))
 records_slim <- read_naaccr(
   input       = record_file,
   version     = 18,
   keep_fields = c("ageAtDiagnosis", "countyAtDx", "primarySite")
 )
 dim(records_slim)
-format(object.size(records_slim))
 ```
 
 Like with most classes, one can create a new `naaccr_record` object with the
