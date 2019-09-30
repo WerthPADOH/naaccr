@@ -68,8 +68,6 @@ can improve time and memory efficiency.
 ``` r
 dim(records)
 #> [1]  20 866
-format(object.size(records))
-#> [1] "951744 bytes"
 records_slim <- read_naaccr(
   input       = record_file,
   version     = 18,
@@ -77,8 +75,6 @@ records_slim <- read_naaccr(
 )
 dim(records_slim)
 #> [1] 20  3
-format(object.size(records_slim))
-#> [1] "2368 bytes"
 ```
 
 Like with most classes, one can create a new `naaccr_record` object with
