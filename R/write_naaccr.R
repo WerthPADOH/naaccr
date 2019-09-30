@@ -235,6 +235,7 @@ write_naaccr <- function(records, con, version = NULL, format = NULL) {
     on = "name",
     type := paste0("sentineled_", type)
   ]
+  setorderv(write_format, "start_col")
   set(
     write_format,
     j = "width",
@@ -257,22 +258,43 @@ write_naaccr <- function(records, con, version = NULL, format = NULL) {
       )
     }
   }
+  is_sentinel <- startsWith(write_format[["type"]], "sentineled")
+  sent_cols <- write_format[["name"]][is_sentinel]
+  flag_cols <- paste0(sent_cols, "Flag")
+  non_sent_cols <- write_format[["name"]][!is_sentinel]
+  if (length(non_sent_cols)) {
+    set(
+      x = records,
+      j = non_sent_cols,
+      value = mapply(
+        FUN = naaccr_encode,
+        x = records[, non_sent_cols, with = FALSE],
+        field = non_sent_cols,
+        MoreArgs = list(format = write_format),
+        SIMPLIFY = FALSE
+      )
+    )
+  }
+  if (length(sent_cols)) {
+    set(
+      x = records,
+      j = sent_cols,
+      value = mapply(
+        FUN = naaccr_encode,
+        x = records[, sent_cols, with = FALSE],
+        field = sent_cols,
+        flag = records[, flag_cols, with = FALSE],
+        MoreArgs = list(format = write_format),
+        SIMPLIFY = FALSE
+      )
+    )
+  }
+
   blank_line <- stri_pad_left("", width = line_length, pad = " ")
   text_lines <- rep(blank_line, nrow(records))
-  for (column in write_format[["name"]]) {
-    field_def <- write_format[list(name = column), on = "name"]
-    flags <- if (startsWith(field_def[["type"]], "sentineled")) {
-      records[[paste0(column, "Flag")]]
-    } else {
-      NULL
-    }
-    v <- naaccr_encode(
-      x = records[[column]],
-      field = column,
-      flag = flags,
-      format = write_format
-    )
-    stri_sub(text_lines, field_def[["start_col"]], field_def[["end_col"]]) <- v
-  }
+  starts <- write_format[, "start_col", with = FALSE]
+  ends <- write_format[, "end_col", with = FALSE]
+  text_values <- data.table::transpose(records[, write_format[["name"]], with = FALSE])
+  stri_sub_all(text_lines, from = starts, to = ends) <- text_values
   writeLines(text_lines, con)
 }

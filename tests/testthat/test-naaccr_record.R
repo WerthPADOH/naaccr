@@ -24,7 +24,11 @@ expected_column_names <- function(format_data) {
 
 
 test_that("read_naaccr returns a 'naaccr_record', 'data.frame' object", {
-  nr <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt", version = 18)
+  nr <- read_naaccr(
+    "../data/synthetic-naaccr-18-incidence.txt",
+    version = 18,
+    keep_fields = "sex"
+  )
   expect_true(inherits(nr, "naaccr_record"))
   expect_true(inherits(nr, "data.frame"))
 })
@@ -38,34 +42,26 @@ test_that("read_naaccr returns all columns by default", {
 })
 
 test_that("read_naaccr reads the data", {
-  nr <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt", version = 18)
+  nr <- read_naaccr(
+    "../data/synthetic-naaccr-18-abstract.txt",
+    version = 18,
+    keep_fields = "ageAtDiagnosis"
+  )
   record_lines <- readLines("../data/synthetic-naaccr-18-abstract.txt")
   age_expected <- as.integer(substr(record_lines, 223, 225))
   expect_identical(nr[["ageAtDiagnosis"]], age_expected)
 })
 
 test_that("read_naaccr only creates the columns from the format", {
-  nr <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt", format = naaccr_format_18)
-  expected_names <- expected_column_names(naaccr_format_18)
+  all_types <- naaccr_format_18[
+    list(type = unique(type)),
+    on = "type",
+    mult = "first"
+  ]
+  nr <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt", format = all_types)
+  expected_names <- expected_column_names(all_types)
   expect_named(
     nr, expected_names, ignore.order = TRUE,
-    info = stri_join(
-      "Mismatches: ",
-      stri_join(
-        c(
-          stri_join("+", setdiff(names(nr), expected_names)),
-          stri_join("-", setdiff(expected_names, names(nr)))
-        ),
-        collapse = ", "
-      )
-    )
-  )
-
-  small_format <- naaccr_format_18[1:10]
-  nr_small <- read_naaccr("../data/synthetic-naaccr-18-abstract.txt", format = small_format)
-  expected_names <- expected_column_names(small_format)
-  expect_named(
-    nr_small, expected_names, ignore.order = TRUE,
     info = stri_join(
       "Mismatches: ",
       stri_join("+", setdiff(names(nr), expected_names), collapse = ", "),
@@ -75,7 +71,11 @@ test_that("read_naaccr only creates the columns from the format", {
 })
 
 test_that("read_naaccr can handle different versions", {
-  nr16 <- read_naaccr("../data/synthetic-naaccr-16-abstract.txt", version = 16)
+  nr16 <- read_naaccr(
+    "../data/synthetic-naaccr-16-abstract.txt",
+    version = 16,
+    keep_fields = c("ageAtDiagnosis", "addrAtDxCity")
+  )
   expect_identical(
     nr16[["ageAtDiagnosis"]],
     c(60L, 72L, 70L, 60L, 83L, 56L, 73L, 60L, 42L, 61L)
@@ -190,17 +190,22 @@ test_that("read_naaccr_plain returns a data.frame with no NAs", {
 
 test_that("read_naaccr allows skipping lines", {
   inc_file <- "../data/synthetic-naaccr-16-incidence.txt"
-  rec_all <- read_naaccr(inc_file, version = 16)
-  rec_some <- read_naaccr(inc_file, version = 16, skip = 5)
-  expect_equivalent(rec_all[-(1:5), ], rec_some)
+  rec_all <- read_naaccr(inc_file, version = 16, keep_fields = "sex")
+  rec_some <- read_naaccr(inc_file, version = 16, keep_fields = "sex", skip = 5)
+  expect_equivalent(rec_all[-(1:5), , drop = FALSE], rec_some)
 })
 
 test_that("read_naaccr can read only a subset of lines", {
   inc_file <- "../data/synthetic-naaccr-16-incidence.txt"
-  rec_all <- read_naaccr(inc_file, version = 16)
-  rec_some <- read_naaccr(inc_file, version = 16, nrows = 3)
-  expect_equivalent(rec_some, rec_all[1:3, ])
-  rec_beyond <- read_naaccr(inc_file, version = 16, nrows = 100)
+  rec_all <- read_naaccr(inc_file, version = 16, keep_fields = "sex")
+  rec_some <- read_naaccr(inc_file, version = 16, keep_fields = "sex", nrows = 3)
+  expect_equivalent(rec_some, rec_all[1:3, , drop = FALSE])
+  rec_beyond <- read_naaccr(
+    inc_file,
+    version = 16,
+    keep_fields = "sex",
+    nrows = 2 * nrow(rec_all)
+  )
   expect_equivalent(rec_beyond, rec_all)
 })
 
@@ -231,7 +236,7 @@ test_that("read_naaccr can handle different file encodings", {
     write_con <- file(tf, open = "w", encoding = enc)
     writeLines(rec_lines, con = write_con)
     close(write_con)
-    read_naaccr(tf, version = 16, encoding = enc)
+    read_naaccr(tf, version = 16, keep_fields = "sex", encoding = enc)
   }
   encodings <- c("native.enc", "latin1", "UTF-8", "UTF-16")
   results <- lapply(encodings, write_and_read_encoding)

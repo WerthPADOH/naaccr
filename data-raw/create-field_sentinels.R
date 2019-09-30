@@ -10,6 +10,8 @@ field_sentinels <- rbindlist(
   idcol = "scheme"
 )
 field_sentinel_scheme <- fread("data-raw/field_sentinel_scheme.csv")
+setkeyv(field_sentinels, c("scheme", "sentinel"))
+setkeyv(field_sentinel_scheme, "name")
 save(
   field_sentinels, field_sentinel_scheme,
   file = "data-raw/sys-data/field_sentinels.RData",
