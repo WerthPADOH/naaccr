@@ -190,8 +190,14 @@ read_naaccr_plain <- function(input,
       chunks <- c(chunks, vector("list", 1000L))
     }
   }
-  records <- data.table::rbindlist(chunks)
-  setcolorder(records, keep_fields)
+  if (rows_read == 0L) {
+    records <- rep(list(character(0L)), length(keep_fields))
+    setDT(records)
+    setnames(records, keep_fields)
+  } else {
+    records <- data.table::rbindlist(chunks)
+    setcolorder(records, keep_fields)
+  }
   setDF(records)
   records
 }

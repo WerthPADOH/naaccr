@@ -271,3 +271,25 @@ test_that("read_naaccr can handle a custom format", {
   expect_identical(names(recs), new_format[["name"]])
   expect_is(recs[["1 very % unusual name `"]], "integer")
 })
+
+test_that("read_naaccr reads empty files into a 0-row tabel with all columns", {
+  tf <- tempfile()
+  on.exit(if (file.exists(tf)) file.remove(tf), add = TRUE)
+  file.create(tf)
+  fields <- c(
+    "ageAtDiagnosis", "dateOfBirth", "censusOccCode19702000",
+    "estrogenReceptorSummary", "secondaryDiagnosis1", "latitude"
+  )
+  plain <- read_naaccr_plain(tf, version = 18, keep_fields = fields)
+  expect_identical(dim(plain), c(0L, length(fields)))
+  expect_named(plain, fields)
+  processed <- read_naaccr(tf, version = 18, keep_fields = fields)
+  expect_identical(dim(processed), c(0L, length(fields)))
+  expect_named(processed, fields)
+  expect_is(processed[["ageAtDiagnosis"]], "integer")
+  expect_is(processed[["dateOfBirth"]], "Date")
+  expect_is(processed[["censusOccCode19702000"]], "factor")
+  expect_is(processed[["estrogenReceptorSummary"]], "logical")
+  expect_is(processed[["secondaryDiagnosis1"]] ,"character")
+  expect_is(processed[["latitude"]], "numeric")
+})
