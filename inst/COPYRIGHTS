@@ -9,7 +9,8 @@ Files:
   - `data-raw/code-labels/overRideCs20.csv`
   - `data-raw/code-labels/tnm_descriptor.csv`
 
-Copyright: Codes created by United States National Cancer Institute's Surveillance, Epidemiology, and End Results Program are public domain under 17 U.S. Code § 105.
+Copyright: Codes from the United States Centers for Disease Control and
+Prevention are public domain under 17 U.S. Code § 105.
 Files:
   - `data-raw/code-labels/ambiguousTerminologyDx.csv`
   - `data-raw/code-labels/censusCodSys19708090.csv`
@@ -39,7 +40,8 @@ Files:
   - `data-raw/sentinel-labels/sequenceNumberCentral.csv`
   - `data-raw/sentinel-labels/tumor_size.csv`
 
-Copyright: Codes created by United States National Program of Cancer Registries are public domain under 17 U.S. Code § 105.
+Copyright: Codes created by United States National Program of Cancer Registries
+are public domain under 17 U.S. Code § 105.
 Files:
   - `data-raw/code-labels/censusOccIndSys7000.csv`
   - `data-raw/code-labels/cocAccreditedFlag.csv`
@@ -51,7 +53,8 @@ Copyright: World Health Organization
 Files:
   - `data-raw/code-labels/grade.csv`
 
-Copyright: Codes created by United States Bureau of the Census are public domain under 17 U.S. Code § 105.
+Copyright: Codes created by United States Bureau of the Census are public domain
+under 17 U.S. Code § 105.
 Files:
   - `ignore/census-codes/2010-occ-codes-with-crosswalk-from-2002-2011.xls`
   - `ignore/census-codes/industry-crosswalk-90-00-02-07-12.xls`
