@@ -39,6 +39,8 @@ Files:
   - `data-raw/sentinel-labels/multiplicityCounter.csv`
   - `data-raw/sentinel-labels/sequenceNumberCentral.csv`
   - `data-raw/sentinel-labels/tumor_size.csv`
+  - All other instances of codes as defined in the International Classification
+    of Diseases, Tenth Revision, Clinical Modification (ICD-10-CM).
 
 Copyright: Codes created by United States National Program of Cancer Registries
 are public domain under 17 U.S. Code § 105.
@@ -52,6 +54,8 @@ Files:
 Copyright: World Health Organization
 Files:
   - `data-raw/code-labels/grade.csv`
+  - All other instances of topology or morphology codes as defined in the
+    International Classification of Diseases for Oncology, Third Revision (ICD-O-3).
 
 Copyright: Codes created by United States Bureau of the Census are public domain
 under 17 U.S. Code § 105.
