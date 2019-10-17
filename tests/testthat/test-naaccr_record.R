@@ -177,6 +177,17 @@ test_that("naaccr_record allows users to keep 'unknown' levels", {
   expect_false("unknown" %in% levels(no_unknown[["laterality"]]))
 })
 
+test_that("naaccr_record preserves columns not detailed in the format", {
+  foo <- c(0 + 1i, 2 + 3i)
+  record <- naaccr_record(
+    ageAtDiagnosis = "075",
+    dateOfBirth = "20081021",
+    `/foo/` = foo # definitely not a name in the format
+  )
+  expect_named(record, c("ageAtDiagnosis", "dateOfBirth", "/foo/"))
+  expect_identical(record[["/foo/"]], foo)
+})
+
 test_that("read_naaccr_plain returns a data.frame with no NAs", {
   rabs16 <- read_naaccr_plain("../data/synthetic-naaccr-16-abstract.txt", version = 16)
   expect_false(anyNA(rabs16))
