@@ -118,7 +118,7 @@ test_that("read_naaccr fills in fields beyond end of lines", {
 test_that("naaccr_record can be used to create a new naaccr_record object", {
   nr <- naaccr_record(
     sex             = c(1, 9),
-    race1           = c(1, 88),
+    race1           = 1,
     dateOfDiagnosis = c("20140104", "20100705")
   )
   expect_is(nr, "naaccr_record")

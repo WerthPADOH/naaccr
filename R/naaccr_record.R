@@ -22,8 +22,7 @@ naaccr_record <- function(...,
                           keep_unknown = FALSE,
                           version = NULL,
                           format = NULL) {
-  input_data <- lapply(list(...), as.character)
-  setDF(input_data)
+  input_data <- as.data.table(lapply(list(...), as.character))
   as.naaccr_record(
     x = input_data,
     keep_unknown = keep_unknown,
