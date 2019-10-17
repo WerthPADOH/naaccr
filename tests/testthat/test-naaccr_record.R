@@ -118,7 +118,7 @@ test_that("read_naaccr fills in fields beyond end of lines", {
 test_that("naaccr_record can be used to create a new naaccr_record object", {
   nr <- naaccr_record(
     sex             = c(1, 9),
-    race1           = c(1, 88),
+    race1           = 1,
     dateOfDiagnosis = c("20140104", "20100705")
   )
   expect_is(nr, "naaccr_record")
@@ -175,6 +175,17 @@ test_that("naaccr_record allows users to keep 'unknown' levels", {
   no_unknown <- naaccr_record(laterality = "9", keep_unknown = FALSE)
   expect_true(is.na(no_unknown[["laterality"]]))
   expect_false("unknown" %in% levels(no_unknown[["laterality"]]))
+})
+
+test_that("naaccr_record preserves columns not detailed in the format", {
+  foo <- c(0 + 1i, 2 + 3i)
+  record <- naaccr_record(
+    ageAtDiagnosis = "075",
+    dateOfBirth = "20081021",
+    `/foo/` = foo # definitely not a name in the format
+  )
+  expect_named(record, c("ageAtDiagnosis", "dateOfBirth", "/foo/"))
+  expect_identical(record[["/foo/"]], foo)
 })
 
 test_that("read_naaccr_plain returns a data.frame with no NAs", {

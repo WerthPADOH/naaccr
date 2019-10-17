@@ -16,16 +16,13 @@
 #'   the records. Use this or \code{format}, not both.
 #' @param format A \code{\link{record_format}} object for parsing the records.
 #' @return A \code{data.frame} with columns named using the NAACCR XML scheme.
-#' @import data.table
 #' @export
 naaccr_record <- function(...,
                           keep_unknown = FALSE,
                           version = NULL,
                           format = NULL) {
-  input_data <- lapply(list(...), as.character)
-  setDF(input_data)
   as.naaccr_record(
-    x = input_data,
+    x = list(...),
     keep_unknown = keep_unknown,
     version = version,
     format = format
@@ -52,14 +49,20 @@ as.naaccr_record <- function(x,
 
 
 #' @rdname as.naaccr_record
+#' @importFrom data.table as.data.table
 #' @export
 as.naaccr_record.list <- function(x,
                                   keep_unknown = FALSE,
                                   version = NULL,
                                   format = NULL,
                                   ...) {
-  x_df <- as.data.frame(x, stringsAsFactors = FALSE)
-  as.naaccr_record(x_df)
+  as.naaccr_record(
+    x = as.data.table(x, stringsAsFactors = FALSE),
+    keep_unknown = keep_unknown,
+    version = version,
+    format = format,
+    ...
+  )
 }
 
 
@@ -99,12 +102,18 @@ as.naaccr_record.data.frame <- function(x,
   all_items <- convert_format[
     list(name = names(x)),
     on = "name",
+    nomatch = 0L
   ][
     ,
     .SD[1],
     by = "item"
   ]
   record <- if (is.data.table(x)) copy(x) else as.data.table(x)
+  for (column in all_items[["name"]]) {
+    if (!is.character(record[[column]])) {
+      set(record, j = column, value = as.character(record[[column]]))
+    }
+  }
   count_items <- all_items[list(type = "count"), on = "type", nomatch = 0L]
   for (ii in seq_len(nrow(count_items))) {
     column <- count_items[["name"]][ii]
