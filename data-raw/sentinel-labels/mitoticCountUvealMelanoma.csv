@@ -1,5 +1,5 @@
 "sentinel","label"
-"XX.1","≥ 100"
+"XX.1",">= 100"
 "XX.2","low, NOS"
 "XX.3","high, NOS"
 "XX.4","denominator not 40 HPF"

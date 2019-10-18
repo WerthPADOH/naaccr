@@ -1,5 +1,5 @@
 "sentinel","label"
-"90","≥ 90"
+"90",">= 90"
 "95","positive aspiration"
 "97","positive, NOS"
 "98","no nodes examined"
