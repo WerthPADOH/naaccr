@@ -6,6 +6,7 @@
 # the CSV and version controlled.
 library(readxl)
 library(data.table)
+library(stringi)
 
 
 # Industry 2000 ----------------------------------------------------------------
@@ -27,7 +28,7 @@ industry_crosswalk[
   description := category_2012
 ][
   ,
-  label := paste0(
+  label := stri_join(
     tolower(substr(description, 1, 1)),
     substr(description, 2, nchar(description))
   )
@@ -42,29 +43,45 @@ industry_crosswalk[
   label := "Postal Service"
 ][
   ,
-  label := gsub(" \\(.*?\\)", "", label)
+  label := stri_replace_all_regex(label, " \\(.*?\\)", "")
 ][
   ,
-  label := gsub(",? except [^,]*,?", "", label)
+  label := stri_replace_all_regex(label, ",? except [^,]*,?", "")
 ][
   ,
-  label := gsub(", n\\.e\\.c\\.,?", "", label)
+  label := stri_replace_all_regex(label, ", n\\.e\\.c\\.,?", "")
 ][
   ,
-  label := gsub("u. S.", "U.S.", label, fixed = TRUE)
+  label := stri_replace_all_fixed(label, "u. S.", "U.S.")
 ]
 
-setorderv(industry_crosswalk, "census_2000")
+# Codes did not change meaning between 1990 and 2000 Census
+# In fact, only one code (992) was reused, and it meant the same in both
 industry_codes <- industry_crosswalk[
-  !is.na(census_2000)
-][
-  order(census_2000),
+  ,
   list(
-    code = census_2000,
-    label = label,
+    code = c(census_1990, census_2000),
+    label = c(label, label),
     means_missing = FALSE,
-    description = description)
+    description = description
+  )
+][
+  startsWith(code, "New") | startsWith(code, "Old"),
+  code := NA
+][
+  ,
+  code := stri_replace_all_regex(code, "\\D", "")
+][
+  !nzchar(code),
+  code := NA
+][
+  ,
+  code := stri_pad_left(code, width = 3, pad = "0")
+][
+  !is.na(code)
 ]
+
+industry_codes <- unique(industry_codes)
 
 fwrite(
   industry_codes,
