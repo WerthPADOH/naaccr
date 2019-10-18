@@ -1,5 +1,5 @@
 "sentinel","label"
-"X1","≥ 100"
+"X1",">= 100"
 "X2","procedure done, number unknown"
 "X6","biopsy, no removal"
 "X8","not applicable"

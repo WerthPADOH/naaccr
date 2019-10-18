@@ -170,7 +170,7 @@ rnp
 #>   regionalNodesPositive regionalNodesPositiveFlag
 #> 1                    10                      <NA>
 #> 2                    20                      <NA>
-#> 3                    NA                      = 90
+#> 3                    NA                     >= 90
 #> 4                    NA       positive aspiration
 #> 5                    NA                   unknown
 #> 6                    NA                      <NA>

@@ -11,7 +11,7 @@ library(data.table)
 
 
 # 2000 to SOC crosswalk --------------------------------------------------------
-pdf_lines <- pdf_text("ignore/census-codes/occ2000t.pdf") %>%
+pdf_lines <- pdf_text("external/census-codes/occ2000t.pdf") %>%
   stri_split_lines() %>%
   unlist() %>%
   stri_trim_both() %>%
