@@ -23,7 +23,7 @@ country_codes <- country_codes[
     description   = Official_name
   )
 ]
-custom_countries <- fread("data-raw/custom-country-codes.csv")
+custom_countries <- fread("data-raw/custom-country-codes.csv", encoding = "UTF-8")
 country_codes <- rbind(country_codes, custom_countries)
 fwrite(country_codes, "data-raw/code-labels/iso_country.csv", quote = TRUE)
 
@@ -34,6 +34,7 @@ field_codes <- rbindlist(
   lapply(
     code_files,
     fread,
+    encoding = "UTF-8",
     colClasses = c(
       code = "character",
       label = "character",

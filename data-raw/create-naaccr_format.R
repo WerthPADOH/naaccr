@@ -15,6 +15,7 @@ format_list <- lapply(
   sep = ",",
   header = TRUE,
   na.strings = "",
+  encoding = "UTF-8",
   colClasses = c(
     name = "character",
     item = "integer",
@@ -43,7 +44,7 @@ naaccr_format[
 ]
 
 # Add non-official data used by the package
-field_info <- fread("data-raw/field_info.csv")
+field_info <- fread("data-raw/field_info.csv", encoding = "UTF-8")
 naaccr_format[
   field_info,
   on = "item",

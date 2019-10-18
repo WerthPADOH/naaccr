@@ -144,3 +144,33 @@ test_that("unknown_to_na works on naaccr_record objects", {
     r2[, c("ageAtDiagnosis", "psaLabValue")]
   )
 })
+
+test_that("All factor and sentinel labels are appropriate characters", {
+  # Country names are the most likely violations, if encoding is mishandled
+  country_fields <- c(
+    "addrAtDxCountry", "addrCurrentCountry", "birthplaceCountry",
+    "followupContactCountry", "placeOfDeathCountry"
+  )
+  countries <- unlist(field_levels_all[country_fields])
+  validation <- "^[\\pL' ,().-]+$" # \\pL := Unicode letter from any language
+  invalid <- grep(validation, countries, invert = TRUE, value = TRUE, perl = TRUE)
+  expect_true(
+    length(invalid) == 0L,
+    info = paste0(
+      "Some values not matching pattern:\n",
+      paste0(head(invalid), collapse = "\n")
+    )
+  )
+  # All other values should be ASCII
+  non_country_fields <- setdiff(names(field_levels_all), country_fields)
+  non_countries <- unlist(field_levels_all[non_country_fields])
+  ascii <- iconv(non_countries, from = "UTF-8", to = "ASCII")
+  invalid <- non_countries[is.na(ascii)]
+  expect_true(
+    length(invalid) == 0L,
+    info = paste0(
+      "Some values with non-ASCII characters:\n",
+      paste0(names(head(invalid)), ": ", head(invalid), collapse = "\n")
+    )
+  )
+})
