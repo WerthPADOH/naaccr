@@ -2,6 +2,8 @@
 
 S3method(as.naaccr_record,data.frame)
 S3method(as.naaccr_record,list)
+S3method(split_sentineled,default)
+S3method(split_sentineled,numeric)
 S3method(unknown_to_na,factor)
 S3method(unknown_to_na,naaccr_record)
 export(as.naaccr_record)

@@ -21,6 +21,20 @@ test_that("naaccr_factor converts the input to a factor", {
   expect_identical(as.character(country_factor), countries[["name"]])
 })
 
+test_that("Applying naaccr_factor or naaccr_sentinel again makes no change", {
+  races <- sprintf("%02d", 1:99)
+  f <- naaccr_factor(races, "race1")
+  expect_identical(f, naaccr_factor(f, "race1"))
+
+  gis_qual <- c("00", "01", "02", "98", "99", NA)
+  g <- naaccr_factor(gis_qual, "gisCoordinateQuality", keep_unknown = TRUE)
+  expect_identical(g, naaccr_factor(g, "gisCoordinateQuality", keep_unknown = TRUE))
+
+  ln_size <- c("00.0", "20.0", "XX.1", "XX.8", "XX.9", "99.0")
+  s <- split_sentineled(ln_size, "lnSize")
+  expect_identical(s[["lnSize"]], split_sentineled(ln_size, "lnSize")[["lnSize"]])
+})
+
 test_that("naaccr_factor warns for non-fields", {
   expect_warning(naaccr_factor("a", "foo"))
 })
@@ -51,6 +65,16 @@ test_that("split_sentineled returns double-NA for invalid codes with warning", {
   expect_warning(result <- split_sentineled("QQ", "gleasonScoreClinical"))
   expect_true(is.na(result[["gleasonScoreClinical"]]))
   expect_true(is.na(result[["gleasonScoreClinicalFlag"]]))
+})
+
+test_that("split_sentineled is robust to global options", {
+  old_opt <- options(scipen = -10)
+  on.exit(options(old_opt), add = TRUE)
+  s_num <- split_sentineled(c(1, 20, 88), "sequenceNumberCentral")
+  expect_identical(s_num[["sequenceNumberCentral"]], c(1, 20, NA))
+  expect_identical(is.na(s_num[["sequenceNumberCentralFlag"]]), c(TRUE, TRUE, FALSE))
+  s_char <- split_sentineled(c("01", "20", "88"), "sequenceNumberCentral")
+  expect_identical(s_num, s_char)
 })
 
 test_that("All required code/sentinel schemes exist", {

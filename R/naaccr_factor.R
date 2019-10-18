@@ -94,7 +94,12 @@ naaccr_factor <- function(x, field, keep_unknown = FALSE, ...) {
   if (field %in% field_code_scheme[["name"]]) {
     field_scheme <- field_code_scheme[list(name = field), on = "name"]
     codes <- field_codes[field_scheme, on = "scheme"]
-    out <- factor(x, levels = codes[["code"]], labels = codes[["label"]], ...)
+    out <- factor(
+      x,
+      levels = c(codes[["code"]], codes[["label"]]),
+      labels = rep(codes[["label"]], 2L),
+      ...
+    )
     if (isFALSE(keep_unknown)) {
       out <- unknown_to_na(out, field = field)
     }
@@ -134,30 +139,44 @@ split_sentineled <- function(x, field) {
   if (length(field) != 1L) {
     stop("field should be single string")
   }
-  if (field %in% field_sentinel_scheme[["name"]]) {
-    field_scheme <- field_sentinel_scheme[list(field), on = "name"]
-    sents <- field_sentinels[field_scheme, on = "scheme"]
-    x <- as.character(x)
-    x <- trimws(x)
-    is_empty <- !nzchar(x)
-    x[is_empty] <- NA
-    is_sentinel <- x %in% sents[["sentinel"]]
-    is_continuous <- !is_sentinel & grepl("^\\d+(\\.\\d+)?$", x, perl = TRUE)
-    is_invalid <- !is_empty & !is_sentinel & !is_continuous & !is.na(x)
-    if (any(is_invalid)) {
-      warning("Non-blank invalid codes set to NA: ", field)
-    }
-    x_num <- as.numeric(replace(x, !is_continuous, NA))
-    x_sent <- factor(x, sents[["sentinel"]], sents[["label"]])
-    out <- data.frame(x_num, x_sent)
-    names(out) <- c(field, paste0(field, "Flag"))
-    out
-  } else {
+  if (!(field %in% field_sentinel_scheme[["name"]])) {
     warning('"', field, '" not a sentineld field')
     out <- data.frame(x)
     names(out) <- field
-    out
+    return(out)
   }
+  UseMethod("split_sentineled")
+}
+
+
+#' @export
+#' @noRd
+split_sentineled.default <- function(x, field) {
+  field_scheme <- field_sentinel_scheme[list(field), on = "name"]
+  sents <- field_sentinels[field_scheme, on = "scheme"]
+  x <- as.character(x)
+  x <- trimws(x)
+  is_empty <- !nzchar(x)
+  x[is_empty] <- NA
+  is_sentinel <- x %in% sents[["sentinel"]]
+  is_continuous <- !is_sentinel & grepl("^\\d+(\\.\\d+)?$", x, perl = TRUE)
+  is_invalid <- !is_empty & !is_sentinel & !is_continuous & !is.na(x)
+  if (any(is_invalid)) {
+    warning("Non-blank invalid codes set to NA: ", field)
+  }
+  x_num <- as.numeric(replace(x, !is_continuous, NA))
+  x_sent <- factor(x, sents[["sentinel"]], sents[["label"]])
+  out <- data.frame(x_num, x_sent)
+  names(out) <- c(field, paste0(field, "Flag"))
+  out
+}
+
+
+#' @export
+#' @noRd
+split_sentineled.numeric <- function(x, field) {
+  xchar <- naaccr_encode(x, field = field)
+  split_sentineled(x = xchar, field = field)
 }
 
 
