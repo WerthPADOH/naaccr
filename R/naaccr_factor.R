@@ -222,3 +222,19 @@ split_sequence_number <- function(x) {
   setDF(out)
   out
 }
+
+
+#' List of possible values for a field
+#'
+#' These lists gives the levels for each categorical or flag field from the
+#' NAACCR formats. It is intended to help researchers
+#'
+#' \code{field_levels} does not include levels representing "unknown."
+#' \code{field_levels_all} does include the "unknown" levels.
+#'
+#' @format A named \code{list}, where the names are for categorical fields or
+#'   sentinel flags, and the values are the possible levels for each field.
+"field_levels"
+
+#' @rdname field_levels
+"field_levels_all"
