@@ -10,7 +10,7 @@ library(data.table)
 
 # Industry 2000 ----------------------------------------------------------------
 industry_crosswalk <- read_xls(
-  path  = "ignore/census-codes/industry-crosswalk-90-00-02-07-12.xls",
+  path  = "external/census-codes/industry-crosswalk-90-00-02-07-12.xls",
   sheet = "1990-2012",
   range = "A26:M307",
   col_names = c(

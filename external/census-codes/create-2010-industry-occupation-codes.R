@@ -31,10 +31,10 @@ preprocess_phin <- function(infile, outfile) {
 
 
 preprocess_phin(
-  "ignore/census-codes/PHVS_Occupation_CDC_Census2010_V1.txt",
+  "external/census-codes/PHVS_Occupation_CDC_Census2010_V1.txt",
   "data-raw/code-labels/censusOccCode2010.csv"
 )
 preprocess_phin(
-  "ignore/census-codes/PHVS_Industry_CDC_Census2010.txt",
+  "external/census-codes/PHVS_Industry_CDC_Census2010.txt",
   "data-raw/code-labels/censusIndCode2010.csv"
 )
