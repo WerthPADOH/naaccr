@@ -43,6 +43,11 @@ type_converters <- list(
 #' @param padding Single-character strings to use for padding in fixed-width
 #'   files.
 #' @param name_literal (Optional) Item name in plain language.
+#' @param parent Name of the parent node to include this field under when
+#'   writing to an XML file.
+#'   Values can be \code{"NaaccrData"}, \code{"Patient"}, \code{"Tumor"}, or
+#'   \code{NA} (default).
+#'   Fields with \code{NA} for parent won't be included in an XML file.
 #' @param x Object to be coerced to a \code{record_format}, usually a
 #'   \code{data.frame} or \code{list}.
 #' @param ... Other arguments passed to \code{record_format}.
@@ -75,6 +80,9 @@ type_converters <- list(
 #'     }
 #'     \item{\code{name_literal}}{
 #'       (\code{character}) Field name in plain language.
+#'     }
+#'     \item{\code{parent}}{
+#'       (\code{factor}) Parent XML node for the field.
 #'     }
 #'   }
 #'
@@ -192,7 +200,8 @@ record_format <- function(name,
                           type,
                           alignment    = "left",
                           padding      = " ",
-                          name_literal = NULL) {
+                          name_literal = NULL,
+                          parent       = NA) {
   # Allow 0-row formats, because why not?
   n_rows <- max(
     length(name), length(item), length(start_col), length(end_col),
@@ -210,6 +219,12 @@ record_format <- function(name,
   if (any(padding_width > 1L, na.rm = TRUE)) {
     stop("'padding' must only contain single-character values")
   }
+  parent_nodes <- c("NaaccrData", "Patient", "Tumor")
+  if (any(!is.na(parent) & !(parent %in% parent_nodes), na.rm = TRUE)) {
+    parent_list <- paste0("'", parent_nodes, "'", collapse = ", ")
+    warning("Replacing values of 'parent' other than (", parent_list, ") with NA")
+    warning(paste0(setdiff(parent, c(parent_nodes, NA)), collapse = ", "))
+  }
   # Create the format
   fmt <- data.table(
     name         = as.character(name),
@@ -219,7 +234,8 @@ record_format <- function(name,
     type         = factor(as.character(type), sort(names(type_converters))),
     alignment    = factor(as.character(alignment), c("left", "right")),
     padding      = as.character(padding),
-    name_literal = as.character(name_literal)
+    name_literal = as.character(name_literal),
+    parent       = factor(parent, parent_nodes)
   )
   if (anyNA(fmt[["alignment"]])) {
     stop("'alignment' must only contain values of \"left\" or \"right\"")
