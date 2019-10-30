@@ -13,7 +13,9 @@
 #' @param keep_unknown Logical indicating whether values of "unknown" should be
 #'   a level in the factor or \code{NA}.
 #' @param version An integer specifying the NAACCR format version for parsing
-#'   the records. Use this or \code{format}, not both.
+#'   the records. Use this or \code{format}, not both. If both \code{version}
+#'   and \code{format} are \code{NULL} (default), the most recent NAACCR format
+#'   will be used.
 #' @param format A \code{\link{record_format}} object for parsing the records.
 #' @return A \code{data.frame} with columns named using the NAACCR XML scheme.
 #' @export
@@ -90,15 +92,7 @@ as.naaccr_record.data.frame <- function(x,
                                         version = NULL,
                                         format = NULL,
                                         ...) {
-  convert_format <- if (!is.null(version)) {
-    key_data <- list(version = version)
-    naaccr_format[key_data, on = "version"]
-  } else if (!is.null(format)) {
-    format
-  } else {
-    latest_version <- max(naaccr_format[["version"]])
-    naaccr_format[list(version = latest_version), on = "version"]
-  }
+  convert_format <- choose_naaccr_format(version = version, format = format)
   all_items <- convert_format[
     list(name = names(x)),
     on = "name",

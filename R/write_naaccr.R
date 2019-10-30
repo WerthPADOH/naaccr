@@ -139,16 +139,7 @@ format_datetime <- function(x) {
 #' @import data.table
 #' @export
 naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) {
-  if (!is.null(version) && !is.null(format)) {
-    stop("Specify either 'version' or 'format', not both.")
-  }
-  if (is.null(format)) {
-    if (is.null(version)) {
-      version <- max(naaccr_format[["version"]])
-    }
-    version_key <- list(version = version)
-    format <- naaccr_format[version_key, on = "version"]
-  }
+  format <- choose_naaccr_format(version = version, format = format)
   field_def <- format[list(name = field), on = "name", nomatch = 0L]
   if (nrow(field_def) == 0L) {
     warning("No format for field '", field, "'; defaulting to character")
@@ -190,6 +181,92 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
 }
 
 
+#' Replace values in a record dataset with format-adhering values
+#' @noRd
+encode_records <- function(records, format) {
+  # Combine the "reportable" and "only tumor" fields back into sequence number
+  for (ii in seq_len(ncol(sequence_number_columns))) {
+    number_name <- sequence_number_columns[["number", ii]]
+    if (number_name %in% format[["name"]]) {
+      only_name <- sequence_number_columns[["only", ii]]
+      only_tumor <- which(records[[only_name]])
+      set(x = records, i = only_tumor, j = number_name, value = 0L)
+      reportable_name <- sequence_number_columns[["reportable", ii]]
+      non_reportable <- which(!records[[reportable_name]])
+      set(
+        x = records,
+        i = non_reportable,
+        j = number_name,
+        value = records[["name"]][non_reportable] + 60L
+      )
+    }
+  }
+  is_sentinel <- startsWith(format[["type"]], "sentineled")
+  sent_cols <- format[["name"]][is_sentinel]
+  flag_cols <- paste0(sent_cols, "Flag")
+  non_sent_cols <- format[["name"]][!is_sentinel]
+  if (length(non_sent_cols)) {
+    set(
+      x = records,
+      j = non_sent_cols,
+      value = mapply(
+        FUN = naaccr_encode,
+        x = records[, non_sent_cols, with = FALSE],
+        field = non_sent_cols,
+        MoreArgs = list(format = format),
+        SIMPLIFY = FALSE
+      )
+    )
+  }
+  if (length(sent_cols)) {
+    set(
+      x = records,
+      j = sent_cols,
+      value = mapply(
+        FUN = naaccr_encode,
+        x = records[, sent_cols, with = FALSE],
+        field = sent_cols,
+        flag = records[, flag_cols, with = FALSE],
+        MoreArgs = list(format = format),
+        SIMPLIFY = FALSE
+      )
+    )
+  }
+  records
+}
+
+
+#' @noRd
+prepare_writing_format <- function(format, fields) {
+  type <- NULL # Avoid unmatched variable name warning in R Check
+  fmt <- format[
+    list(name = fields),
+    on = "name",
+    nomatch = 0L
+  ][
+    ,
+    type := as.character(type)
+  ][
+    field_code_scheme,
+    on = "name",
+    type := "factor"
+  ][
+    field_sentinel_scheme,
+    on = "name",
+    type := paste0("sentineled_", type)
+  ]
+  set(
+    fmt,
+    j = "width",
+    value = fmt[["end_col"]] - fmt[["start_col"]] + 1L
+  )
+  fmt
+}
+
+
+#' Arrange the format for writing
+
+
 #' Write records in NAACCR format
 #'
 #' Write records from a \code{\link{naaccr_record}} object to a connection in
@@ -207,89 +284,11 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
 #' @export
 write_naaccr <- function(records, con, version = NULL, format = NULL) {
   records <- if (is.data.table(records)) copy(records) else as.data.table(records)
-  if (is.null(format)) {
-    if (length(version) > 1L) {
-      stop("'version' must a single integer")
-    } else if (is.null(version)) {
-      version <- max(naaccr_format[["version"]])
-    }
-    version <- as.integer(version)
-    version_key <- list(version = version)
-    format <- naaccr_format[version_key, on = "version"]
-  }
-  line_length <- max(format[["end_col"]])
-  type <- NULL # Avoid unmatched variable name warning in R Check
-  write_format <- format[
-    list(name = names(records)),
-    on      = "name",
-    nomatch = 0L
-  ][
-    ,
-    type := as.character(type)
-  ][
-    field_code_scheme,
-    on = "name",
-    type := "factor"
-  ][
-    field_sentinel_scheme,
-    on = "name",
-    type := paste0("sentineled_", type)
-  ]
+  write_format <- choose_naaccr_format(version = version, format = format)
+  write_format <- prepare_writing_format(write_format, names(records))
   setorderv(write_format, "start_col")
-  set(
-    write_format,
-    j = "width",
-    value = write_format[["end_col"]] - write_format[["start_col"]] + 1L
-  )
-  # Combine the "reportable" and "only tumor" fields back into sequence number
-  for (ii in seq_len(ncol(sequence_number_columns))) {
-    number_name <- sequence_number_columns[["number", ii]]
-    if (number_name %in% write_format[["name"]]) {
-      only_name <- sequence_number_columns[["only", ii]]
-      only_tumor <- which(records[[only_name]])
-      set(x = records, i = only_tumor, j = number_name, value = 0L)
-      reportable_name <- sequence_number_columns[["reportable", ii]]
-      non_reportable <- which(!records[[reportable_name]])
-      set(
-        x = records,
-        i = non_reportable,
-        j = number_name,
-        value = records[["name"]][non_reportable] + 60L
-      )
-    }
-  }
-  is_sentinel <- startsWith(write_format[["type"]], "sentineled")
-  sent_cols <- write_format[["name"]][is_sentinel]
-  flag_cols <- paste0(sent_cols, "Flag")
-  non_sent_cols <- write_format[["name"]][!is_sentinel]
-  if (length(non_sent_cols)) {
-    set(
-      x = records,
-      j = non_sent_cols,
-      value = mapply(
-        FUN = naaccr_encode,
-        x = records[, non_sent_cols, with = FALSE],
-        field = non_sent_cols,
-        MoreArgs = list(format = write_format),
-        SIMPLIFY = FALSE
-      )
-    )
-  }
-  if (length(sent_cols)) {
-    set(
-      x = records,
-      j = sent_cols,
-      value = mapply(
-        FUN = naaccr_encode,
-        x = records[, sent_cols, with = FALSE],
-        field = sent_cols,
-        flag = records[, flag_cols, with = FALSE],
-        MoreArgs = list(format = write_format),
-        SIMPLIFY = FALSE
-      )
-    )
-  }
-
+  line_length <- max(write_format[["end_col"]])
+  records <- encode_records(records, write_format)
   blank_line <- stri_pad_left("", width = line_length, pad = " ")
   text_lines <- rep(blank_line, nrow(records))
   starts <- write_format[, "start_col", with = FALSE]
