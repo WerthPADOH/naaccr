@@ -311,6 +311,8 @@ rbind.record_format <- function(..., stringsAsFactors = FALSE) {
 choose_naaccr_format <- function(version = NULL, format = NULL, keep_fields = NULL) {
   if (is.null(version) && is.null(format)) {
     version <- max(naaccr_format[["version"]])
+  } else if (!is.null(version) && !is.null(format)) {
+    stop("Specify 'version' or 'format', not both")
   }
   if (!is.null(version)) {
     key_data <- list(version = as.integer(version))
