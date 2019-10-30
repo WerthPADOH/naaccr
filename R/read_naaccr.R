@@ -138,20 +138,9 @@ read_naaccr_plain <- function(input,
       add = TRUE
     )
   }
-  if (!is.null(version)) {
-    key_data <- list(version = version)
-    read_format <- naaccr_format[key_data, on = "version"]
-  } else if (!is.null(format)) {
-    read_format <- format
-  } else {
-    stop("Must specify either version or format")
-  }
-  if (is.null(keep_fields)) {
-    keep_fields <- read_format[["name"]]
-  } else {
-    read_format <- read_format[list(name = keep_fields), on = "name"]
-  }
-  read_format <- as.record_format(read_format)
+  read_format <- choose_naaccr_format(
+    version = version, format = format, keep_fields = keep_fields
+  )
   # Read all record types as the longest type, padding and then truncating
   # Break the reading into chunks because of the typically large files.
   # "Growing" vectors is inefficient, so allocate many new spaces when needed
