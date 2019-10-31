@@ -311,6 +311,32 @@ select_first_cautiously <- function(x, warning_name = NULL) {
 }
 
 
+#' XML-ize a dataset of NAACCR fields, with one node per row
+#' @noRd
+group_values <- function(dataset, node_name) {
+  items <- vapply(
+    X = names(dataset),
+    FUN = function(field) {
+      lapply(
+        X = dataset[[field]],
+        FUN = newXMLNode,
+        name = "Item",
+        attrs = c(naaccrId = field)
+      )
+    },
+    FUN.VALUE = vector("list", nrow(dataset))
+  )
+  if (!is.matrix(items)) {
+    items <- matrix(items, nrow = nrow(dataset))
+  }
+  out <- vector("list", nrow(dataset))
+  for (ii in seq_along(out)) {
+    out[[ii]] <- newXMLNode(node_name, .children = items[ii, , drop = TRUE])
+  }
+  out
+}
+
+
 #' Write records to a NAACCR-formatted XML file
 #' @inheritParams write_naaccr
 #' @param base_dictionary URI for the dictionary defining the NAACCR data items.
@@ -322,6 +348,7 @@ select_first_cautiously <- function(x, warning_name = NULL) {
 #' @return Invisibly returns the
 #'   \code{\link[=XMLInternalDocument-class]{XMLInternalDocument}} object which
 #'   was written to \code{con}.
+#' @import data.table
 #' @importFrom XML newXMLNode newXMLDoc addChildren
 #' @importFrom methods as
 #' @export
@@ -373,32 +400,40 @@ write_naaccr_xml <- function(records,
     )
   )
   root <- newXMLDoc(node = naaccr_data)
-  for (nd in tiered_items[["NaaccrData"]]) {
-    value <- select_first_cautiously(records[[nd]])
-    nd_item <- newXMLNode(name = "Item", attrs = c(naaccrId = nd), value)
-    addChildren(naaccr_data, nd_item)
-  }
+  nd_nodes <- lapply(
+    tiered_items[["NaaccrData"]],
+    FUN = function(nd) {
+      value <- select_first_cautiously(records[[nd]])
+      newXMLNode(name = "Item", attrs = c(naaccrId = nd), value)
+    }
+  )
+  addChildren(naaccr_data, kids = nd_nodes)
   if (!("patientIdNumber" %in% names(records))) {
     set(records, j = "patientIdNumber", value = seq_len(nrow(records)))
   }
-  patient_records <- split(records, records[["patientIdNumber"]])
-  for (pr in patient_records) {
-    patient <- newXMLNode(name = "Patient")
-    for (pitem in tiered_items[["Patient"]]) {
-      value <- select_first_cautiously(pr[[pitem]])
-      pat_item <- newXMLNode(name = "Item", attrs = c(naaccrId = pitem), value)
-      addChildren(patient, pat_item)
-    }
-    for (rr in seq_len(nrow(pr))) {
-      tumor <- newXMLNode(name = "Tumor")
-      for (titem in tiered_items[["Tumor"]]) {
-        value <- select_first_cautiously(pr[[titem]][rr])
-        tum_item <- newXMLNode(name = "Item", attrs = c(naaccrId = titem), value)
-        addChildren(tumor, tum_item)
-      }
-      addChildren(patient, tumor)
-    }
-    addChildren(naaccr_data, patient)
+  pids <- unique(records[["patientIdNumber"]])
+  patients <- records[
+    list(patientIdNumber = pids),
+    on = "patientIdNumber",
+    mult = "first",
+    tiered_items[["Patient"]],
+    with = FALSE
+  ]
+  set(patients, j = "p_node", value = list(group_values(patients, "Patient")))
+  tumors <- records[, tiered_items[["Tumor"]], with = FALSE]
+  set(tumors, j = "t_node", value = list(group_values(tumors, "Tumor")))
+  set(tumors, j = "patientIdNumber", value = records[["patientIdNumber"]])
+  patients <- tumors[
+    ,
+    list(t_nodes = list(t_node)),
+    by = "patientIdNumber"
+  ][
+    patients,
+    on = "patientIdNumber"
+  ]
+  for (ii in seq_len(nrow(patients))) {
+    addChildren(patients[["p_node"]][[ii]], kids = patients[["t_nodes"]][[ii]])
+    addChildren(naaccr_data, patients[["p_node"]][[ii]])
   }
   invisible(writeLines(as(root, "character"), con = con))
 }

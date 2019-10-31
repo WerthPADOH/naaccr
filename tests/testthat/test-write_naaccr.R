@@ -149,11 +149,11 @@ test_that("write_naaccr_xml puts items under correct parent node", {
   tree <- xmlParse(xml_text, asText = TRUE)
 
   naaccr_ids <- xpathSApply(tree, "//x:NaaccrData/x:Item", get_ids, namespaces = "x")
-  expect_setequal(naaccr_ids, item_tiers[["NaaccrData"]])
+  expect_identical(sort(naaccr_ids), sort(item_tiers[["NaaccrData"]]))
 
   patient_ids <- xpathSApply(tree, "//x:Patient/x:Item", get_ids, namespaces = "x")
-  expect_setequal(patient_ids, item_tiers[["Patient"]])
+  expect_setequal(sort(patient_ids), sort(item_tiers[["Patient"]]))
 
   tumor_ids <- xpathSApply(tree, "//x:Tumor/x:Item", get_ids, namespaces = "x")
-  expect_setequal(tumor_ids, item_tiers[["Tumor"]])
+  expect_setequal(sort(tumor_ids), sort(item_tiers[["Tumor"]]))
 })
