@@ -423,6 +423,7 @@ write_naaccr_xml <- function(records,
   tumors <- records[, tiered_items[["Tumor"]], with = FALSE]
   set(tumors, j = "t_node", value = list(group_values(tumors, "Tumor")))
   set(tumors, j = "patientIdNumber", value = records[["patientIdNumber"]])
+  t_node <- NULL # Avoid references in parent environments
   patients <- tumors[
     ,
     list(t_nodes = list(t_node)),

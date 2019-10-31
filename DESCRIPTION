@@ -14,6 +14,7 @@ Description: Functions for reading cancer record files which follow a format
     defined by the North American Association of Central Cancer Registries
     (NAACCR).
 Imports:
+    methods,
     data.table,
     stringi,
     utils,
