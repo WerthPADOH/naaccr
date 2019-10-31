@@ -1,5 +1,6 @@
 library(testthat)
 library(naaccr)
+library(XML)
 
 
 context("write_naaccr")
@@ -104,4 +105,55 @@ test_that("write_naaccr can handle custom formats", {
   for (column in names(recs_2)) {
     expect_equivalent(recs_2[[column]], recs[[column]])
   }
+})
+
+
+write_naaccr_xml_to_vector <- function(records, version = NULL, format = NULL) {
+  tc <- textConnection(NULL, open = "w")
+  on.exit(close(tc), add = TRUE)
+  write_naaccr_xml(records, tc, version = version, format = format)
+  textConnectionValue(tc)
+}
+
+
+get_ids <- function(node) {
+  xmlAttrs(node)[["naaccrId"]]
+}
+
+
+test_that("write_naaccr_xml includes all and only items in format and records", {
+  records <- naaccr_record(
+    ageAtDiagnosis = 65,
+    patientIdNumber = 999,
+    recordType = "A",
+    foo = "bar"
+  )
+
+  xml_text <- write_naaccr_xml_to_vector(records, version = 18)
+  tree <- xmlParse(xml_text, asText = TRUE)
+  ids <- xpathSApply(tree, "//x:Item", get_ids, namespaces = "x")
+  expect_setequal(ids, c("ageAtDiagnosis", "patientIdNumber", "recordType"))
+
+  subfmt <- naaccr_format_18[name == "patientIdNumber"]
+  xml_text <- write_naaccr_xml_to_vector(records, format = subfmt)
+  tree <- xmlParse(xml_text, asText = TRUE)
+  ids <- xpathSApply(tree, "//x:Item", get_ids, namespaces = "x")
+  expect_setequal(ids, "patientIdNumber")
+})
+
+test_that("write_naaccr_xml puts items under correct parent node", {
+  records <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt", version = 18)
+  subfmt <- naaccr_format_18[name %in% names(records)]
+  item_tiers <- split(subfmt[["name"]], subfmt[["parent"]])
+  xml_text <- write_naaccr_xml_to_vector(records, format = subfmt)
+  tree <- xmlParse(xml_text, asText = TRUE)
+
+  naaccr_ids <- xpathSApply(tree, "//x:NaaccrData/x:Item", get_ids, namespaces = "x")
+  expect_setequal(naaccr_ids, item_tiers[["NaaccrData"]])
+
+  patient_ids <- xpathSApply(tree, "//x:Patient/x:Item", get_ids, namespaces = "x")
+  expect_setequal(patient_ids, item_tiers[["Patient"]])
+
+  tumor_ids <- xpathSApply(tree, "//x:Tumor/x:Item", get_ids, namespaces = "x")
+  expect_setequal(tumor_ids, item_tiers[["Tumor"]])
 })

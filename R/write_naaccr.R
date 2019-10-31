@@ -184,6 +184,7 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
 #' Replace values in a record dataset with format-adhering values
 #' @noRd
 encode_records <- function(records, format) {
+  records <- if (is.data.table(records)) copy(records) else as.data.table(records)
   # Combine the "reportable" and "only tumor" fields back into sequence number
   for (ii in seq_len(ncol(sequence_number_columns))) {
     number_name <- sequence_number_columns[["number", ii]]
@@ -264,10 +265,7 @@ prepare_writing_format <- function(format, fields) {
 }
 
 
-#' Arrange the format for writing
-
-
-#' Write records in NAACCR format
+#' Write records to a NAACCR-formatted fixed-width file
 #'
 #' Write records from a \code{\link{naaccr_record}} object to a connection in
 #' fixed-width format, according to a specific version of the NAACCR format.
@@ -283,7 +281,6 @@ prepare_writing_format <- function(format, fields) {
 #' @import stringi
 #' @export
 write_naaccr <- function(records, con, version = NULL, format = NULL) {
-  records <- if (is.data.table(records)) copy(records) else as.data.table(records)
   write_format <- choose_naaccr_format(version = version, format = format)
   write_format <- prepare_writing_format(write_format, names(records))
   setorderv(write_format, "start_col")
@@ -296,4 +293,112 @@ write_naaccr <- function(records, con, version = NULL, format = NULL) {
   text_values <- data.table::transpose(records[, write_format[["name"]], with = FALSE])
   stri_sub_all(text_lines, from = starts, to = ends) <- text_values
   writeLines(text_lines, con)
+}
+
+
+#' @noRd
+select_first_cautiously <- function(x, warning_name = NULL) {
+  ux <- unique(x[!is.na(x)])
+  if (length(ux) == 0L) return(NULL)
+  if (length(ux) > 1L) {
+    if (!is.null(warning_name)) {
+      warning_name <- paste0(" for ", warning_name)
+    }
+    warning("Multiple values found", warning_name, "; using just the first")
+    ux <- ux[1]
+  }
+  ux
+}
+
+
+#' Write records to a NAACCR-formatted XML file
+#' @inheritParams write_naaccr
+#' @param base_dictionary URI for the dictionary defining the NAACCR data items.
+#'   If this is \code{NULL} and either \code{version} is not \code{NULL} or
+#'   \code{format} is one of the standard NAACCR formats, then the URI from
+#'   NAACCR's website for that version's dictionary will be used.
+#' @param user_dictionary URI for the dictionary defining the user-specified
+#'   data items.  If \code{NULL} (default), it won't be included in the XML.
+#' @return Invisibly returns the
+#'   \code{\link[=XMLInternalDocument-class]{XMLInternalDocument}} object which
+#'   was written to \code{con}.
+#' @importFrom XML newXMLNode newXMLDoc addChildren
+#' @importFrom methods as
+#' @export
+write_naaccr_xml <- function(records,
+                             con,
+                             version = NULL,
+                             format = NULL,
+                             base_dictionary = NULL,
+                             user_dictionary = NULL) {
+  write_format <- choose_naaccr_format(version = version, format = format)
+  write_format <- prepare_writing_format(write_format, names(records))
+  # Determine XML namespace from given format or version
+  if (is.null(base_dictionary)) {
+    if (!is.null(format)) {
+      for (v in sort(unique(naaccr_format[["version"]]), decreasing = TRUE)) {
+        vfmt <- as.record_format(naaccr_format[list(version = v), on = "version"])
+        setDT(vfmt)
+        format <- as.data.table(format)
+        same_fmt <- all.equal(
+          vfmt, format,
+          check.attributes = FALSE,
+          ignore.col.order = TRUE,
+          ignore.row.order = TRUE
+        )
+        if (isTRUE(same_fmt)) {
+          version <- v
+          break()
+        }
+      }
+    }
+    if (!is.null(version)) {
+      base_dictionary <- sprintf(
+        "http://naaccr.org/naaccrxml/naaccr-dictionary-%2d0.xml", version
+      )
+    }
+  }
+  records <- encode_records(records, write_format)
+  tiered_items <- split(write_format[["name"]], write_format[["parent"]])
+  time_gen <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S")
+  time_gen <- paste0(substr(time_gen, 1, 22), ":", substr(time_gen, 23, 24))
+  naaccr_data <- newXMLNode(
+    name = "NaaccrData",
+    namespaceDefinitions = "http://naaccr.org/naaccrxml",
+    attrs = c(
+      baseDictionaryUri = base_dictionary,
+      userDictionaryUri = user_dictionary,
+      specificationVersion = "1.4",
+      timeGenerated = time_gen
+    )
+  )
+  root <- newXMLDoc(node = naaccr_data)
+  for (nd in tiered_items[["NaaccrData"]]) {
+    value <- select_first_cautiously(records[[nd]])
+    nd_item <- newXMLNode(name = "Item", attrs = c(naaccrId = nd), value)
+    addChildren(naaccr_data, nd_item)
+  }
+  if (!("patientIdNumber" %in% names(records))) {
+    set(records, j = "patientIdNumber", value = seq_len(nrow(records)))
+  }
+  patient_records <- split(records, records[["patientIdNumber"]])
+  for (pr in patient_records) {
+    patient <- newXMLNode(name = "Patient")
+    for (pitem in tiered_items[["Patient"]]) {
+      value <- select_first_cautiously(pr[[pitem]])
+      pat_item <- newXMLNode(name = "Item", attrs = c(naaccrId = pitem), value)
+      addChildren(patient, pat_item)
+    }
+    for (rr in seq_len(nrow(pr))) {
+      tumor <- newXMLNode(name = "Tumor")
+      for (titem in tiered_items[["Tumor"]]) {
+        value <- select_first_cautiously(pr[[titem]][rr])
+        tum_item <- newXMLNode(name = "Item", attrs = c(naaccrId = titem), value)
+        addChildren(tumor, tum_item)
+      }
+      addChildren(patient, tumor)
+    }
+    addChildren(naaccr_data, patient)
+  }
+  invisible(writeLines(as(root, "character"), con = con))
 }

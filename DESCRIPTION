@@ -16,7 +16,8 @@ Description: Functions for reading cancer record files which follow a format
 Imports:
     data.table,
     stringi,
-    utils
+    utils,
+    XML
 Suggests:
     devtools,
     httr,
