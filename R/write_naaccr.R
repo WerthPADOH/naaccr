@@ -42,7 +42,7 @@ naaccr_unsentinel <- function(value,
     stop(field, " matched ", nrow(field_scheme), " schema")
   }
   sentinels <- field_sentinels[field_scheme, on = "scheme"]
-  is_flagged <- !is.na(flag)
+  is_flagged <- if (is.null(flag)) rep(FALSE, length(value)) else !is.na(flag)
   out <- rep_len(NA_character_, length(value))
   out[!is_flagged] <- switch(type,
     integer = format_integer(value[!is_flagged], width),
@@ -152,7 +152,13 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
   field_def <- format[list(name = field), on = "name", nomatch = 0L]
   if (nrow(field_def) == 0L) {
     warning("No format for field '", field, "'; defaulting to character")
-    return(as.character(x))
+    if (is.integer(x)) {
+      return(formatC(x, format = "d"))
+    } else if (is.numeric(x)) {
+      return(formatC(x, format = "f"))
+    } else {
+      return(as.character(x))
+    }
   }
   width <- field_def[["end_col"]] - field_def[["start_col"]] + 1L
   codes <- switch(as.character(field_def[["type"]]),
@@ -226,14 +232,6 @@ write_naaccr <- function(records, con, version = NULL, format = NULL) {
   ][
     ,
     type := as.character(type)
-  ][
-    field_code_scheme,
-    on = "name",
-    type := "factor"
-  ][
-    field_sentinel_scheme,
-    on = "name",
-    type := paste0("sentineled_", type)
   ]
   setorderv(write_format, "start_col")
   set(
