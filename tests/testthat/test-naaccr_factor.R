@@ -70,10 +70,10 @@ test_that("split_sentineled returns double-NA for invalid codes with warning", {
 test_that("split_sentineled is robust to global options", {
   old_opt <- options(scipen = -10)
   on.exit(options(old_opt), add = TRUE)
-  s_num <- split_sentineled(c(1, 20, 88), "sequenceNumberCentral")
-  expect_identical(s_num[["sequenceNumberCentral"]], c(1, 20, NA))
-  expect_identical(is.na(s_num[["sequenceNumberCentralFlag"]]), c(TRUE, TRUE, FALSE))
-  s_char <- split_sentineled(c("01", "20", "88"), "sequenceNumberCentral")
+  s_num <- split_sentineled(c(1, 500, 989), "tumorSizeClinical")
+  expect_identical(s_num[["tumorSizeClinical"]], c(1, 500, NA))
+  expect_identical(is.na(s_num[["tumorSizeClinicalFlag"]]), c(TRUE, TRUE, FALSE))
+  s_char <- split_sentineled(c("01", "500", "989"), "tumorSizeClinical")
   expect_identical(s_num, s_char)
 })
 
