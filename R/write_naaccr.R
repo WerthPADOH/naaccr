@@ -226,14 +226,6 @@ write_naaccr <- function(records, con, version = NULL, format = NULL) {
   ][
     ,
     type := as.character(type)
-  ][
-    field_code_scheme,
-    on = "name",
-    type := "factor"
-  ][
-    field_sentinel_scheme,
-    on = "name",
-    type := paste0("sentineled_", type)
   ]
   setorderv(write_format, "start_col")
   set(
