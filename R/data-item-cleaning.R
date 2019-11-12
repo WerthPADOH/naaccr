@@ -182,13 +182,7 @@ clean_telephone <- function(number) {
 #' @export
 clean_count <- function(count, width) {
   count <- trimws(count)
-  tryCatch(
-    na_code <- stri_join(rep("9", width), collapse = ""),
-    error = function(err) {
-      browser()
-      stop(conditionMessage(err))
-    }
-  )
+  na_code <- stri_join(rep("9", width), collapse = "")
   count[count == na_code] <- NA
   as.integer(count)
 }
