@@ -1,31 +1,40 @@
 #' @noRd
-type_converters <- list(
-  integer      = as.integer,
-  numeric      = as.numeric,
-  character    = clean_text,
-  factor       = identity,
-  sentineled_integer = identity,
-  sentineled_numeric = identity,
-  age          = clean_age,
-  icd_code     = clean_icd_code,
-  postal       = clean_postal,
-  city         = clean_address_city,
-  address      = clean_address_number_and_street,
-  facility     = clean_facility_id,
-  census_block = clean_census_block,
-  census_tract = clean_census_tract,
-  icd_9        = clean_icd_9_cm,
-  county       = clean_county_fips,
-  physician    = clean_physician_id,
-  override     = naaccr_override,
-  boolean01    = naaccr_boolean,
-  telephone    = clean_telephone,
-  count        = clean_count,
-  ssn          = clean_ssn,
-  boolean12    = function(x) naaccr_boolean(x, false_value = '1'),
-  Date         = naaccr_date,
-  datetime     = naaccr_datetime
-)
+naaccr_boolean12 <- function(x) naaccr_boolean(x, false_value = '1')
+
+
+#' `type`: name of the field type (see record_format)
+#' `fun`: normal function used to parse the field (factors and sentinels are
+#'   special).
+#' `fun_unknown`: function used to parse the field when `keep_unknown = TRUE`
+#'   for the reading/parsing function.
+#' @noRd
+type_converters <- rbindlist(list(
+  list(type = "integer", fun = list(as.integer), fun_unknown = list(as.integer)),
+  list(type = "numeric", fun = list(as.numeric), fun_unknown = list(as.numeric)),
+  list(type = "character", fun = list(clean_text), fun_unknown = list(as.character)),
+  list(type = "factor", fun = list(identity), fun_unknown = list(identity)),
+  list(type = "sentineled_integer", fun = list(identity), fun_unknown = list(identity)),
+  list(type = "sentineled_numeric", fun = list(identity), fun_unknown = list(identity)),
+  list(type = "age", fun = list(clean_age), fun_unknown = list(as.integer)),
+  list(type = "icd_code", fun = list(clean_icd_code), fun_unknown = list(as.character)),
+  list(type = "postal", fun = list(clean_postal), fun_unknown = list(as.character)),
+  list(type = "city", fun = list(clean_address_city), fun_unknown = list(as.character)),
+  list(type = "address", fun = list(clean_address_number_and_street), fun_unknown = list(as.character)),
+  list(type = "facility", fun = list(clean_facility_id), fun_unknown = list(as.character)),
+  list(type = "census_block", fun = list(clean_census_block), fun_unknown = list(as.integer)),
+  list(type = "census_tract", fun = list(clean_census_tract), fun_unknown = list(as.character)),
+  list(type = "icd_9", fun = list(clean_icd_9_cm), fun_unknown = list(as.character)),
+  list(type = "county", fun = list(clean_county_fips), fun_unknown = list(as.character)),
+  list(type = "physician", fun = list(clean_physician_id), fun_unknown = list(as.character)),
+  list(type = "override", fun = list(naaccr_override), fun_unknown = list(naaccr_override)),
+  list(type = "boolean01", fun = list(naaccr_boolean), fun_unknown = list(naaccr_boolean)),
+  list(type = "telephone", fun = list(clean_telephone), fun_unknown = list(as.character)),
+  list(type = "count", fun = list(clean_count), fun_unknown = list(as.integer)),
+  list(type = "ssn", fun = list(clean_ssn), fun_unknown = list(as.character)),
+  list(type = "boolean12", fun = list(naaccr_boolean12), fun_unknown = list(naaccr_boolean12)),
+  list(type = "Date", fun = list(naaccr_date), fun_unknown = list(naaccr_date)),
+  list(type = "datetime", fun = list(naaccr_datetime), fun_unknown = list(naaccr_datetime))
+))
 
 
 #' Define custom fields for NAACCR records
@@ -219,7 +228,7 @@ record_format <- function(name,
     item         = as.integer(item),
     start_col    = as.integer(start_col),
     end_col      = as.integer(end_col),
-    type         = factor(as.character(type), sort(names(type_converters))),
+    type         = factor(as.character(type), sort(type_converters[["type"]])),
     alignment    = factor(as.character(alignment), c("left", "right")),
     padding      = as.character(padding),
     name_literal = as.character(name_literal)
