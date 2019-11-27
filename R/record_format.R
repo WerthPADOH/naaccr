@@ -257,6 +257,7 @@ record_format <- function(name,
 
 #' @inheritParams record_format
 #' @rdname record_format
+#' @importFrom utils modifyList
 #' @export
 as.record_format <- function(x, ...) {
   if (inherits(x, "record_format")) {
