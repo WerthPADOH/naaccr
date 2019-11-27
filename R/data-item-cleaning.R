@@ -185,22 +185,6 @@ clean_facility_id <- function(fin, keep_unknown = FALSE) {
 }
 
 
-#' Clean the "Multiplicity Counter" codes
-#' @param count A character vector of "Multiplicity Counter" codes.
-#' @inheritParams clean_text
-#' @return Integer vector of \code{count}.
-#'   If \code{keep_unknown} is \code{FALSE}, values representing unknown counts
-#'   are replaced with \code{NA}.
-#' @export
-clean_multiplicity <- function(count, keep_unknown = FALSE) {
-  count_int <- as.integer(count)
-  if (!keep_unknown) {
-    count_int[count_int < 0L | count_int > 87L] <- NA
-  }
-  count_int
-}
-
-
 #' Clean physician identification numbers
 #' @param physician A character vector of medical license number or
 #'   facility-generated codes.
