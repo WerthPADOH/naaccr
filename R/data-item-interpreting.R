@@ -17,9 +17,18 @@
 #'   naaccr_boolean(x, false_value = "1")
 #' @export
 naaccr_boolean <- function(flag, false_value = c('0', '1')) {
+  if (is.logical(flag)) {
+    return(flag)
+  }
+  if (is.numeric(flag)) {
+    flag <- format(as.integer(flag), scientific = FALSE)
+  }
+  if (is.numeric(false_value)) {
+    false_value <- format(as.integer(false_value), scientific = FALSE)
+  }
   false_value <- match.arg(false_value)
   bool <- rep_len(NA, length(flag))
-  true_value <- if (false_value == '0') '1' else '2'
+  true_value <- switch(false_value, '0' = '1', '1' = '2')
   bool[flag == false_value] <- FALSE
   bool[flag == true_value]  <- TRUE
   bool
@@ -38,6 +47,15 @@ naaccr_boolean <- function(flag, false_value = c('0', '1')) {
 #'   naaccr_override(c("", "1", NA, "9"))
 #' @export
 naaccr_override <- function(flag) {
+  if (is.numeric(flag)) {
+    warning("Provided flag is numeric, so FALSE overrides cannot be identified")
+    flag <- format(flag, scientific = FALSE)
+  }
+  invalid <- !(flag %in% c("1", "", NA))
+  if (any(invalid)) {
+    warning("Replacing values of flag other than '1' and '' with NA")
+    flag[invalid] <- NA
+  }
   bool <- rep_len(NA, length(flag))
   bool[flag == '1'] <- TRUE
   bool[flag == '']  <- FALSE

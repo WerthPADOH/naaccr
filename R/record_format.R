@@ -308,3 +308,24 @@ rbind.record_format <- function(..., stringsAsFactors = FALSE) {
 #' @rdname naaccr_format
 #' @export
 "naaccr_format_18"
+
+
+#' Internal function for other functions to resolve format
+#' @noRd
+choose_naaccr_format <- function(version = NULL, format = NULL, keep_fields = NULL) {
+  if (is.null(version) && is.null(format)) {
+    version <- max(naaccr_format[["version"]])
+  } else if (!is.null(version) && !is.null(format)) {
+    stop("Specify 'version' or 'format', not both")
+  }
+  if (!is.null(version)) {
+    key_data <- list(version = as.integer(version))
+    fmt <- naaccr_format[key_data, on = "version"]
+  } else {
+    fmt <- format
+  }
+  if (!is.null(keep_fields)) {
+    fmt <- fmt[list(name = as.character(keep_fields)), on = "name"]
+  }
+  as.record_format(fmt)
+}
