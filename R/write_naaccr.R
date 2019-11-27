@@ -3,7 +3,7 @@
 #' @param field Character string naming the field.
 #' @noRd
 naaccr_unfactor <- function(x, field) {
-  if (length(field) != 1L) {
+  if (length(field) != 1L || !is.character(field)) {
     stop("field should be single string")
   }
   field_scheme <- field_code_scheme[list(name = field), on = "name"]
@@ -34,7 +34,7 @@ naaccr_unsentinel <- function(value,
                               width,
                               type = c("integer", "numeric")) {
   type <- match.arg(type)
-  if (length(field) != 1L) {
+  if (length(field) != 1L || !is.character(field)) {
     stop("field should be single string")
   }
   field_scheme <- field_sentinel_scheme[list(name = field), on = "name"]
@@ -45,8 +45,8 @@ naaccr_unsentinel <- function(value,
   is_flagged <- if (is.null(flag)) rep(FALSE, length(value)) else !is.na(flag)
   out <- rep_len(NA_character_, length(value))
   out[!is_flagged] <- switch(type,
-    integer = format_integer(value[!is_flagged], width),
-    numeric = format_decimal(value[!is_flagged], width)
+    integer = format_integer(as.integer(value)[!is_flagged], width),
+    numeric = format_decimal(as.numeric(value)[!is_flagged], width)
   )
   sents <- sentinels[
     list(label = as.character(flag[is_flagged])),

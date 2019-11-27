@@ -44,7 +44,7 @@ unknown_to_na.naaccr_record <- function(x, ...) {
 #' @rdname unknown_to_na
 #' @export
 unknown_to_na.factor <- function(x, field, ...) {
-  if (length(field) != 1L) {
+  if (length(field) != 1L || !is.character(field)) {
     stop("field should be single string")
   }
   field_scheme <- field_code_scheme[
@@ -77,8 +77,8 @@ unknown_to_na.factor <- function(x, field, ...) {
 #'   descriptions instead of the basic NAACCR codes. Codes which stood for
 #'   "unknown" with no further information are replaced with \code{NA}.
 #'
-#'   If \code{field} names a text or site-specific field, a \code{character}
-#'   vector will be returned instead.
+#'   If \code{field} names a text or site-specific field, \code{x} will be
+#'   returned unchanged with a warning.
 #' @examples
 #'   naaccr_factor(c("20", "43", "99"), "radRegionalRxModality")
 #'   naaccr_factor(c("USA", "GER", "XEN"), "addrAtDxCountry")
@@ -88,25 +88,26 @@ unknown_to_na.factor <- function(x, field, ...) {
 #' @import data.table
 #' @export
 naaccr_factor <- function(x, field, keep_unknown = FALSE, ...) {
-  if (length(field) != 1L) {
+  if (length(field) != 1L || !is.character(field)) {
     stop("field should be single string")
   }
-  if (field %in% field_code_scheme[["name"]]) {
-    field_scheme <- field_code_scheme[list(name = field), on = "name"]
-    codes <- field_codes[field_scheme, on = "scheme"]
-    out <- factor(
-      x,
-      levels = c(codes[["code"]], codes[["label"]]),
-      labels = rep(codes[["label"]], 2L),
-      ...
-    )
-    if (isFALSE(keep_unknown)) {
-      out <- unknown_to_na(out, field = field)
-    }
-  } else {
+  if (!(field %in% field_code_scheme[["name"]])) {
     warning('"', field, '" not a coded field')
-    out <- as.character(x)
-    names(out) <- names(x)
+    return(x)
+  }
+  if (is.numeric(x)) {
+    x <- format(x, scientific = FALSE)
+  }
+  field_scheme <- field_code_scheme[list(name = field), on = "name"]
+  codes <- field_codes[field_scheme, on = "scheme"]
+  out <- factor(
+    x,
+    levels = c(codes[["code"]], codes[["label"]]),
+    labels = rep(codes[["label"]], 2L),
+    ...
+  )
+  if (isFALSE(keep_unknown)) {
+    out <- unknown_to_na(out, field = field)
   }
   out
 }
@@ -136,7 +137,7 @@ naaccr_factor <- function(x, field, keep_unknown = FALSE, ...) {
 #'   s[is.na(s[["regionalNodesPositive"]]), "regionalNodesPositiveFlag"]
 #' @export
 split_sentineled <- function(x, field) {
-  if (length(field) != 1L) {
+  if (length(field) != 1L || !is.character(field)) {
     stop("field should be single string")
   }
   if (!(field %in% field_sentinel_scheme[["name"]])) {

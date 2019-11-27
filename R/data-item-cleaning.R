@@ -75,6 +75,9 @@ clean_address_number_and_street <- function(location, keep_unknown = FALSE) {
 #'   uncertain postal codes are replaced with \code{NA}.
 #' @export
 clean_postal <- function(postal, keep_unknown = FALSE) {
+  if (is.numeric(postal)) {
+    postal <- format(as.integer(postal), scientific = FALSE)
+  }
   postal <- trimws(postal)
   if (!keep_unknown) {
     postal[postal %in% c('', '888888888', '999999999', '999999')] <- NA
@@ -91,6 +94,9 @@ clean_postal <- function(postal, keep_unknown = FALSE) {
 #'   unknown block groups are replaced with \code{NA}.
 #' @export
 clean_census_block <- function(block, keep_unknown = FALSE) {
+  if (is.numeric(block)) {
+    block <- format(as.integer(block), scientific = FALSE)
+  }
   block <- trimws(block)
   if (!keep_unknown) {
     block[!grepl("^[1-9]$", block)] <- NA
@@ -108,6 +114,9 @@ clean_census_block <- function(block, keep_unknown = FALSE) {
 #' @import data.table
 #' @export
 clean_census_tract <- function(tract, keep_unknown = FALSE) {
+  if (is.numeric(tract)) {
+    tract <- format(as.integer(tract), scientific = FALSE)
+  }
   tract <- trimws(tract)
   if (!keep_unknown) {
     is_tract <- data.table::between(tract, '000100', '949999')
@@ -127,6 +136,9 @@ clean_census_tract <- function(tract, keep_unknown = FALSE) {
 #' @import stringi
 #' @export
 clean_county_fips <- function(county, keep_unknown = FALSE) {
+  if (is.numeric(county)) {
+    county <- format(as.integer(county), scientific = FALSE)
+  }
   county <- trimws(county)
   if (!keep_unknown) {
     stri_subset_regex(county, "^\\d{3}$", negate = TRUE) <- NA
@@ -144,6 +156,9 @@ clean_county_fips <- function(county, keep_unknown = FALSE) {
 #'   "unknown" (\code{"00000"}) are replaced with \code{NA}.
 #' @export
 clean_icd_9_cm <- function(code, keep_unknown = FALSE) {
+  if (is.numeric(code)) {
+    code <- format(as.integer(code), scientific = FALSE)
+  }
   code <- trimws(code)
   if (!keep_unknown) {
     code[code %in% c('', '00000')] <- NA
@@ -161,6 +176,9 @@ clean_icd_9_cm <- function(code, keep_unknown = FALSE) {
 #'   with \code{NA}.
 #' @export
 clean_icd_code <- function(code, keep_unknown = FALSE) {
+  if (is.numeric(code)) {
+    code <- format(as.integer(code), scientific = FALSE)
+  }
   code <- trimws(code)
   if (!keep_unknown) {
     code[code %in% c('', '0000', '7777', '7797')] <- NA
@@ -177,6 +195,9 @@ clean_icd_code <- function(code, keep_unknown = FALSE) {
 #'   unknown facilities are replaced with \code{NA}.
 #' @export
 clean_facility_id <- function(fin, keep_unknown = FALSE) {
+  if (is.numeric(fin)) {
+    fin <- format(as.integer(fin), scientific = FALSE)
+  }
   fin <- trimws(fin)
   if (!keep_unknown) {
     fin[fin %in% c('', '0000000000', '0099999999')] <- NA
@@ -194,6 +215,9 @@ clean_facility_id <- function(fin, keep_unknown = FALSE) {
 #'   unknown physicians or non-applicable are replaced with \code{NA}.
 #' @export
 clean_physician_id <- function(physician, keep_unknown = FALSE) {
+  if (is.numeric(physician)) {
+    physician <- format(as.integer(physician), scientific = FALSE)
+  }
   physician <- trimws(physician)
   if (!keep_unknown) {
     physician[physician %in% c('', '00000000', '99999999')] <- NA
@@ -211,10 +235,13 @@ clean_physician_id <- function(physician, keep_unknown = FALSE) {
 #'   unknown numbers or patients without a number are replaced with \code{NA}.
 #' @export
 clean_telephone <- function(number, keep_unknown = FALSE) {
+  if (is.numeric(number)) {
+    number <- format(as.integer(number), scientific = FALSE)
+  }
   number <- trimws(number)
   if (!keep_unknown) {
-    number[grep("^[09]+$", number)] <- NA
-    number[!nzchar(number)] <- NA
+    number[grep("^[09]+$", number)] <- NA_character_
+    number[!nzchar(number)] <- NA_character_
   }
   number
 }
@@ -234,12 +261,12 @@ clean_telephone <- function(number, keep_unknown = FALSE) {
 #' @import stringi
 #' @export
 clean_count <- function(count, width, keep_unknown = FALSE) {
-  count <- trimws(count)
+  count <- as.integer(count)
   if (!keep_unknown) {
-    na_code <- stri_join(rep("9", width), collapse = "")
-    count[count == na_code] <- NA
+    na_code <- as.integer(10^width - 1)
+    count[count == na_code] <- NA_integer_
   }
-  as.integer(count)
+  count
 }
 
 
@@ -252,9 +279,12 @@ clean_count <- function(count, width, keep_unknown = FALSE) {
 #'   unknown Social Security ID numbers are replaced with \code{NA}.
 #' @export
 clean_ssn <- function(number, keep_unknown = FALSE) {
+  if (is.numeric(number)) {
+    number <- format(as.integer(number), scientific = FALSE)
+  }
   number <- trimws(number)
   if (!keep_unknown) {
-    number[number %in% c("", "999999999")] <- NA
+    number[number %in% c("", "999999999")] <- NA_character_
   }
   number
 }
