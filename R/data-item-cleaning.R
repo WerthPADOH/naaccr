@@ -3,7 +3,7 @@
 # read NAACCR files because they heavily use sentinel values. Columns which will
 # be converted to factors don't need cleaning.
 
-#' Clean free text
+#' Clean free-form text
 #'
 #' @param text A character vector of free text values.
 #' @param keep_unknown Replace values for "unknown" with \code{NA}?
@@ -124,6 +124,7 @@ clean_census_tract <- function(tract, keep_unknown = FALSE) {
 #' @return A character vector with leading and trailing whitespace removed.
 #'   If \code{keep_unknown} is \code{FALSE}, blanks and values representing
 #'   unknown counties are replaced with \code{NA}.
+#' @import stringi
 #' @export
 clean_county_fips <- function(county, keep_unknown = FALSE) {
   county <- trimws(county)
