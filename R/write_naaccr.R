@@ -59,32 +59,46 @@ naaccr_unsentinel <- function(value,
 }
 
 
-#' Format a decimal number for a NAACCR fixed-width file
+#' This function is meant to be used in naaccr_encode. All other functions in
+#' this package should use naaccr_encode instead.
 #' @param x Numeric vector.
 #' @param width Integer giving the field width.
 #' @import stringi
 #' @noRd
 format_decimal <- function(x, width) {
   expanded <- formatC(x, width = width, format = "f")
+  non_finite <- !is.finite(x)
+  if (any(non_finite & !is.na(x))) {
+    warning("Setting non-finite values to missing")
+  }
+  expanded[non_finite] <- NA
   sliced <- substr(expanded, 1L, width)
-  dot_end <- endsWith(sliced, ".")
+  dot_end <- endsWith(sliced, ".") & !is.na(sliced)
   sliced[dot_end] <- stri_sub(sliced[dot_end], 1L, nchar(sliced[dot_end]) - 1L)
-  sliced[!is.finite(x)] <- NA
   trimws(sliced)
 }
 
 
-#' Format an integer for a NAACCR fixed-width file
+#' This function is meant to be used in naaccr_encode. All other functions in
+#' this package should use naaccr_encode instead.
 #' @param x Integer vector
 #' @param width Integer giving the field width
+#' @import stringi
 #' @noRd
 format_integer <- function(x, width) {
   expanded <- formatC(x, width = width, format = "d")
-  expanded[!is.finite(x)] <- NA
+  non_finite <- !is.finite(x)
+  if (any(non_finite & !is.na(x))) {
+    warning("Setting non-finite values to missing")
+  }
+  expanded[non_finite] <- NA
   trimws(expanded)
 }
 
 
+#' This function is meant to be used in naaccr_encode. All other functions in
+#' this package should use naaccr_encode instead.
+#' @param x Date vector
 #' @noRd
 format_date <- function(x) {
   original <- attr(x, "original")
@@ -98,6 +112,9 @@ format_date <- function(x) {
 }
 
 
+#' This function is meant to be used in naaccr_encode. All other functions in
+#' this package should use naaccr_encode instead.
+#' @param x POSIXct vector
 #' @noRd
 format_datetime <- function(x) {
   original <- attr(x, "original")
@@ -127,7 +144,7 @@ format_datetime <- function(x) {
 #'   field contains sentinel values.
 #' @inheritParams write_naaccr
 #' @return Character vector of the values as they would be encoded in a
-#'   NAACCR-formatted text file
+#'   NAACCR-formatted text file.
 #' @seealso \code{\link{split_sentineled}}
 #' @examples
 #'   r <- naaccr_record(
@@ -143,10 +160,8 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
   field_def <- format[list(name = field), on = "name", nomatch = 0L]
   if (nrow(field_def) == 0L) {
     warning("No format for field '", field, "'; defaulting to character")
-    if (is.integer(x)) {
-      return(formatC(x, format = "d"))
-    } else if (is.numeric(x)) {
-      return(formatC(x, format = "f"))
+    if (is.numeric(x)) {
+      return(format(x, scientific = FALSE))
     } else {
       return(as.character(x))
     }
@@ -169,10 +184,10 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
   codes <- as.character(codes)
   too_wide <- stri_width(codes) > width
   if (any(too_wide, na.rm = TRUE)) {
-    codes[too_wide] <- NA
+    codes[too_wide] <- ""
     warning(
       sum(too_wide), " values of '", field,
-      "' field were too wide and set to NA"
+      "' field were too wide and set to blanks"
     )
   }
   if (!is.na(field_def[["alignment"]])) {

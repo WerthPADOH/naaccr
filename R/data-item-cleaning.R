@@ -239,9 +239,11 @@ clean_telephone <- function(number, keep_unknown = FALSE) {
     number <- format(as.integer(number), scientific = FALSE)
   }
   number <- trimws(number)
+  number <- stri_replace_all_fixed(number, "[[:punct:][:space:]]", "")
   if (!keep_unknown) {
     number[grep("^[09]+$", number)] <- NA_character_
     number[!nzchar(number)] <- NA_character_
+    number[grep("\\D", number)] <- NA_character_
   }
   number
 }
