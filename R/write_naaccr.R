@@ -71,7 +71,7 @@ format_decimal <- function(x, width) {
   if (any(non_finite & !is.na(x))) {
     warning("Setting non-finite values to missing")
   }
-  expanded[non_finite] <- NA
+  expanded[non_finite] <- NA_character_
   sliced <- substr(expanded, 1L, width)
   dot_end <- endsWith(sliced, ".") & !is.na(sliced)
   sliced[dot_end] <- stri_sub(sliced[dot_end], 1L, nchar(sliced[dot_end]) - 1L)
@@ -91,7 +91,7 @@ format_integer <- function(x, width) {
   if (any(non_finite & !is.na(x))) {
     warning("Setting non-finite values to missing")
   }
-  expanded[non_finite] <- NA
+  expanded[non_finite] <- NA_character_
   trimws(expanded)
 }
 

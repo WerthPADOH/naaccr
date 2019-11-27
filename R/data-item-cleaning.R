@@ -14,7 +14,7 @@
 clean_text <- function(text, keep_unknown = FALSE) {
   trimmed <- trimws(text)
   if (!keep_unknown) {
-    trimmed[!nzchar(trimmed)] <- NA
+    trimmed[!nzchar(trimmed)] <- NA_character_
   }
   trimmed
 }
@@ -29,7 +29,7 @@ clean_text <- function(text, keep_unknown = FALSE) {
 clean_age <- function(age, keep_unknown = FALSE) {
   age_int <- as.integer(age)
   if (!keep_unknown) {
-    age_int[age_int < 0L | age_int > 120L] <- NA
+    age_int[age_int < 0L | age_int > 120L] <- NA_integer_
   }
   age_int
 }
@@ -45,7 +45,7 @@ clean_age <- function(age, keep_unknown = FALSE) {
 clean_address_city <- function(city, keep_unknown = FALSE) {
   city <- trimws(city)
   if (!keep_unknown) {
-    city[city %in% c('', 'UNKNOWN')] <- NA
+    city[city %in% c('', 'UNKNOWN')] <- NA_character_
   }
   city
 }
@@ -61,7 +61,7 @@ clean_address_city <- function(city, keep_unknown = FALSE) {
 clean_address_number_and_street <- function(location, keep_unknown = FALSE) {
   location <- trimws(location)
   if (!keep_unknown) {
-    location[location %in% c('', 'UNKNOWN')] <- NA
+    location[location %in% c('', 'UNKNOWN')] <- NA_character_
   }
   location
 }
@@ -80,7 +80,7 @@ clean_postal <- function(postal, keep_unknown = FALSE) {
   }
   postal <- trimws(postal)
   if (!keep_unknown) {
-    postal[postal %in% c('', '888888888', '999999999', '999999')] <- NA
+    postal[postal %in% c('', '888888888', '999999999', '999999')] <- NA_character_
   }
   postal
 }
@@ -99,7 +99,7 @@ clean_census_block <- function(block, keep_unknown = FALSE) {
   }
   block <- trimws(block)
   if (!keep_unknown) {
-    block[!grepl("^[1-9]$", block)] <- NA
+    block[!grepl("^[1-9]$", block)] <- NA_character_
   }
   block
 }
@@ -121,7 +121,7 @@ clean_census_tract <- function(tract, keep_unknown = FALSE) {
   if (!keep_unknown) {
     is_tract <- data.table::between(tract, '000100', '949999')
     is_bna   <- data.table::between(tract, '950100', '998999')
-    tract[!is_tract & !is_bna] <- NA
+    tract[!is_tract & !is_bna] <- NA_character_
   }
   tract
 }
@@ -141,8 +141,8 @@ clean_county_fips <- function(county, keep_unknown = FALSE) {
   }
   county <- trimws(county)
   if (!keep_unknown) {
-    stri_subset_regex(county, "^\\d{3}$", negate = TRUE) <- NA
-    county[!nzchar(county)] <- NA
+    stri_subset_regex(county, "^\\d{3}$", negate = TRUE) <- NA_character_
+    county[!nzchar(county)] <- NA_character_
   }
   county
 }
@@ -161,7 +161,7 @@ clean_icd_9_cm <- function(code, keep_unknown = FALSE) {
   }
   code <- trimws(code)
   if (!keep_unknown) {
-    code[code %in% c('', '00000')] <- NA
+    code[code %in% c('', '00000')] <- NA_character_
   }
   code
 }
@@ -181,7 +181,7 @@ clean_icd_code <- function(code, keep_unknown = FALSE) {
   }
   code <- trimws(code)
   if (!keep_unknown) {
-    code[code %in% c('', '0000', '7777', '7797')] <- NA
+    code[code %in% c('', '0000', '7777', '7797')] <- NA_character_
   }
   code
 }
@@ -200,7 +200,7 @@ clean_facility_id <- function(fin, keep_unknown = FALSE) {
   }
   fin <- trimws(fin)
   if (!keep_unknown) {
-    fin[fin %in% c('', '0000000000', '0099999999')] <- NA
+    fin[fin %in% c('', '0000000000', '0099999999')] <- NA_character_
   }
   fin
 }
@@ -220,7 +220,7 @@ clean_physician_id <- function(physician, keep_unknown = FALSE) {
   }
   physician <- trimws(physician)
   if (!keep_unknown) {
-    physician[physician %in% c('', '00000000', '99999999')] <- NA
+    physician[physician %in% c('', '00000000', '99999999')] <- NA_character_
   }
   physician
 }
