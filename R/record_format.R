@@ -2,6 +2,14 @@
 naaccr_boolean12 <- function(x) naaccr_boolean(x, false_value = '1')
 
 
+#' Wrapper to create "keep unknown" versions of functions
+#' @noRd
+keep_unknown <- function(fun) {
+  formals(fun)[["keep_unknown"]] <- TRUE
+  fun
+}
+
+
 #' `type`: name of the field type (see record_format)
 #' `fun`: normal function used to parse the field (factors and sentinels are
 #'   special).
@@ -11,26 +19,26 @@ naaccr_boolean12 <- function(x) naaccr_boolean(x, false_value = '1')
 type_converters <- rbindlist(list(
   list(type = "integer", fun = list(as.integer), fun_unknown = list(as.integer)),
   list(type = "numeric", fun = list(as.numeric), fun_unknown = list(as.numeric)),
-  list(type = "character", fun = list(clean_text), fun_unknown = list(as.character)),
+  list(type = "character", fun = list(clean_text), fun_unknown = list(keep_unknown(clean_text))),
   list(type = "factor", fun = list(identity), fun_unknown = list(identity)),
   list(type = "sentineled_integer", fun = list(identity), fun_unknown = list(identity)),
   list(type = "sentineled_numeric", fun = list(identity), fun_unknown = list(identity)),
-  list(type = "age", fun = list(clean_age), fun_unknown = list(as.integer)),
-  list(type = "icd_code", fun = list(clean_icd_code), fun_unknown = list(as.character)),
-  list(type = "postal", fun = list(clean_postal), fun_unknown = list(as.character)),
-  list(type = "city", fun = list(clean_address_city), fun_unknown = list(as.character)),
-  list(type = "address", fun = list(clean_address_number_and_street), fun_unknown = list(as.character)),
-  list(type = "facility", fun = list(clean_facility_id), fun_unknown = list(as.character)),
-  list(type = "census_block", fun = list(clean_census_block), fun_unknown = list(as.integer)),
-  list(type = "census_tract", fun = list(clean_census_tract), fun_unknown = list(as.character)),
-  list(type = "icd_9", fun = list(clean_icd_9_cm), fun_unknown = list(as.character)),
-  list(type = "county", fun = list(clean_county_fips), fun_unknown = list(as.character)),
-  list(type = "physician", fun = list(clean_physician_id), fun_unknown = list(as.character)),
+  list(type = "age", fun = list(clean_age), fun_unknown = list(keep_unknown(clean_age))),
+  list(type = "icd_code", fun = list(clean_icd_code), fun_unknown = list(keep_unknown(clean_icd_code))),
+  list(type = "postal", fun = list(clean_postal), fun_unknown = list(keep_unknown(clean_postal))),
+  list(type = "city", fun = list(clean_address_city), fun_unknown = list(keep_unknown(clean_address_city))),
+  list(type = "address", fun = list(clean_address_number_and_street), fun_unknown = list(keep_unknown(clean_address_number_and_street))),
+  list(type = "facility", fun = list(clean_facility_id), fun_unknown = list(keep_unknown(clean_facility_id))),
+  list(type = "census_block", fun = list(clean_census_block), fun_unknown = list(keep_unknown(clean_census_block))),
+  list(type = "census_tract", fun = list(clean_census_tract), fun_unknown = list(keep_unknown(clean_census_tract))),
+  list(type = "icd_9", fun = list(clean_icd_9_cm), fun_unknown = list(keep_unknown(clean_icd_9_cm))),
+  list(type = "county", fun = list(clean_county_fips), fun_unknown = list(keep_unknown(clean_county_fips))),
+  list(type = "physician", fun = list(clean_physician_id), fun_unknown = list(keep_unknown(clean_physician_id))),
   list(type = "override", fun = list(naaccr_override), fun_unknown = list(naaccr_override)),
   list(type = "boolean01", fun = list(naaccr_boolean), fun_unknown = list(naaccr_boolean)),
-  list(type = "telephone", fun = list(clean_telephone), fun_unknown = list(as.character)),
-  list(type = "count", fun = list(clean_count), fun_unknown = list(as.integer)),
-  list(type = "ssn", fun = list(clean_ssn), fun_unknown = list(as.character)),
+  list(type = "telephone", fun = list(clean_telephone), fun_unknown = list(keep_unknown(clean_telephone))),
+  list(type = "count", fun = list(clean_count), fun_unknown = list(keep_unknown(clean_count))),
+  list(type = "ssn", fun = list(clean_ssn), fun_unknown = list(keep_unknown(clean_ssn))),
   list(type = "boolean12", fun = list(naaccr_boolean12), fun_unknown = list(naaccr_boolean12)),
   list(type = "Date", fun = list(naaccr_date), fun_unknown = list(naaccr_date)),
   list(type = "datetime", fun = list(naaccr_datetime), fun_unknown = list(naaccr_datetime))
