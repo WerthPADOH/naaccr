@@ -7,8 +7,9 @@ Author: Nathan Werth [aut, cre],
     North American Association of Cancer Registries [cph],
     World Health Organization [cph],
     American Joint Committee on Cancer [cph],
-    United States Centers for Disease Control and Prevention [cph],
-    United States Bureau of the Census [cph]
+    United States Centers for Disease Control and Prevention [ctb],
+    United States Bureau of the Census [ctb],
+    United States National Program of Cancer Registries [ctb]
 Maintainer: Nathan Werth <nwerth@pa.gov>
 Description: Functions for reading cancer record files which follow a format
     defined by the North American Association of Central Cancer Registries
