@@ -150,6 +150,18 @@ test_that("as.naaccr_record auto-cleans fields", {
   }
 })
 
+test_that("naaccr_record can preserve 'unknown' codes in cleaned fields", {
+  record <- naaccr_record(
+    ageAtDiagnosis = c("001", "200"),
+    addrAtDxPostalCode = c("888888888", "90210"),
+    dateOfDiagnosis = c("19900801", "1998    "),
+    keep_unknown = TRUE
+  )
+  expect_identical(record[["ageAtDiagnosis"]], c(1L, 200L))
+  expect_identical(record[["addrAtDxPostalCode"]], c("888888888", "90210"))
+  expect_equivalent(record[["dateOfDiagnosis"]], as.Date(c("1990-08-01", NA)))
+})
+
 test_that("as.naaccr_record creates fields with correct classes", {
   record <- as.naaccr_record(list(
     ageAtDiagnosis          = NA,
