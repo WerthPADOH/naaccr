@@ -1,14 +1,6 @@
 Below is the copyright information for all file formats, data item codes, and
 SAS code found in files in the `data-raw` and `ignore/format-sources` directories.
 
-Copyright: American Joint Committee on Cancer
-Files:
-  - `data-raw/code-labels/derived_stage_flag.csv`
-  - `data-raw/code-labels/gradePathSystem.csv`
-  - `data-raw/code-labels/gradePathValue.csv`
-  - `data-raw/code-labels/overRideCs20.csv`
-  - `data-raw/code-labels/tnm_descriptor.csv`
-
 Copyright: Codes from the United States Centers for Disease Control and
 Prevention are public domain under 17 U.S. Code § 105.
 Files:
