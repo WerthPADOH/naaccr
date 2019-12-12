@@ -13,6 +13,8 @@ Maintainer: Nathan Werth <nwerth@pa.gov>
 Description: Functions for reading cancer record files which follow a format
     defined by the North American Association of Central Cancer Registries
     (NAACCR).
+URL: https://github.com/WerthPADOH/naaccr
+BugReports: https://github.com/WerthPADOH/naaccr/issues
 Imports:
     data.table,
     stringi,
