@@ -1,6 +1,6 @@
 Package: naaccr
 Type: Package
-Title: Read cancer records in the NAACCR format
+Title: Read Cancer Records in the NAACCR Format
 Version: 1.0.0
 Author: Nathan Werth [aut, cre],
     Pennsylvania Department of Health [cph],
