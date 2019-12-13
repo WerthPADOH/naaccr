@@ -222,3 +222,107 @@ read_naaccr <- function(input,
     ...
   )
 }
+
+
+#' Gather all <Item> nodes under a <NaaccrData>, <Patient>, or <Tumor>.
+#' These will be combined with other node-items in a single table.
+#' @importFrom XML getNodeSet xmlGetAttr xmlValue
+#' @importFrom stringi stri_trim_both
+#' @noRd
+items_to_row <- function(parent_node, keep_fields) {
+  items <- getNodeSet(parent_node, "ns:Item", namespaces = "ns")
+  ids <- vapply(items, xmlGetAttr, character(1), name = "naaccrId")
+  names(items) <- ids
+  if (!is.null(keep_fields)) {
+    items <- items[ids %in% keep_fields]
+  }
+  values <- vapply(items, xmlValue, character(1))
+  values <- stringi::stri_trim_both(values)
+  out <- as.list(values)
+  names(out) <- names(items)
+  out
+}
+
+
+#' @importFrom XML getNodeSet
+#' @noRd
+make_patient_table <- function(patient, keep_fields) {
+  tumors <- getNodeSet(patient, "ns:Tumor", namespaces = "ns")
+  tumor_rows <- lapply(tumors, items_to_row, keep_fields = keep_fields)
+  patient_table <- rbindlist(tumor_rows, use.names = TRUE, fill = TRUE)
+  patient_items <- items_to_row(patient, keep_fields = keep_fields)
+  if (length(patient_items)) {
+    set(patient_table, j = names(patient_items), value = patient_items)
+  }
+  patient_table
+}
+
+
+#' @importFrom XML getNodeSet
+#' @noRd
+make_registry_table <- function(registry, keep_fields) {
+  patients <- getNodeSet(registry, "ns:Patient", namespaces = "ns")
+  patient_rows <- lapply(patients, make_patient_table, keep_fields = keep_fields)
+  registry_table <- rbindlist(patient_rows, use.names = TRUE, fill = TRUE)
+  registry_items <- items_to_row(registry, keep_fields = keep_fields)
+  if (length(registry_items)) {
+    set(registry_table, j = names(registry_items), value = registry_items)
+  }
+  registry_table
+}
+
+
+#' @inheritParams read_naaccr_plain
+#' @param as_text Logical indicating (if \code{TRUE}) that \code{input} is a
+#'   character string containing XML or (if \code{FALSE}) it is the path to a
+#'   file with XML content
+#' @importFrom XML xmlInternalTreeParse free getNodeSet
+#' @import data.table
+#' @export
+read_naaccr_xml_plain <- function(input,
+                                  keep_fields = NULL,
+                                  as_text = FALSE,
+                                  encoding = getOption("encoding")) {
+  tree <- xmlInternalTreeParse(
+    file = input, ignoreBlanks = FALSE, asText = as_text
+  )
+  on.exit(free(tree), add = TRUE)
+  registry_nodes <- getNodeSet(tree, "//ns:NaaccrData", namespaces = "ns")
+  registry_tables <- lapply(
+    registry_nodes, make_registry_table, keep_fields = keep_fields
+  )
+  records <- rbindlist(registry_tables, use.names = TRUE, fill = TRUE)
+  if (!is.null(keep_fields)) {
+    # Preserve order of keep_fields
+    kept <- match(names(records), keep_fields)
+    records <- records[, keep_fields[sort(kept)], with = FALSE]
+  }
+  setDF(records)
+  records
+}
+
+
+#' @inheritParams read_naaccr
+#' @export
+read_naaccr_xml <- function(input,
+                            version = NULL,
+                            format = NULL,
+                            keep_fields = NULL,
+                            keep_unknown = FALSE,
+                            as_text = FALSE,
+                            encoding = getOption("encoding"),
+                            ...) {
+  records <- read_naaccr_xml_plain(
+    input = input,
+    keep_fields = keep_fields,
+    as_text = as_text,
+    encoding = encoding
+  )
+  as.naaccr_record(
+    x = records,
+    keep_unknown = keep_unknown,
+    version = version,
+    format = format,
+    ...
+  )
+}
