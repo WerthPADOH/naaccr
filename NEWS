@@ -1,5 +1,17 @@
 # Change log
 
+## 1.0.0
+
+-   Added `field_levels` and `field_levels_all` lists, which make it easy to see
+    the possible values for factor fields.
+-   All factor and sentinel levels are now easy to type on a standard U.S.
+    QWERTY keyboard.
+-   Repeatedly applying `naaccr_factor` or `naaccr_sentinel`
+    (e.g., `naaccr_factor(naaccr_factor(...))`) is now a no-op.
+-   Removed AJCC-copyright material.
+-   Functions are safer: more argument checking, warnings, and option-robustness.
+-   Fixed bugs with handling custom formats and columns not in the format.
+
 ## 0.5.0
 
 -   Processed date and time fields now store their original text values in the

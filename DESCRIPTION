@@ -1,18 +1,20 @@
 Package: naaccr
 Type: Package
-Title: Read cancer records in the NAACCR format
-Version: 0.5.0
+Title: Read Cancer Records in the NAACCR Format
+Version: 1.0.0
 Author: Nathan Werth [aut, cre],
     Pennsylvania Department of Health [cph],
     North American Association of Cancer Registries [cph],
     World Health Organization [cph],
-    American Joint Committee on Cancer [cph],
-    United States Centers for Disease Control and Prevention [cph],
-    United States Bureau of the Census [cph]
+    United States Centers for Disease Control and Prevention [ctb],
+    United States Bureau of the Census [ctb],
+    United States National Program of Cancer Registries [ctb]
 Maintainer: Nathan Werth <nwerth@pa.gov>
 Description: Functions for reading cancer record files which follow a format
     defined by the North American Association of Central Cancer Registries
     (NAACCR).
+URL: https://github.com/WerthPADOH/naaccr
+BugReports: https://github.com/WerthPADOH/naaccr/issues
 Imports:
     methods,
     data.table,

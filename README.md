@@ -67,7 +67,7 @@ can improve time and memory efficiency.
 
 ``` r
 dim(records)
-#> [1]  20 866
+#> [1]  20 867
 records_slim <- read_naaccr(
   input       = record_file,
   version     = 18,

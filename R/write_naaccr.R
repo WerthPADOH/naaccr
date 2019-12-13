@@ -3,7 +3,7 @@
 #' @param field Character string naming the field.
 #' @noRd
 naaccr_unfactor <- function(x, field) {
-  if (length(field) != 1L) {
+  if (length(field) != 1L || !is.character(field)) {
     stop("field should be single string")
   }
   field_scheme <- field_code_scheme[list(name = field), on = "name"]
@@ -34,7 +34,7 @@ naaccr_unsentinel <- function(value,
                               width,
                               type = c("integer", "numeric")) {
   type <- match.arg(type)
-  if (length(field) != 1L) {
+  if (length(field) != 1L || !is.character(field)) {
     stop("field should be single string")
   }
   field_scheme <- field_sentinel_scheme[list(name = field), on = "name"]
@@ -42,11 +42,11 @@ naaccr_unsentinel <- function(value,
     stop(field, " matched ", nrow(field_scheme), " schema")
   }
   sentinels <- field_sentinels[field_scheme, on = "scheme"]
-  is_flagged <- !is.na(flag)
+  is_flagged <- if (is.null(flag)) rep(FALSE, length(value)) else !is.na(flag)
   out <- rep_len(NA_character_, length(value))
   out[!is_flagged] <- switch(type,
-    integer = format_integer(value[!is_flagged], width),
-    numeric = format_decimal(value[!is_flagged], width)
+    integer = format_integer(as.integer(value)[!is_flagged], width),
+    numeric = format_decimal(as.numeric(value)[!is_flagged], width)
   )
   sents <- sentinels[
     list(label = as.character(flag[is_flagged])),
@@ -59,32 +59,46 @@ naaccr_unsentinel <- function(value,
 }
 
 
-#' Format a decimal number for a NAACCR fixed-width file
+#' This function is meant to be used in naaccr_encode. All other functions in
+#' this package should use naaccr_encode instead.
 #' @param x Numeric vector.
 #' @param width Integer giving the field width.
 #' @import stringi
 #' @noRd
 format_decimal <- function(x, width) {
   expanded <- formatC(x, width = width, format = "f")
+  non_finite <- !is.finite(x)
+  if (any(non_finite & !is.na(x))) {
+    warning("Setting non-finite values to missing")
+  }
+  expanded[non_finite] <- NA_character_
   sliced <- substr(expanded, 1L, width)
-  dot_end <- endsWith(sliced, ".")
+  dot_end <- endsWith(sliced, ".") & !is.na(sliced)
   sliced[dot_end] <- stri_sub(sliced[dot_end], 1L, nchar(sliced[dot_end]) - 1L)
-  sliced[!is.finite(x)] <- NA
   trimws(sliced)
 }
 
 
-#' Format an integer for a NAACCR fixed-width file
+#' This function is meant to be used in naaccr_encode. All other functions in
+#' this package should use naaccr_encode instead.
 #' @param x Integer vector
 #' @param width Integer giving the field width
+#' @import stringi
 #' @noRd
 format_integer <- function(x, width) {
   expanded <- formatC(x, width = width, format = "d")
-  expanded[!is.finite(x)] <- NA
+  non_finite <- !is.finite(x)
+  if (any(non_finite & !is.na(x))) {
+    warning("Setting non-finite values to missing")
+  }
+  expanded[non_finite] <- NA_character_
   trimws(expanded)
 }
 
 
+#' This function is meant to be used in naaccr_encode. All other functions in
+#' this package should use naaccr_encode instead.
+#' @param x Date vector
 #' @noRd
 format_date <- function(x) {
   original <- attr(x, "original")
@@ -98,6 +112,9 @@ format_date <- function(x) {
 }
 
 
+#' This function is meant to be used in naaccr_encode. All other functions in
+#' this package should use naaccr_encode instead.
+#' @param x POSIXct vector
 #' @noRd
 format_datetime <- function(x) {
   original <- attr(x, "original")
@@ -127,7 +144,7 @@ format_datetime <- function(x) {
 #'   field contains sentinel values.
 #' @inheritParams write_naaccr
 #' @return Character vector of the values as they would be encoded in a
-#'   NAACCR-formatted text file
+#'   NAACCR-formatted text file.
 #' @seealso \code{\link{split_sentineled}}
 #' @examples
 #'   r <- naaccr_record(
@@ -143,7 +160,11 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
   field_def <- format[list(name = field), on = "name", nomatch = 0L]
   if (nrow(field_def) == 0L) {
     warning("No format for field '", field, "'; defaulting to character")
-    return(as.character(x))
+    if (is.numeric(x)) {
+      return(format(x, scientific = FALSE))
+    } else {
+      return(as.character(x))
+    }
   }
   width <- field_def[["end_col"]] - field_def[["start_col"]] + 1L
   codes <- switch(as.character(field_def[["type"]]),
@@ -163,10 +184,10 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
   codes <- as.character(codes)
   too_wide <- stri_width(codes) > width
   if (any(too_wide, na.rm = TRUE)) {
-    codes[too_wide] <- NA
+    codes[too_wide] <- ""
     warning(
       sum(too_wide), " values of '", field,
-      "' field were too wide and set to NA"
+      "' field were too wide and set to blanks"
     )
   }
   if (!is.na(field_def[["alignment"]])) {
@@ -184,7 +205,6 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
 #' Replace values in a record dataset with format-adhering values
 #' @noRd
 encode_records <- function(records, format) {
-  records <- if (is.data.table(records)) copy(records) else as.data.table(records)
   # Combine the "reportable" and "only tumor" fields back into sequence number
   for (ii in seq_len(ncol(sequence_number_columns))) {
     number_name <- sequence_number_columns[["number", ii]]
@@ -247,14 +267,6 @@ prepare_writing_format <- function(format, fields) {
   ][
     ,
     type := as.character(type)
-  ][
-    field_code_scheme,
-    on = "name",
-    type := "factor"
-  ][
-    field_sentinel_scheme,
-    on = "name",
-    type := paste0("sentineled_", type)
   ]
   set(
     fmt,
@@ -265,7 +277,7 @@ prepare_writing_format <- function(format, fields) {
 }
 
 
-#' Write records to a NAACCR-formatted fixed-width file
+#' Write records in NAACCR format
 #'
 #' Write records from a \code{\link{naaccr_record}} object to a connection in
 #' fixed-width format, according to a specific version of the NAACCR format.
@@ -281,6 +293,7 @@ prepare_writing_format <- function(format, fields) {
 #' @import stringi
 #' @export
 write_naaccr <- function(records, con, version = NULL, format = NULL) {
+  records <- if (is.data.table(records)) copy(records) else as.data.table(records)
   write_format <- choose_naaccr_format(version = version, format = format)
   write_format <- prepare_writing_format(write_format, names(records))
   setorderv(write_format, "start_col")
@@ -385,6 +398,7 @@ write_naaccr_xml <- function(records,
       )
     }
   }
+  records <- if (is.data.table(records)) copy(records) else as.data.table(records)
   records <- encode_records(records, write_format)
   tiered_items <- split(write_format[["name"]], write_format[["parent"]])
   time_gen <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S")
