@@ -352,6 +352,24 @@ group_values <- function(dataset, node_name) {
 }
 
 
+#' @import stringi
+#' @import data.table
+#' @noRd
+compose_items_xml <- function(dataset) {
+  node_list <- data.table::transpose(dataset)
+  vapply(
+    X = node_list,
+    FUN = function(values) {
+      stri_join(
+        '<Item naaccrId="', names(dataset), '">', values, "</Item>",
+        collapse = ""
+      )
+    },
+    FUN.VALUE = character(1L)
+  )
+}
+
+
 #' Write records to a NAACCR-formatted XML file
 #' @inheritParams write_naaccr
 #' @param base_dictionary URI for the dictionary defining the NAACCR data items.
@@ -364,15 +382,18 @@ group_values <- function(dataset, node_name) {
 #'   \code{\link[=XMLInternalDocument-class]{XMLInternalDocument}} object which
 #'   was written to \code{con}.
 #' @import data.table
-#' @importFrom XML newXMLNode newXMLDoc addChildren
-#' @importFrom methods as
 #' @export
 write_naaccr_xml <- function(records,
                              con,
                              version = NULL,
                              format = NULL,
                              base_dictionary = NULL,
-                             user_dictionary = NULL) {
+                             user_dictionary = NULL,
+                             encoding = "UTF-8") {
+  if (is.character(con)) {
+    con <- file(con, "w", encoding = "UTF-8")
+    on.exit(try(close(con)), add = TRUE)
+  }
   write_format <- choose_naaccr_format(version = version, format = format)
   write_format <- prepare_writing_format(write_format, names(records))
   # Determine XML namespace from given format or version
@@ -405,52 +426,48 @@ write_naaccr_xml <- function(records,
   tiered_items <- split(write_format[["name"]], write_format[["parent"]])
   time_gen <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S")
   time_gen <- paste0(substr(time_gen, 1, 22), ":", substr(time_gen, 23, 24))
-  naaccr_data <- newXMLNode(
-    name = "NaaccrData",
-    namespaceDefinitions = "http://naaccr.org/naaccrxml",
-    attrs = c(
-      baseDictionaryUri = base_dictionary,
-      userDictionaryUri = user_dictionary,
-      specificationVersion = "1.4",
-      timeGenerated = time_gen
-    )
+  naaccr_data_tag <- paste0(
+    "<NaaccrData xmlns = \"http://naaccr.org/naaccrxml\"",
+    " baseDictionaryUri = \"", base_dictionary, "\"",
+    " userDictionaryUri = \"", user_dictionary, "\"",
+    " specificationVersion = \"1.4\"",
+    " timeGenerated = \"", time_gen, "\">"
   )
-  root <- newXMLDoc(node = naaccr_data)
-  nd_nodes <- lapply(
-    tiered_items[["NaaccrData"]],
-    FUN = function(nd) {
-      value <- select_first_cautiously(records[[nd]])
-      newXMLNode(name = "Item", attrs = c(naaccrId = nd), value)
-    }
-  )
-  addChildren(naaccr_data, kids = nd_nodes)
+  if (length(tiered_items[["NaaccrData"]])) {
+    naaccr_data <- unique(records[, tiered_items[["NaaccrData"]], with = FALSE])
+    naaccr_data_items <- compose_items_xml(naaccr_data)
+  } else {
+    naaccr_data_items <- NULL
+  }
+  writeLines(c(naaccr_data_tag, naaccr_data_items), con)
   if (!("patientIdNumber" %in% names(records))) {
     set(records, j = "patientIdNumber", value = seq_len(nrow(records)))
   }
-  pids <- unique(records[["patientIdNumber"]])
-  patients <- records[
-    list(patientIdNumber = pids),
-    on = "patientIdNumber",
-    mult = "first",
-    union("patientIdNumber", tiered_items[["Patient"]]),
-    with = FALSE
-  ]
-  set(patients, j = "p_node", value = list(group_values(patients, "Patient")))
-  tumors <- records[, tiered_items[["Tumor"]], with = FALSE]
-  set(tumors, j = "t_node", value = list(group_values(tumors, "Tumor")))
-  set(tumors, j = "patientIdNumber", value = records[["patientIdNumber"]])
-  t_node <- NULL # Avoid references in parent environments
-  patients <- tumors[
-    ,
-    list(t_nodes = list(t_node)),
-    by = "patientIdNumber"
-  ][
-    patients,
-    on = "patientIdNumber"
-  ]
-  for (ii in seq_len(nrow(patients))) {
-    addChildren(patients[["p_node"]][[ii]], kids = patients[["t_nodes"]][[ii]])
-    addChildren(naaccr_data, patients[["p_node"]][[ii]])
+  patient_vars <- union("patientIdNumber", tiered_items[["Patient"]])
+  patients <- unique(records[, patient_vars, with = FALSE])
+  if (length(tiered_items[["Patient"]])) {
+    patients[
+      ,
+      patient_items := compose_items_xml(.SD),
+      .SDcols = tiered_items[["Patient"]]
+    ]
+  } else {
+    set(patient, j = "patient_items", value = "")
   }
-  invisible(writeLines(as(root, "character"), con = con))
+  records[
+    patients,
+    on = patient_vars,
+    {
+      if (length(tiered_items[["Tumor"]])) {
+        tumor_items <- compose_items_xml(.SD[, tiered_items[["Tumor"]], with = FALSE])
+        tumors <- stri_join("<Tumor>", tumor_items, "</Tumor>")
+      } else {
+        tumors <- NULL
+      }
+      writeLines(c("<Patient>", patient_items, tumors, "</Patient>"), con = con)
+    },
+    by = .EACHI,
+  ]
+  writeLines("</NaaccrData>", con = con)
+  NULL
 }
