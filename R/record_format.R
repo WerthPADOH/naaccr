@@ -83,9 +83,13 @@ type_converters <- rbindlist(list(
 #'     }
 #'     \item{\code{start_col}}{
 #'       (\code{integer}) First column of the field in a fixed-width text file.
+#'       If \code{NA}, the field will not be read from or written to fixed-width
+#'       files. They will included in XML files.
 #'     }
 #'     \item{\code{end_col}}{
 #'       (\code{integer}) Last column of the field in a fixed-width text file.
+#'       If \code{NA}, the field will not be read from or written to fixed-width
+#'       files. They will included in XML files.
 #'     }
 #'     \item{\code{type}}{
 #'       (\code{factor}) R class for the column vector.
@@ -215,9 +219,9 @@ type_converters <- rbindlist(list(
 #' @export
 record_format <- function(name,
                           item,
-                          start_col,
-                          end_col,
-                          type,
+                          start_col    = NA,
+                          end_col      = NA,
+                          type         = "character",
                           alignment    = "left",
                           padding      = " ",
                           name_literal = NULL,

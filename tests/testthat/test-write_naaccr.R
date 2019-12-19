@@ -157,3 +157,19 @@ test_that("write_naaccr_xml puts items under correct parent node", {
   tumor_ids <- xpathSApply(tree, "//x:Tumor/x:Item", get_ids, namespaces = "x")
   expect_setequal(sort(tumor_ids), sort(item_tiers[["Tumor"]]))
 })
+
+test_that("write_naaccr_xml handles custom fields without column info", {
+  rf <- record_format(
+    name = "blah",
+    item = 9999,
+    start_col = NA,
+    end_col = NA,
+    type = "integer",
+    alignment = "left",
+    padding = "0",
+    name_literal = "blah blah",
+    parent = "Patient"
+  )
+  recs <- data.frame(blah = 1:4)
+  expect_silent(write_naaccr_xml_to_vector(recs, format = rf))
+})
