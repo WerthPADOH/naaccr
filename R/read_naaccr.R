@@ -227,7 +227,7 @@ read_naaccr <- function(input,
 #' Gather all <Item> nodes under a <NaaccrData>, <Patient>, or <Tumor>.
 #' These will be combined with other node-items in a single table.
 #' @importFrom XML getNodeSet xmlGetAttr xmlValue
-#' @importFrom stringi stri_trim_both
+#' @import stringi
 #' @noRd
 items_to_row <- function(parent_node, keep_fields) {
   items <- getNodeSet(parent_node, "ns:Item", namespaces = "ns")
