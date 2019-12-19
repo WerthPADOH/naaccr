@@ -210,7 +210,7 @@ encode_records <- function(records, format) {
   # Combine the "reportable" and "only tumor" fields back into sequence number
   for (ii in seq_len(ncol(sequence_number_columns))) {
     number_name <- sequence_number_columns[["number", ii]]
-    if (number_name %in% format[["name"]]) {
+    if (number_name %in% format[["name"]] && number_name %in% names(records)) {
       only_name <- sequence_number_columns[["only", ii]]
       only_tumor <- which(records[[only_name]])
       set(x = records, i = only_tumor, j = number_name, value = 0L)
