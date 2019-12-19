@@ -430,7 +430,7 @@ write_naaccr_xml <- function(records,
     list(patientIdNumber = pids),
     on = "patientIdNumber",
     mult = "first",
-    tiered_items[["Patient"]],
+    union("patientIdNumber", tiered_items[["Patient"]]),
     with = FALSE
   ]
   set(patients, j = "p_node", value = list(group_values(patients, "Patient")))
