@@ -1,0 +1,5 @@
+"code","label","means_missing","description"
+"","not converted",FALSE,"Not converted (clarification for cases diagnosed as of January 1, 2007: cases coded in prior ICD-O version and not converted to ICD-O-3)"
+"0","morphology originally coded in ICD-O-3",FALSE,"Morphology (Morph--Type&Behav ICD-O-3 [521]) originally coded in ICD-O-3"
+"1","morphology converted without review",FALSE,"Morphology (Morph--Type&Behav ICD-O-3 [521]) converted from (Morph--Type&Behav ICD-O-2 [419]) without review"
+"3","morphology converted with review",FALSE,"Morphology (Morph--Type&Behav ICD-O-3 [521]) converted from (Morph--Type&Behav ICD-O-2 [419]) with review"

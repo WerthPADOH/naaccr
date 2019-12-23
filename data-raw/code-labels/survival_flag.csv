@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"","not coded",FALSE,"Not coded"
+"0","complete dates, 0 days survival",FALSE,"Complete dates are available and there are 0 days of survival (i.e., date last contact = date of diagnosis)"
+"1","complete dates, 1+ days survival",FALSE,"Complete dates are available and there are more than 0 days of survival (i.e., date last contact > date diagnosis)"
+"2","incomplete dates, 0 days survival possible",FALSE,"Incomplete dates are available and there could be zero days of follow-up (i.e., known components are equal, e.g., 2006 and 20061002)"
+"3","incomplete dates, 1+ days survival",FALSE,"Incomplete dates are available and there cannot be zero days of follow-up (i.e., any difference in known date components, e.g., 200602 and 200603)"
+"8","death certificate or autopsy only",FALSE,"Not calculated because a Death Certificate Only or Autopsy Only case"
+"9","unknown",TRUE,"Unknown"

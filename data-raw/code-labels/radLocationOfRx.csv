@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"0","no treatment",FALSE,"No radiation treatment"
+"1","facility only",FALSE,"All radiation treatment at this facility"
+"2","regional at facility, boost elsewhere",FALSE,"Regional treatment at this facility, boost elsewhere"
+"3","boost at facility, regional elsewhere",FALSE,"Boost radiation at this facility, regional elsewhere"
+"4","elsewhere only",FALSE,"All radiation treatment elsewhere"
+"8","other",FALSE,"Other, NOS"
+"9","unknown",TRUE,"Unknown"

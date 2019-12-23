@@ -1,0 +1,5 @@
+"code","label","means_missing","description"
+"0","conclusive term",FALSE,"Conclusive term"
+"1","ambiguous term only",FALSE,"Ambiguous term only"
+"2","ambiguous term followed by conclusive term",FALSE,"Ambiguous term followed by conclusive term"
+"9","unknown",TRUE,"Unknown term"

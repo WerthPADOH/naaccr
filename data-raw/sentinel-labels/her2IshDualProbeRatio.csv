@@ -1,0 +1,6 @@
+"sentinel","label"
+"XX.2","< 2"
+"XX.3",">= 2"
+"XX.7","test ordered, results unknown"
+"XX.8","not applicable"
+"XX.9","not documented"

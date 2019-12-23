@@ -1,0 +1,5 @@
+"code","label","means_missing","description"
+"1","grade I or 1",FALSE,"Recorded as Grade I or 1"
+"2","grade II or 2",FALSE,"Recorded as Grade II or 2"
+"3","grade III or 3",FALSE,"Recorded as Grade III or 3"
+"4","grade IV or 4",FALSE,"Recorded as Grade IV or 4"

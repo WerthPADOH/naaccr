@@ -1,0 +1,3 @@
+"code","label","means_missing","description"
+"","derived summary stage 2000 or diagnosed prior to 2012.",FALSE,"Derived Summary Stage 2000 [3020] reported using Collaborative Stage Data Collection System or case diagnosed prior to 2012."
+"1","directly coded SEER summary stage 2000",FALSE,"Directly coded SEER Summary Stage 2000 [759] used to report Summary Stage; Derived Summary Stage 2000 [3020] must be blank."

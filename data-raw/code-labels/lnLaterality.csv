@@ -1,0 +1,7 @@
+"code","label","means_missing","description"
+"0","none",FALSE,"No regional lymph node involvement"
+"1","unilateral",FALSE,"Unilateral - all positive regional nodes with same laterality OR only one regional node positive"
+"2","bilateral",FALSE,"Bilateral - positive bilateral regional lymph nodes"
+"3","unknown laterality",TRUE,"Laterality unknown - positive regional lymph nodes with unknown laterality"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",TRUE,"Not documented in medical record; Lymph node laterality not assessed or unknown if assessed"

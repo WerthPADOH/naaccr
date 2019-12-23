@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"","not coded",FALSE,"Census Tract 1970/80/90 not coded"
+"0","not tracted",FALSE,"Not tracted"
+"1","1970 Census",FALSE,"1970 Census Tract Definitions"
+"2","1980 Census",FALSE,"1980 Census Tract Definitions"
+"3","1990 Census",FALSE,"1990 Census Tract Definitions"

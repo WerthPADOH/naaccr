@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"1","all urban",FALSE,"All urban-the percent of the population in an urban area = 100%"
+"2","mostly urban",FALSE,"Mostly urban-the percent of the population in an urban area < 100% and >= 50%"
+"3","mostly rural",FALSE,"Mosty rural-the percent of the population in an urban area > 0% and < 50%"
+"4","all rural",FALSE,"All rural-the percent of the population in an urban area = 0%"
+"9","unknown",TRUE,"Unknown or not applicable-census tract not available or tract population was zero at the last decadal census"

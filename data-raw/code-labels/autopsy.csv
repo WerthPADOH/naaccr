@@ -1,0 +1,5 @@
+"code","label","means_missing","description"
+"0","not applicable; patient alive",FALSE,"Not applicable; patient alive"
+"1","autopsy performed",FALSE,"Autopsy performed"
+"2","no autopsy performed",FALSE,"No autopsy performed"
+"9","unknown",TRUE,"Patient expired, unknown if autopsy performed"

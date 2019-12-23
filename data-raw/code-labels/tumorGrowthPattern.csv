@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"1","mass-forming",FALSE,"Mass-forming"
+"2","periductal infiltrating",FALSE,"Periductal infiltrating"
+"3","mass-forming and periductal infiltrating",FALSE,"Mixed mass-forming and periductal infiltrating"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case (If this information is required by your standard setter, use of code 8 may result in an edit error.) "
+"9","unknown",TRUE,"Not documented in medical record; pathology report does not mention tumor growth pattern; cannot be determined by the pathologist; tumor growth pattern not assessed or unknown if assessed"

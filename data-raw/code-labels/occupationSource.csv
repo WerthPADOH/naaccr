@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"0","unknown occupation",FALSE,"Unknown occupation/no occupation available"
+"1","reporting facility",FALSE,"Reporting facility records"
+"2","death certificate",FALSE,"Death certificate"
+"3","interview",FALSE,"Interview"
+"7","other",FALSE,"Other source"
+"8","not applicable",TRUE,"Not applicable"
+"9","unknown",TRUE,"Unknown source"

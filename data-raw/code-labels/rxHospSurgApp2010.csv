@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"0","none",FALSE,"No surgical procedure of primary site at this facility. Diagnosed at autopsy."
+"1","robotic assisted",FALSE,"Robotic assisted."
+"2","robotic converted to open",FALSE,"Robotic converted to open."
+"3","endoscopic or laparoscopic",FALSE,"Endoscopic or laparoscopic."
+"4","endoscopic or laparoscopic converted to open",FALSE,"Endoscopic or laparoscopic converted to open."
+"5","open, NOS.",FALSE,"Open. Approach not specified."
+"9","unknown",TRUE,"Unknown whether surgery was performed; patient record does not state whether a surgical procedure of the primary site was performed and no information is available; death certificate only."

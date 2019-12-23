@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"0","none",FALSE,"Ipsilateral adrenal gland involvement not present/not identified"
+"1","contiguous ",FALSE,"Adrenal gland involvement by direct involvement (contiguous involvement)"
+"2","noncontiguous",FALSE,"Adrenal gland involvement by separate nodule (noncontiguous involvement)"
+"3","contiguous and noncontiguous",FALSE,"Combination of code 1-2"
+"4","involvement, NOS",FALSE,"Ipsilateral adrenal gland involvement, unknown if direct involvement or separate nodule"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case; (If this information is required by your standard setter, use of code 8 may result in an edit error.)"
+"9","unknown",TRUE,"Not documented in medical record; Ipsilateral adrenal gland not resected; Ipsilateral adrenal gland involvement not assessed or unknown if assessed; No surgical resection of primary site is performed"

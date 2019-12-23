@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"0","none",FALSE,"No radiation to the brain and/or central nervous system"
+"1","radiation",FALSE,"Radiation"
+"7","recommended, refused",FALSE,"Patient or patient's guardian refused"
+"8","recommended, unknown if administered",FALSE,"Radiation recommended, unknown if administered"
+"9","unknown",TRUE,"Unknown; not applicable"

@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"0","not paired site",FALSE,"Not a paired site"
+"1","right",FALSE,"Right: origin of primary"
+"2","left",FALSE,"Left: origin of primary"
+"3","one side, NOS",FALSE,"Only one side involved, right or left origin unspecified"
+"4","bilateral",FALSE,"Bilateral involvement at time of diagnosis, lateral origin unknown for a single primary; or both ovaries involved simultaneously, single histology; bilateral retinoblastomas; bilateral Wilms' tumors"
+"5","midline",FALSE,"Paired site: midline tumor"
+"9","unknown",TRUE,"Paired site, but no information concerning laterality"

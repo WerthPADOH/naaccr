@@ -1,0 +1,7 @@
+"code","label","means_missing","description"
+"I","incidence",FALSE,"Incidence-only record type (nonconfidential coded data) Length = 4048"
+"C","confidential",FALSE,"Confidential record type (incidence record plus confidential data) Length = 6154"
+"A","abstract",FALSE,"Full case Abstract record type (incidence and confidential data plus text summaries; used for reporting to central registries) Length = 24194"
+"U","update",FALSE,"Correction/ Update record type (short format record used to submit corrections to data already submitted) Length = 1543"
+"M","modified",FALSE,"Record Modified since previous submission to central registry (identical in format to the \"A\" record type; used to submit changes to data already submitted) Length = 24194"
+"L","laboratory",FALSE,"Pathology Laboratory"

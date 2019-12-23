@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"1","ICD-8 and motnac",FALSE,"ICD-8 and MOTNAC"
+"2","ICD-9",FALSE,"ICD-9"
+"3","ICD-O-1",FALSE,"ICD-O, First Edition"
+"4","ICD-O-2",FALSE,"ICD-O, Second Edition"
+"5","ICD-O-3",FALSE,"ICD-O, Third Edition"
+"6","ICD-10",FALSE,"ICD-10"
+"9","other",TRUE,"Other"

@@ -1,0 +1,4 @@
+"code","label","means_missing","description"
+"1","urban",FALSE,"Urban commuting area-RUCA codes 1.0, 1.1, 2.0, 2.1, 3.0, 4.1, 5.1, 7.1, 8.1, and 10.1"
+"2","non-urban",FALSE,"Not an urban commuting area-All other RUCA codes except 99"
+"9","unknown",TRUE,"Unknown or not applicable-census tract not available or RUCA code = 99"

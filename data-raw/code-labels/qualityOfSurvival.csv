@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"0","normal activity",FALSE,"Normal activity"
+"1","symptomatic and ambulatory",FALSE,"Symptomatic and ambulatory"
+"2","occasionally needs assistance",FALSE,"Ambulatory more than 50 percent of the time, occasionally needs assistance"
+"3","nursing care needed",FALSE,"Ambulatory less than 50 percent of the time, nursing care needed"
+"4","bedridden",FALSE,"Bedridden, may require hospitalization"
+"8","not applicable",TRUE,"Not applicable, dead"
+"9","unknown",TRUE,"Unknown or unspecified"

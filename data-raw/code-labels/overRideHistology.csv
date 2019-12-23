@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"","not reviewed or reviewed and corrected",FALSE,"Not reviewed or reviewed and corrected"
+"1","reviewed and confirmed stated in situ or malignant despite histology behavior",FALSE,"Reviewed and confirmed that the pathologist states the primary to be \""""""""in situ\"""""""" or \""""""""malignant\"""""""" although the behavior code of the histology is designated as \""""""""benign\"""""""" or \""""""""uncertain\"""""""" in ICD-O-2 or ICD-O-3
+            "
+"2","reviewed and confirmed in situ despite no microscopic confirmation",FALSE,"Reviewed and confirmed that the behavior code is \""""""""in situ,\"""""""" but the case is not microscopically confirmed"
+"3","reviewed and confirmed stated in situ despite histology behavior and no microscopic confirmation",FALSE,"Reviewed and confirmed that conditions 1 and 2 both apply"

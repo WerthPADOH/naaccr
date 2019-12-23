@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"1","never married",FALSE,"Single (never married)"
+"2","married",FALSE,"Married (including common law)"
+"3","separated",FALSE,"Separated"
+"4","divorced",FALSE,"Divorced"
+"5","widowed",FALSE,"Widowed"
+"6","unmarried",FALSE,"Unmarried or Domestic Partner (same sex or opposite sex, registered or unregistered, other than common law marriage)"
+"9","unknown",TRUE,"Unknown"

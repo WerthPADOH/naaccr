@@ -1,2 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+external/*
+.travis.yml
+README.Rmd
+data-raw/*
+build.R

@@ -1,0 +1,4 @@
+"code","label","means_missing","description"
+"1","population-based central registry",FALSE,"Central registry (population-based)"
+"2","non-population-based central registry or hospital consortium",FALSE,"Central registry or hospital consortium (not population-based)"
+"3","single hospital/freestanding center",FALSE,"Single hospital/freestanding center"

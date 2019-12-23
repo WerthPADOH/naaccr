@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"1","0% - <5% poverty",FALSE,"0% - <5% poverty"
+"2","5% - <10% poverty",FALSE,"5% - <10% poverty"
+"3","10% - <20% poverty",FALSE,"10% - <20% poverty"
+"4","20% - 100% poverty",FALSE,"20% - 100% poverty"
+"9","unknown or not applicable",TRUE,"Unknown or not applicable"

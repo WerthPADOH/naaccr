@@ -1,0 +1,17 @@
+item,name,source,year_added,version_added,year_retired,version_retired,section,parent
+1500,firstCourseCalcMethod,NAACCR,,,2013,13,Treatment-1st Course,Tumor
+2730,csPrerxTumorSize,AJCC,2010,12,2018,18,Stage/Prognostic Factors,Tumor
+2735,csPrerxExtension,AJCC,2010,12,2018,18,Stage/Prognostic Factors,Tumor
+2740,csPrerxTumorSizeExtEval,AJCC,2010,12,2018,18,Stage/Prognostic Factors,Tumor
+2750,csPrerxLymphNodes,AJCC,2010,12,2018,18,Stage/Prognostic Factors,Tumor
+2755,csPrerxRegNodesEval,AJCC,2010,12,2018,18,Stage/Prognostic Factors,Tumor
+2760,csPrerxMetsAtDx,AJCC,2010,12,2018,18,Stage/Prognostic Factors,Tumor
+2765,csPrerxMetsEval,AJCC,2010,12,2018,18,Stage/Prognostic Factors,Tumor
+2770,csPostrxTumorSize,AJCC,2010,12,2018,18,Stage/Prognostic Factors,Tumor
+2775,csPostrxExtension,AJCC,2010,12,2018,18,Stage/Prognostic Factors,Tumor
+2780,csPostrxLymphNodes,AJCC,2010,12,2018,18,Stage/Prognostic Factors,Tumor
+2785,csPostrxMetsAtDx,AJCC,2010,12,2018,18,Stage/Prognostic Factors,Tumor
+2161,reserved18,,2013,13,2018,18,,Tumor
+2162,reserved19,,2016,16,2018,18,,Tumor
+2163,reserved20,,2016,16,2018,18,,Tumor
+2700,reserved17,,2013,13,2018,18,,Tumor

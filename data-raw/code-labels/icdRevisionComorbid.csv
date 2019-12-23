@@ -1,0 +1,4 @@
+"code","label","means_missing","description"
+"0","not applicable",TRUE,"No comorbidities or complications recorded in patient's record"
+"1","ICD-10-CM",FALSE,"ICD-10-CM"
+"9","ICD-9-CM",TRUE,"ICD-9-CM"

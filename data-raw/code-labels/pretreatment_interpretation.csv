@@ -1,0 +1,7 @@
+"code","label","means_missing","description"
+"0","normal",FALSE,"Negative/normal; within normal limits"
+"1","elevated",FALSE,"Positive/elevated"
+"2","borderline",FALSE,"Borderline; undetermined if positive or negative"
+"7","test ordered, results unknown",TRUE,"Test ordered, results not in chart"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",TRUE,"Not documented in medical record; AFP pretreatment interpretation not assessed or unknown if assessed"

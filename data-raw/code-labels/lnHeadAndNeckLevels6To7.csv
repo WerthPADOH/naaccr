@@ -1,0 +1,7 @@
+"code","label","means_missing","description"
+"0","none",FALSE,"No involvement in Levels VI or VII lymph nodes"
+"1","VI",FALSE,"Level VI lymph node(s) involved"
+"2","VII",FALSE,"Level VII lymph node(s) involved"
+"3","VI, VII",FALSE,"Levels VI and VII lymph node(s) involved"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",TRUE,"Not documented in medical record; Positive nodes, but level of positive node(s) unknown; Lymph nodes levels VI-VII not assessed, or unknown if assessed"

@@ -3,3 +3,9 @@
 *.RData
 .Ruserdata
 *.rda
+*.rds
+
+# Output files
+man/*
+data-raw/code-labels/iso_country.csv
+external/format-sources/version-*.json

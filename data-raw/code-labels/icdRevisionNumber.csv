@@ -1,0 +1,5 @@
+"code","label","means_missing","description"
+"1","ICD-10",FALSE,"ICD-10"
+"7","ICD-7",FALSE,"ICD-7"
+"8","ICDA-8",FALSE,"ICDA-8"
+"9","ICD-9",TRUE,"ICD-9"

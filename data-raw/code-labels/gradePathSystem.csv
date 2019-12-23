@@ -1,0 +1,4 @@
+"code","label","means_missing","description"
+"2","two-grade",FALSE,"Two-Grade System"
+"3","three-grade",FALSE,"Three-Grade System"
+"4","four-grade",FALSE,"Four-Grade System"

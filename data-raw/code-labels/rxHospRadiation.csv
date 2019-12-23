@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"0","none",FALSE,"None"
+"1","beam radiation",FALSE,"Beam radiation"
+"2","radioactive implants",FALSE,"Radioactive implants"
+"3","radioisotopes",FALSE,"Radioisotopes"
+"4","beam radiation and radioactive implants or radioisotopes",FALSE,"Combination of 1 with 2 or 3"
+"5","radiation, NOS",FALSE,"Radiation, NOS-method or source not specified"
+"9","unknown",TRUE,"Unknown if radiation therapy administered"

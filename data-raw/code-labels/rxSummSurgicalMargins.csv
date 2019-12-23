@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"0","no residual tumor",FALSE,"No residual tumor"
+"1","residual tumor, NOS",FALSE,"Residual tumor, NOS"
+"2","microscopic residual tumor",FALSE,"Microscopic residual tumor"
+"3","macroscopic residual tumor",FALSE,"Macroscopic residual tumor"
+"7","margins not evaluable",FALSE,"Margins not evaluable"
+"8","no primary site surgery",FALSE,"No primary site surgery"
+"9","unknown",TRUE,"Unknown or not applicable"

@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"0","no surgery, no readmission",FALSE,"No surgical procedure of the primary site was performed. Patient not readmitted to the same hospital within 30 days of discharge."
+"1","surgery, unplanned readmission",FALSE,"Patient was surgically treated and was then readmitted to the same hospital within 30 days of being discharged. This readmission was unplanned."
+"2","surgery, planned readmission",FALSE,"Patient was surgically treated and was then readmitted to the same hospital within 30 days of being discharged. This readmission was planned (chemotherapy port insertion, revision of colostomy, etc.)."
+"3","surgery, planned and unplanned readmissions",FALSE,"Patient was surgically treated and, within 30 days of being discharged, had both a planned and an unplanned readmission to the same hospital."
+"9","unknown",TRUE,"It is unknown whether surgery of the primary site was recommended or performed; it is unknown whether the patient was readmitted to the same hospital within 30 days of discharge; death certificate only."

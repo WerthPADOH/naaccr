@@ -1,0 +1,5 @@
+"code","label","means_missing","description"
+"","not reviewed or reviewed and corrected",FALSE,"Not reviewed or reviewed and corrected."
+"1","reviewed and confirmed as reported",FALSE,"Reviewed and confirmed that age/site/histology combination is correct as reported"
+"2","reviewed and confirmed diagnosed in utero",FALSE,"Reviewed and confirmed that case was diagnosed in utero"
+"3","reviewed and confirmed as reported and diagnosed in utero",FALSE,"Reviewed and confirmed that conditions 1 and 2 both apply"

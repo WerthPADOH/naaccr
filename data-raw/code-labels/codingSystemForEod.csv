@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"0","2-digit nonspecific",FALSE,"2-Digit Nonspecific Extent of Disease (1973-82)"
+"1","2-digit site-specific",FALSE,"2-Digit Site-Specific Extent of Disease (1973-82)"
+"2","13-digit",FALSE,"13-Digit (expanded) Site-Specific Extent of Disease (1973-1982)"
+"3","4-digit",FALSE,"4-Digit Extent of Disease (1983-87)"
+"4","10-digit",FALSE,"10-Digit Extent of Disease, 1988 (1988-2003)"

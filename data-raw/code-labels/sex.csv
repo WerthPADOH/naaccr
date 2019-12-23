@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"1","male",FALSE,"Male"
+"2","female",FALSE,"Female"
+"3","other",FALSE,"Other (intersex, disorders of sexual development/DSD). The word hermaphrodite formally classified under this code is an outdated term."
+"4","transsexual, NOS",FALSE,"Transsexual, NOS"
+"5","transsexual, natal male",FALSE,"Transsexual, natal male"
+"6","transsexual, natal female",FALSE,"Transsexual, natal female"
+"9","unknown",TRUE,"Not stated/unknown"

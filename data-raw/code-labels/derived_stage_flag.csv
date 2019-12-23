@@ -1,0 +1,3 @@
+"code","label","means_missing","description"
+"1","Collaborative Stage",FALSE,"AJCC fields derived from Collaborative Stage"
+"2","EOD",FALSE,"AJCC fields derived from EOD (prior to 2004)"

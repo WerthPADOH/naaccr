@@ -1,0 +1,5 @@
+"code","label","means_missing","description"
+"0","not treated",FALSE,"No treatment given"
+"1","treated",FALSE,"Treatment given"
+"2","active surveillance",FALSE,"Active surveillance (watchful waiting)"
+"9","unknown",TRUE,"unknown if treatment was given"

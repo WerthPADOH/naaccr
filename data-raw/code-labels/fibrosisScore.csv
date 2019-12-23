@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"0","none to moderate",FALSE,"Ishak fibrosis score 0-4; ; No to moderate fibrosis; METAVIR score F0-F3; Batt-Ludwig score 0-3"
+"1","advanced to severe",FALSE,"Ishak fibrosis score 5-6; ; Advanced/severe fibrosis; METAVIR score F4; Batt-Ludwig score 4; Developing cirrhosis; Incomplete cirrhosis; Transition to cirrhosis; Cirrhosis, probable or definite; Cirrhosis, NOS"
+"7","advanced to severe, statement only",FALSE,"Clinical statement of advanced/severe fibrosis or cirrhosis, AND; Not histologically confirmed or unknown if histologically confirmed"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",TRUE,"Not documented in medical record; stated in medical record that patient does not have advanced cirrhosis/advanced fibrosis, not histologically confirmed or unknown if histologically confirmed; fibrosis score stated but cannot be assigned to codes 0 or 1; fibrosis score stated but scoring system not recorded; fibrosis Score not assessed or unknown if assessed"

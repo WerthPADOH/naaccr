@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"1","non-hispanic last name and non-hispanic maiden name",FALSE,"Non-Hispanic last name and non-Hispanic maiden name"
+"2","non-hispanic last name, did not check maiden name or patient was male",FALSE,"Non-Hispanic last name, did not check maiden name or patient was male"
+"3","non-hispanic last name, missing maiden name",FALSE,"Non-Hispanic last name, missing maiden name"
+"4","hispanic last name, non-hispanic maiden name",FALSE,"Hispanic last name, non-Hispanic maiden name"
+"5","hispanic last name, did not check maiden name or patient was male",FALSE,"Hispanic last name, did not check maiden name or patient was male"
+"6","hispanic last name, missing maiden name",FALSE,"Hispanic last name, missing maiden name"
+"7","hispanic maiden name",FALSE,"Hispanic Maiden name (females only) (regardless of last name)"

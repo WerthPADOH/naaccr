@@ -1,0 +1,7 @@
+"code","label","means_missing","description"
+"0","regional lymph nodes involved, ENE not present",FALSE,"Regional lymph nodes involved, ENE not present/not identified during diagnostic workup"
+"1","regional lymph nodes involved, ENE present, physical exam or imaging",FALSE,"Regional lymph nodes involved, ENE present/identified during diagnostic workup, based on physical exam and/or imaging"
+"2","regional lymph nodes involved, ENE present, microscopic confirmation",FALSE,"Regional lymph nodes involved, ENE present/identified during diagnostic workup, based on microscopic confirmation"
+"7","no lymph node involvement",FALSE,"No lymph node involvement during diagnostic workup (cN0)"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",FALSE,"Not documented in medical record; Clinical ENE not assessed or unknown if assessed during diagnostic workup; Clinical assessment of lymph nodes not done, or unknown if done"

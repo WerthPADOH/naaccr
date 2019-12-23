@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"0","anemic",FALSE,"Anemia not present; Hgb =11.0 g/dL"
+"1","not anemic",FALSE,"Anemia present;Hgb <11.0 g/dL"
+"6","stated anemic, results unknown",FALSE,"Lab value unknown, physician states patient is anemic"
+"7","test ordered, results unknown",TRUE,"Test ordered, results not in chart"
+"9","unknown",TRUE,"Not documented in medical record;Anemia not assessed or unknown if assessed"
