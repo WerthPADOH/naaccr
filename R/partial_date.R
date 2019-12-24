@@ -34,7 +34,7 @@ create_partial_date <- function(dates, y, m, d) {
 
 #' @export
 as.Date.partial_date <- function(x, ...) {
-  out <- as.Date(as.integer(out), origin = as.Date("1970-01-01"), ...)
+  out <- as.Date(as.integer(x), origin = as.Date("1970-01-01"), ...)
   names(out) <- names(x)
   out
 }
@@ -141,17 +141,20 @@ as.partial_date.character <- function(x, fmt = "%Y%m%d", ...) {
 
 #' @export
 `[.partial_date` <- function(x, i) {
-  create_partial_date(unclass(x)[i], year(x)[i], month(x)[i], mday(x)[i])
+  create_partial_date(as.Date(x)[i], year(x)[i], month(x)[i], mday(x)[i])
 }
 
 
 #' @export
 `[<-.partial_date` <- function(x, i, value) {
+  if (length(i) != length(value)) {
+    stop("More elements supplied than there are to replace")
+  }
   dates <- as.Date(x)
   y <- year(x)
   m <- month(x)
   d <- mday(x)
-  value <- as.POSIXlt(value)
+  value <- as.partial_date(value)
   dates[i] <- as.Date(value)
   y[i] <- year(value)
   m[i] <- month(value)
