@@ -44,13 +44,18 @@ as.Date.partial_date <- function(x, ...) {
 as.POSIXlt.partial_date <- function(x, ...) {
   dates <- as.Date(x)
   out <- as.POSIXlt(dates, ...)
+  if (is.null(out$zone)) {
+    out$zone <- as.POSIXlt(NA)$zone
+  }
   na <- is.na(out)
-  out[["year"]][na] <- year(x)[na]
-  out[["month"]][na] <- month(x)[na]
-  out[["mday"]][na] <- mday(x)[na]
-  out[["sec"]][na] <- 0L
-  out[["min"]][na] <- 0L
-  out[["hour"]][na] <- 0L
+  if (any(na)) {
+    out$year[na] <- year(x)[na]
+    out$mon[na] <- month(x)[na]
+    out$mday[na] <- mday(x)[na]
+    out$sec[na] <- 0L
+    out$min[na] <- 0L
+    out$hour[na] <- 0L
+  }
   out
 }
 
