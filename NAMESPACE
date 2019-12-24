@@ -2,6 +2,8 @@
 
 S3method("[",partial_date)
 S3method("[<-",partial_date)
+S3method("[[",partial_date)
+S3method("[[<-",partial_date)
 S3method(as.Date,partial_date)
 S3method(as.POSIXlt,partial_date)
 S3method(as.naaccr_record,data.frame)

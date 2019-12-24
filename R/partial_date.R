@@ -168,6 +168,30 @@ as.partial_date.character <- function(x, fmt = "%Y%m%d", ...) {
 }
 
 
+#' @export
+`[[.partial_date` <- function(x, i) {
+  create_partial_date(as.Date(x)[[i]], year(x)[[i]], month(x)[[i]], mday(x)[[i]])
+}
+
+
+#' @export
+`[[<-.partial_date` <- function(x, i, value) {
+  if (length(i) != length(value)) {
+    stop("More elements supplied than there are to replace")
+  }
+  dates <- as.Date(x)
+  y <- year(x)
+  m <- month(x)
+  d <- mday(x)
+  value <- as.partial_date(value)
+  dates[[i]] <- as.Date(value)
+  y[[i]] <- year(value)
+  m[[i]] <- month(value)
+  d[[i]] <- mday(value)
+  create_partial_date(dates, y, m, d)
+}
+
+
 #' Extract portions of dates
 #' @export
 #' @rdname partial_date
