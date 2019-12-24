@@ -1,0 +1,13 @@
+"fmt","part","from","to"
+"%Y%m%d","year",1,4
+"%Y%m%d","month",5,6
+"%Y%m%d","day",7,8
+"%Y-%m-%d","year",1,4
+"%Y-%m-%d","month",5,6
+"%Y-%m-%d","day",7,8
+"%m/%d/%Y","year",7,10
+"%m/%d/%Y","month",1,2
+"%m/%d/%Y","day",4,5
+"%m%d%Y","year",5,8
+"%m%d%Y","month",1,2
+"%m%d%Y","day",3,4
