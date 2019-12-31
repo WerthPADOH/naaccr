@@ -1,3 +1,13 @@
+#' @noRd
+month_days <- c(31L, 28L, 31L, 30L, 31L, 30L, 31L, 31L, 30L, 31L, 30L, 31L)
+
+
+#' @noRd
+is_leap_year <- function(y) {
+  (y %% 4L == 0L) & !((y %% 100L) == 0L & (y %% 400L) != 0L)
+}
+
+
 #' Dates without all known parts
 #' @param year  Integer of the calendar year.
 #' @param month Integer of the month of the year.
@@ -11,7 +21,22 @@ partial_date <- function(year, month, day) {
   y <- as.integer(year)
   m <- as.integer(month)
   d <- as.integer(day)
-  date_string <- sprintf("%04d-%02d-%02d", y, m, d)
+  n <- max(length(y), length(m), length(d))
+  y <- rep_len(y, n)
+  m <- rep_len(m, n)
+  d <- rep_len(d, n)
+  month_limit <- month_days[m]
+  month_limit[is_leap_year(y) & m == 2L] <- 29L
+  invalid <- d < 1L | d > month_limit | m < 1L | m > 12L
+  if (any(invalid, na.rm = TRUE)) {
+    warning("Impossible day values replaced with NA")
+    y[invalid] <- NA
+    m[invalid] <- NA
+    d[invalid] <- NA
+  }
+  date_string <- rep(NA_character_, n)
+  no_na <- !(is.na(y) | is.na(m) | is.na(d))
+  date_string[no_na] <- sprintf("%04d-%02d-%02d", y[no_na], m[no_na], d[no_na])
   out <- as.Date(date_string)
   names(out) <- names(y)
   create_partial_date(out, y, m, d)
