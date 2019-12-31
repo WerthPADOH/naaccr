@@ -15,6 +15,18 @@ test_that("Can extract parts from partial dates", {
   expect_identical(mday(d), c(2L, NA_integer_, NA_integer_))
 })
 
+test_that("Can assign parts to partial dates (with invalid dates becoming NA)", {
+  d <- partial_date(1998, 12, 15)
+  year(d) <- 2000
+  expect_identical(d, partial_date(2000, 12, 15))
+  month(d) <- 2
+  expect_identical(d, partial_date(2000, 2, 15))
+  mday(d) <- 29
+  expect_identical(d, partial_date(2000, 2, 29))
+  expect_warning(year(d) <- 2001)
+  expect_identical(d, partial_date(NA, NA, NA))
+})
+
 test_that("Partial date subsets and sub-assignments are valid", {
   d <- partial_date(c(2000, 2005, 2007), c(1, 4, NA), c(2, NA, NA))
   sub_mult <- d[c(1, 3)]

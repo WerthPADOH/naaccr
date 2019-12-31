@@ -217,17 +217,28 @@ as.partial_date.character <- function(x, fmt = "%Y%m%d", ...) {
 }
 
 
-#' Extract portions of dates
 #' @export
 #' @rdname partial_date
 year <- function(x, ...) UseMethod("year")
 
 #' @importFrom data.table year
 #' @export
+#' @rdname partial_date
 year.default <- data.table::year
 
 #' @export
+#' @rdname partial_date
 year.partial_date <- function(x, ...) attr(x, "year")
+
+#' @export
+#' @rdname partial_date
+`year<-` <- function(x, value) UseMethod("year<-")
+
+#' @export
+#' @rdname partial_date
+`year<-.partial_date` <- function(x, value) {
+  partial_date(year = as.integer(value), month = month(x), day = mday(x))
+}
 
 
 #' @export
@@ -236,10 +247,22 @@ month <- function(x, ...) UseMethod("month")
 
 #' @importFrom data.table month
 #' @export
+#' @rdname partial_date
 month.default <- data.table::month
 
 #' @export
+#' @rdname partial_date
 month.partial_date <- function(x, ...) attr(x, "month")
+
+#' @export
+#' @rdname partial_date
+`month<-` <- function(x, value) UseMethod("month<-")
+
+#' @export
+#' @rdname partial_date
+`month<-.partial_date` <- function(x, value) {
+  partial_date(year = year(x), month = as.integer(value), day = mday(x))
+}
 
 
 #' @export
@@ -248,10 +271,22 @@ mday <- function(x, ...) UseMethod("mday")
 
 #' @importFrom data.table mday
 #' @export
+#' @rdname partial_date
 mday.default <- data.table::mday
 
 #' @export
+#' @rdname partial_date
 mday.partial_date <- function(x, ...) attr(x, "day")
+
+#' @export
+#' @rdname partial_date
+`mday<-` <- function(x, value) UseMethod("mday<-")
+
+#' @export
+#' @rdname partial_date
+`mday<-.partial_date` <- function(x, value) {
+  partial_date(year = year(x), month = month(x), day = as.integer(value))
+}
 
 
 #' @export
