@@ -45,3 +45,28 @@ test_that("Partial date subsets and sub-assignments are valid", {
   d2[[1]] <- partial_date(1950, 8, 13)
   expect_identical(d2, partial_date(c(1950, 2005, 2007), c(8, 4, NA), c(13, NA, NA)))
 })
+
+test_that("Logical comparisons of partial_date uses what's known", {
+  p <- partial_date(c(2000, 2005, 2007), c(1, 4, 12), c(1, 30, 31))
+  expect_s3_class(p + 1, "partial_date")
+  expect_identical(p + 1, partial_date(c(2000, 2005, 2008), c(1, 5, 1), c(2, 1, 1)))
+  expect_identical(p - 1, partial_date(c(1999, 2005, 2007), c(12, 4, 12), c(31, 29, 30)))
+
+  r <- as.Date(c("2000-01-01", "3030-3-30", "2007-12-15"))
+  expect_identical(p == r, c(TRUE, FALSE, FALSE))
+  expect_identical(p > r, c(FALSE, FALSE, TRUE))
+  expect_identical(p >= r, c(TRUE, FALSE, TRUE))
+  expect_identical(p < r, c(FALSE, TRUE, FALSE))
+  expect_identical(p <= r, c(TRUE, TRUE, FALSE))
+})
+
+test_that("Algebra with partially-known dates uses what's known when possible", {
+  p <- partial_date(c(2000, 2000, 2000, NA), c(2, 2, NA, NA), c(15, NA, NA, NA))
+  expect_identical(year(p + 350), c(2001L, 2001L, NA, NA)) # maybe next year
+  expect_identical(year(p + 325), c(2001L, NA, NA, NA)) # less maybe next year
+  expect_identical(month(p + 1), c(2L, NA, NA, NA)) # maybe next month
+  expect_identical(month(p + 31), c(3L, 3L, NA, NA)) # definitely next month
+
+  p2 <- partial_date(c(2001, 2001, 2001, NA), c(2, 2, NA, NA), c(15, NA, NA, NA))
+  expect_identical(year(p2 + 365), c(2002L, 2002L, 2002L, NA)) # definitely next year
+})

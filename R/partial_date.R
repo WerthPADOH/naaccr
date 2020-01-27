@@ -324,3 +324,99 @@ print.partial_date <- function(x, ...) {
   cat("An object of class \"partial_date\"\n")
   print(full_text, ...)
 }
+
+
+#' Get the earliest and latest possible values of a partial date
+#'
+#' @param x \code{\link{partial_date}} object.
+#' @return A \code{data.frame} with two columns containing \code{Date} vectors:
+#'   \code{"earliest"} and \code{"latest"}.
+#'   Each row is the earliest and latest possible dates for each value of \code{x}.
+#' @examples
+#'   p <- as.partial_date(c("20050908", "201102", "201202  ", "2015  31"))
+#'   date_bounds(p)
+#' @import data.table
+#' @export
+date_bounds <- function(x) {
+  if (!is.partial_date(x)) x <- as.partial_date(x)
+  y <- year(x)
+  m <- month(x)
+  d <- mday(x)
+  early <- data.table(y = y, m = m, d = d)
+  late <- data.table::copy(early)
+  na_m <- which(is.na(m))
+  na_d <- which(is.na(d))
+  set(early, i = na_m, j = "m", value = 1L)
+  set(early, i = na_d, j = "d", value = 1L)
+  set(late, i = na_m, j = "m", value = 12L)
+  max_month <- month_days[m]
+  max_month[is_leap_year(y) & m == 2L] <- 29L
+  max_month[na_m] <- 31L
+  set(late, i = na_d, j = "d", value = max_month[na_d])
+  out <- data.frame(
+    earliest = date_ymd(early[["y"]], early[["m"]], early[["d"]]),
+    latest = date_ymd(late[["y"]], late[["m"]], late[["d"]])
+  )
+  row.names(out) <- names(x)
+  out
+}
+
+
+#' @export
+#' @rdname partial_date
+`+.partial_date` <- function(e1, e2) {
+  if (nargs() == 1L) return(e1)
+  if (inherits(e1, "Date") && inherits(e2, "Date")) {
+    stop('binary + is not defined for "Date" or "partial_date" objects')
+  }
+  # Easier if e1 is definitely a partial date
+  if (!is.partial_date(e1) && is.partial_date(e2)) {
+    temp <- e1
+    e1 <- e2
+    e2 <- temp
+  }
+  if (inherits(e2, "difftime")) {
+    e2 <- switch(attr(e2, "units"),
+      secs = e2 / 86400, mins = e2/1440, hours = e2/24, days = e2, weeks = 7 * e2
+    )
+  }
+  orig_bounds <- date_bounds(e1)
+  orig_m_agree <- month(orig_bounds[["earliest"]]) == month(orig_bounds[["latest"]])
+  new_bounds <- lapply(orig_bounds, `+`, e2)
+  y_agree <- year(new_bounds[["earliest"]]) == year(new_bounds[["latest"]])
+  y_agree <- which(y_agree)
+  m_agree <- orig_m_agree & month(new_bounds[["earliest"]]) ==  month(new_bounds[["latest"]])
+  m_agree <- which(m_agree)
+  d_agree <- new_bounds[["earliest"]] == new_bounds[["latest"]]
+  maybe_day <- !d_agree & is.finite(new_bounds[["earliest"]]) & is.finite(new_bounds[["latest"]])
+  if (any(maybe_day)) {
+    d_agree[maybe_day] <- mapply(
+      FUN = function(ear, lat) {
+        month_breaks <- c(seq.Date(ear, lat, by = "month"), lat)
+        months_covered <- month(month_breaks)
+        max_days <- month_days[months_covered]
+        max_days[is_leap_year(year(month_breaks)) & months_covered == 2L] <- 29L
+        mday(ear) <= min(max_days) && mday(lat) <= min(max_days)
+      },
+      ear = new_bounds[["earliest"]][maybe_day],
+      lat = new_bounds[["latest"]][maybe_day],
+      SIMPLIFY = TRUE
+    )
+  }
+  d_agree <- which(d_agree)
+  y <- m <- d <- rep_len(NA_integer_, length(new_bounds[["earliest"]]))
+  y[y_agree] <- year(new_bounds[["earliest"]][y_agree])
+  m[m_agree] <- month(new_bounds[["earliest"]][m_agree])
+  d[d_agree] <- mday(new_bounds[["earliest"]][d_agree])
+  partial_date(y, m, d)
+}
+
+
+#' @export
+#' @rdname partial_date
+`-.partial_date` <- function(e1, e2) {
+  if (is.partial_date(e2)) {
+    stop('Can only subtract from "partial_date" objects')
+  }
+  e1 + -e2
+}
