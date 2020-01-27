@@ -56,6 +56,14 @@ partial_date <- function(year, month, day) {
 }
 
 
+#' @param x An object to test.
+#' @export
+#' @rdname partial_date
+is.partial_date <- function(x) {
+  inherits(x, "partial_date")
+}
+
+
 #' Versatile and efficient builder, but not a good public API
 #' @noRd
 create_partial_date <- function(dates, y, m, d) {
