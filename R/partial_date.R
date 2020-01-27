@@ -8,6 +8,22 @@ is_leap_year <- function(y) {
 }
 
 
+#' @noRd
+date_ymd <- function(year, month, day) {
+  y <- as.integer(year)
+  m <- as.integer(month)
+  d <- as.integer(day)
+  n <- max(length(y), length(m), length(d))
+  y <- rep_len(y, n)
+  m <- rep_len(m, n)
+  d <- rep_len(d, n)
+  date_string <- rep(NA_character_, n)
+  no_na <- !(is.na(y) | is.na(m) | is.na(d))
+  date_string[no_na] <- sprintf("%04d-%02d-%02d", y[no_na], m[no_na], d[no_na])
+  as.Date(date_string)
+}
+
+
 #' Dates without all known parts
 #' @param year  Integer of the calendar year.
 #' @param month Integer of the month of the year.
@@ -34,10 +50,7 @@ partial_date <- function(year, month, day) {
     m[invalid] <- NA
     d[invalid] <- NA
   }
-  date_string <- rep(NA_character_, n)
-  no_na <- !(is.na(y) | is.na(m) | is.na(d))
-  date_string[no_na] <- sprintf("%04d-%02d-%02d", y[no_na], m[no_na], d[no_na])
-  out <- as.Date(date_string)
+  out <- date_ymd(y, m, d)
   names(out) <- names(y)
   create_partial_date(out, y, m, d)
 }
