@@ -61,7 +61,7 @@ type_converters <- rbindlist(list(
 #' @param alignment Alignment of the field in fixed-width files. Either
 #'   \code{"left"} (default) or \code{"right"}.
 #' @param padding Single-character strings to use for padding in fixed-width
-#'   files.
+#'   files. Default is a blank (\code{" "}).
 #' @param name_literal (Optional) Item name in plain language.
 #' @param x Object to be coerced to a \code{record_format}, usually a
 #'   \code{data.frame} or \code{list}.
@@ -210,22 +210,24 @@ record_format <- function(name,
                           start_col,
                           end_col,
                           type,
-                          alignment    = "left",
-                          padding      = " ",
+                          alignment    = NULL,
+                          padding      = NULL,
                           name_literal = NULL) {
   # Allow 0-row formats, because why not?
   n_rows <- max(
     length(name), length(item), length(start_col), length(end_col),
-    length(type), length(name_literal)
+    length(type), length(alignment), length(padding), length(name_literal)
   )
   if (n_rows == 0L) {
     alignment    <- character(0L)
     padding      <- character(0L)
     name_literal <- character(0L)
-  } else if (is.null(name_literal)) {
-    name_literal <- NA_character_
+  } else {
+    if (is.null(alignment)) alignment <- rep_len("left", n_rows)
+    if (is.null(padding)) padding <- rep_len(" ", n_rows)
+    if (is.null(name_literal)) name_literal <- rep_len(NA_character_, n_rows)
   }
-  padding   <- as.character(padding)
+  padding <- as.character(padding)
   padding_width <- nchar(padding)
   if (any(padding_width > 1L, na.rm = TRUE)) {
     stop("'padding' must only contain single-character values")
