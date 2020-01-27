@@ -32,6 +32,17 @@ date_ymd <- function(year, month, day) {
 #'   object. Known parts of the dates can be extracted using the
 #'   \code{\link[data.table]{year}}, \code{\link[data.table]{month}}, and
 #'   \code{\link[data.table]{mday}} functions.
+#' @seealso \code{\link{date_bounds}}, \code{\link{mday}}, \code{\link{month}},
+#'   \code{\link{year}}.
+#' @examples
+#'   p <- partial_date(c(2001, 2002, 2003), c(4, 9, NA), c(1, NA, 5))
+#'   p
+#'
+#'   # Basic arithmetic can make inferences
+#'   p - 1
+#'
+#'   # 30 days from any day in September will be in October
+#'   partial_date(2002, 9, NA) + 30
 #' @export
 partial_date <- function(year, month, day) {
   y <- as.integer(year)
@@ -56,7 +67,6 @@ partial_date <- function(year, month, day) {
 }
 
 
-#' @param x An object to test.
 #' @export
 #' @rdname partial_date
 is.partial_date <- function(x) {
@@ -110,8 +120,8 @@ as.POSIXlt.partial_date <- function(x, ...) {
 #' @param ... Arguments passed to or from other methods.
 #'   For \code{as.partial_date}, these are usually passed to
 #'   \code{\link[base]{as.POSIXlt}}.
-#' @rdname partial_date
 #' @export
+#' @rdname partial_date
 as.partial_date <- function(x, ...) {
   UseMethod("as.partial_date")
 }
@@ -191,12 +201,14 @@ as.partial_date.character <- function(x, fmt = "%Y%m%d", ...) {
 
 
 #' @export
+#' @noRd
 `[.partial_date` <- function(x, i) {
   create_partial_date(as.Date(x)[i], year(x)[i], month(x)[i], mday(x)[i])
 }
 
 
 #' @export
+#' @noRd
 `[<-.partial_date` <- function(x, i, value) {
   if (length(i) != length(value)) {
     stop("More elements supplied than there are to replace")
@@ -215,12 +227,14 @@ as.partial_date.character <- function(x, fmt = "%Y%m%d", ...) {
 
 
 #' @export
+#' @noRd
 `[[.partial_date` <- function(x, i) {
   create_partial_date(as.Date(x)[[i]], year(x)[[i]], month(x)[[i]], mday(x)[[i]])
 }
 
 
 #' @export
+#' @noRd
 `[[<-.partial_date` <- function(x, i, value) {
   if (length(i) != length(value)) {
     stop("More elements supplied than there are to replace")
@@ -238,73 +252,93 @@ as.partial_date.character <- function(x, fmt = "%Y%m%d", ...) {
 }
 
 
+#' Extract parts of a date
+#'
+#' @param x A datetime object (e.g., \code{\link{partial_date}} or one of the
+#'   base \code{\link[base]{DateTimeClasses}}).
+#' @param ... Arguments passed to or from other methods.
+#' @param value Object used to replace the values of \code{x}.
+#' @return
+#'   \itemize{
+#'     \item{\code{mday}}{
+#'       An \code{integer} vector of the day of the month for each value of \code{x}.
+#'     }
+#'     \item{\code{month}}{
+#'       An \code{integer} vector of the month for each value of \code{x}.
+#'     }
+#'     \item{\code{year}}{
+#'       An \code{integer} vector of the year for each value of \code{x}.
+#'     }
+#'   }
+#'
+#'   \code{year<-}, \code{month<-} and \code{mday<-} modify the values of \code{x}.
 #' @export
-#' @rdname partial_date
+#' @rdname date-parts
 year <- function(x, ...) UseMethod("year")
 
 #' @importFrom data.table year
 #' @export
-#' @rdname partial_date
-year.default <- data.table::year
+#' @noRd
+year.default <- function(x, ...) data.table::year(x)
 
 #' @export
-#' @rdname partial_date
+#' @noRd
 year.partial_date <- function(x, ...) attr(x, "year")
 
 #' @export
-#' @rdname partial_date
+#' @rdname date-parts
 `year<-` <- function(x, value) UseMethod("year<-")
 
 #' @export
-#' @rdname partial_date
+#' @noRd
 `year<-.partial_date` <- function(x, value) {
   partial_date(year = as.integer(value), month = month(x), day = mday(x))
 }
 
 
 #' @export
-#' @rdname partial_date
+#' @rdname date-parts
 month <- function(x, ...) UseMethod("month")
 
 #' @importFrom data.table month
 #' @export
-#' @rdname partial_date
-month.default <- data.table::month
+#' @noRd
+month.default <- function(x, ...) data.table::month(x)
 
 #' @export
-#' @rdname partial_date
+#' @noRd
 month.partial_date <- function(x, ...) attr(x, "month")
 
 #' @export
-#' @rdname partial_date
+#' @rdname date-parts
 `month<-` <- function(x, value) UseMethod("month<-")
 
 #' @export
-#' @rdname partial_date
+#' @noRd
 `month<-.partial_date` <- function(x, value) {
   partial_date(year = year(x), month = as.integer(value), day = mday(x))
 }
 
 
 #' @export
-#' @rdname partial_date
+#' @rdname date-parts
 mday <- function(x, ...) UseMethod("mday")
 
 #' @importFrom data.table mday
 #' @export
-#' @rdname partial_date
-mday.default <- data.table::mday
+#' @noRd
+mday.default <- function(x, ...) data.table::mday(x)
 
 #' @export
-#' @rdname partial_date
+#' @noRd
 mday.partial_date <- function(x, ...) attr(x, "day")
 
 #' @export
-#' @rdname partial_date
+#' @rdname date-parts
 `mday<-` <- function(x, value) UseMethod("mday<-")
 
 #' @export
-#' @rdname partial_date
+#' @noRd
 `mday<-.partial_date` <- function(x, value) {
   partial_date(year = year(x), month = month(x), day = as.integer(value))
 }
@@ -363,7 +397,7 @@ date_bounds <- function(x) {
 
 
 #' @export
-#' @rdname partial_date
+#' @noRd
 `+.partial_date` <- function(e1, e2) {
   if (nargs() == 1L) return(e1)
   if (inherits(e1, "Date") && inherits(e2, "Date")) {
@@ -413,7 +447,7 @@ date_bounds <- function(x) {
 
 
 #' @export
-#' @rdname partial_date
+#' @noRd
 `-.partial_date` <- function(e1, e2) {
   if (is.partial_date(e2)) {
     stop('Can only subtract from "partial_date" objects')
