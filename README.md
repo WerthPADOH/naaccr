@@ -196,6 +196,7 @@ To build the `naaccr` package, you’ll need the following R packages:
   - `ISOcodes`
   - `jsonlite`
   - `magrittr`
+  - `methods`
   - `rmarkdown`
   - `roxygen2`
   - `rvest`

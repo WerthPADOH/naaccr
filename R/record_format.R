@@ -98,6 +98,11 @@ type_converters <- rbindlist(list(
 #'     }
 #'   }
 #'
+#'   The object returned by \code{as.record_format} will also have any extra
+#'   information from \code{x}. For example, if \code{x} is a \code{list},
+#'   elements beyond the columns listed above will be an additional column in
+#'   the output.
+#'
 #' @section Format Types:
 #'
 #'   The levels \code{type} can take, along with the functions used to process
@@ -202,7 +207,8 @@ type_converters <- rbindlist(list(
 #'     end_col   = c(975, 1435),
 #'     type      = c("numeric", "facility")
 #'   )
-#'   my_format <- rbind(naaccr_format_16, my_fields)
+#'   # Uses the data.table method of rbind
+#'   my_format <- rbind(naaccr_format_16, my_fields, fill = TRUE)
 #' @import data.table
 #' @export
 record_format <- function(name,
@@ -260,6 +266,7 @@ record_format <- function(name,
 #' @inheritParams record_format
 #' @rdname record_format
 #' @importFrom utils modifyList
+#' @importFrom methods formalArgs
 #' @export
 as.record_format <- function(x, ...) {
   if (inherits(x, "record_format")) {
@@ -275,19 +282,67 @@ as.record_format <- function(x, ...) {
 }
 
 
-#' @noRd
-rbind.record_format <- function(..., stringsAsFactors = FALSE) {
-  combined <- rbindlist(list(...))
-  as.record_format(combined)
-}
-
-
 #' Field definitions from all NAACCR format versions
 #'
-#' A \code{data.table} object defining the fields for each version of NAACCR's
-#' fixed-width record file format.
+#' A \code{\link{record_format}} table defining the fields for each version of
+#' NAACCR's fixed-width record file format.
 #'
-#' @description See \code{\link{record_format}}.
+#' @format
+#'   \describe{
+#'     \item{\code{naaccr_format_12}}{
+#'       An object of class \code{record_format} with 509 rows and 17 columns.
+#'     }
+#'     \item{\code{naaccr_format_13}}{
+#'       An object of class \code{record_format} with 529 rows and 17 columns.
+#'     }
+#'     \item{\code{naaccr_format_14}}{
+#'       An object of class \code{record_format} with 529 rows and 17 columns.
+#'     }
+#'     \item{\code{naaccr_format_15}}{
+#'       An object of class \code{record_format} with 536 rows and 17 columns.
+#'     }
+#'     \item{\code{naaccr_format_16}}{
+#'       An object of class \code{record_format} with 587 rows and 17 columns.
+#'     }
+#'     \item{\code{naaccr_format_18}}{
+#'       An object of class \code{record_format} with 791 rows and 17 columns.
+#'     }
+#'   }
+#'
+#'   Each table has the usual columns found in any \code{\link{record_format}}
+#'   and these additional details:
+#'
+#'   \describe{
+#'     \item{\code{default}}{
+#'       (\code{character}) Default value for the field.
+#'     }
+#'     \item{\code{parent}}{
+#'       (\code{character}) Parent XML element for the field, according to the
+#'       NAACCR XML format definition.
+#'     }
+#'     \item{\code{section}}{
+#'       (\code{character}) General category of the field.
+#'       Possible values include \code{"Demographic"} and \code{"Pathology"}.
+#'     }
+#'     \item{\code{source}}{
+#'       (\code{character}) Organization which defines the field.
+#'     }
+#'     \item{\code{year_added}}{
+#'       (\code{integer}) First year the field was included in a NAACCR format.
+#'     }
+#'     \item{\code{version_added}}{
+#'       (\code{integer}) First NAACCR format version to include the field.
+#'     }
+#'     \item{\code{year_retired}}{
+#'       (\code{integer}) First year the field was no longer included in a
+#'       NAACCR format.
+#'     }
+#'     \item{\code{version_retired}}{
+#'       (\code{integer}) First NAACCR format to no longer include the field.
+#'     }
+#'   }
+#'
+#' @seealso \code{\link{record_format}}.
 #'
 #' @rdname naaccr_format
 #' @export
