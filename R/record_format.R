@@ -267,10 +267,11 @@ as.record_format <- function(x, ...) {
   }
   xlist <- as.list(x)
   xlist <- utils::modifyList(xlist, list(...), keep.null = TRUE)
-  call_args <- args(record_format)
-  arg_names <- names(as.list(call_args))
-  arg_names <- arg_names[nzchar(arg_names)]
-  do.call(record_format, xlist[arg_names])
+  used_names <- intersect(formalArgs(record_format), names(xlist))
+  fmt <- do.call(record_format, xlist[used_names])
+  extra_cols <- setdiff(names(xlist), names(fmt))
+  set(x = fmt, j = extra_cols, value = xlist[extra_cols])
+  fmt
 }
 
 
