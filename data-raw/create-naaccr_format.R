@@ -70,16 +70,6 @@ for (number in unique(naaccr_format[["version"]])) {
   format_env[[format_name]] <- sub_format
 }
 
-for (column in names(sub_format)) {
-  if (is.factor(sub_format[[column]])) {
-    set(
-      naaccr_format,
-      j = column,
-      value = factor(naaccr_format[[column]], levels(sub_format[[column]]))
-    )
-  }
-}
-
 save(naaccr_format, file = "data-raw/sys-data/naaccr_format.RData")
 save(
   list  = ls(envir = format_env),
