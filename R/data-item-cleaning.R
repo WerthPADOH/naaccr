@@ -145,7 +145,7 @@ unknown_age <- function(age) {
 #' @rdname cleaners
 clean_age <- function(age, keep_unknown = FALSE) {
   age_int <- as.integer(age)
-  age_int[age_int] < 0L <- NA_integer_
+  age_int[age_int < 0L] <- NA_integer_
   if (!keep_unknown) {
     age_int[unknown_age(age_int)] <- NA_integer_
   }

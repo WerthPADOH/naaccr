@@ -153,8 +153,8 @@ as.naaccr_record.data.frame <- function(x,
     }
   }
   for (jj in seq_len(nrow(all_items))) {
-    column <- all_items[["name"]][ii]
-    cleaner <- all_items[["cleaner"]][[ii]]
+    column <- all_items[["name"]][jj]
+    cleaner <- all_items[["cleaner"]][[jj]]
     if (is.character(cleaner)) {
       cleaner <- getFunction(cleaner)
     }
@@ -162,7 +162,7 @@ as.naaccr_record.data.frame <- function(x,
       set(x = record, j = column, value = cleaner(record[[column]]))
     }
     if (!keep_unknown) {
-      unknown_finder <- all_items[["unknown_finder"]][[ii]]
+      unknown_finder <- all_items[["unknown_finder"]][[jj]]
       set(
         x = record,
         i = which(unknown_finder(record[[column]])),
