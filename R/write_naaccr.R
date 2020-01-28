@@ -103,9 +103,11 @@ format_integer <- function(x, width) {
 format_date <- function(x) {
   original <- attr(x, "original")
   expanded <- format(x, format = "%Y%m%d")
-  if (!is.null(original)) {
-    is_na <- is.na(expanded)
-    expanded[is_na] <- original[is_na]
+  is_na <- is.na(x)
+  expanded[is_na] <- if (!is.null(original)) {
+    original[is_na]
+  } else {
+    "        "
   }
   expanded[is.na(expanded)] <- "        "
   expanded
@@ -119,9 +121,11 @@ format_date <- function(x) {
 format_datetime <- function(x) {
   original <- attr(x, "original")
   expanded <- format(x, format = "%Y%m%d%H%M%S")
-  if (!is.null(original)) {
-    is_na <- is.na(expanded)
-    expanded[is_na] <- original[is_na]
+  is_na <- is.na(x)
+  expanded[is_na] <- if (!is.null(original)) {
+    original[is_na]
+  } else {
+    "              "
   }
   expanded[is.na(expanded)] <- "              "
   # Account for when zeros are added in naaccr_datetime
@@ -154,6 +158,7 @@ format_datetime <- function(x) {
 #'   r
 #'   mapply(FUN = naaccr_encode, x = r, field = names(r))
 #' @import data.table
+#' @import stringi
 #' @export
 naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) {
   format <- choose_naaccr_format(version = version, format = format)
@@ -190,14 +195,20 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
       "' field were too wide and set to blanks"
     )
   }
+  is_missing <- is.na(codes) | !nzchar(trimws(codes))
   if (!is.na(field_def[["alignment"]])) {
     pad_side <- switch(as.character(field_def[["alignment"]]),
       left = "right",
       right = "left"
     )
-    codes <- stri_pad(codes, width, pad_side, field_def[["padding"]])
+    codes[!is_missing] <- stri_pad(
+      str = codes[!is_missing],
+      width = width,
+      side = pad_side,
+      pad = field_def[["padding"]]
+    )
   }
-  codes[is.na(codes)] <- stri_pad_left("", width, pad = " ")
+  codes[is_missing] <- stri_dup(" ", width)
   codes
 }
 
