@@ -2,56 +2,43 @@
 naaccr_boolean12 <- function(x) naaccr_boolean(x, false_value = '1')
 
 
-#' Wrapper to create "keep unknown" versions of functions
-#' @noRd
-keep_unknown <- function(fun) {
-  formals(fun)[["keep_unknown"]] <- TRUE
-  fun
-}
-
-
-#' `type`: name of the field type (see record_format)
-#' `fun`: normal function used to parse the field (factors and sentinels are
-#'   special).
-#' `fun_unknown`: function used to parse the field when `keep_unknown = TRUE`
-#'   for the reading/parsing function.
+#' Default cleaner and unknown finder functions for each field type
+#' See the docs of record_format below for details
 #' @noRd
 type_converters <- rbindlist(list(
-  list(type = "integer", fun = list(as.integer), fun_unknown = list(as.integer)),
-  list(type = "numeric", fun = list(as.numeric), fun_unknown = list(as.numeric)),
-  list(type = "character", fun = list(clean_text), fun_unknown = list(keep_unknown(clean_text))),
-  list(type = "factor", fun = list(identity), fun_unknown = list(identity)),
-  list(type = "sentineled_integer", fun = list(identity), fun_unknown = list(identity)),
-  list(type = "sentineled_numeric", fun = list(identity), fun_unknown = list(identity)),
-  list(type = "age", fun = list(clean_age), fun_unknown = list(keep_unknown(clean_age))),
-  list(type = "icd_code", fun = list(clean_icd_code), fun_unknown = list(keep_unknown(clean_icd_code))),
-  list(type = "postal", fun = list(clean_postal), fun_unknown = list(keep_unknown(clean_postal))),
-  list(type = "city", fun = list(clean_address_city), fun_unknown = list(keep_unknown(clean_address_city))),
-  list(type = "address", fun = list(clean_address_number_and_street), fun_unknown = list(keep_unknown(clean_address_number_and_street))),
-  list(type = "facility", fun = list(clean_facility_id), fun_unknown = list(keep_unknown(clean_facility_id))),
-  list(type = "census_block", fun = list(clean_census_block), fun_unknown = list(keep_unknown(clean_census_block))),
-  list(type = "census_tract", fun = list(clean_census_tract), fun_unknown = list(keep_unknown(clean_census_tract))),
-  list(type = "icd_9", fun = list(clean_icd_9_cm), fun_unknown = list(keep_unknown(clean_icd_9_cm))),
-  list(type = "county", fun = list(clean_county_fips), fun_unknown = list(keep_unknown(clean_county_fips))),
-  list(type = "physician", fun = list(clean_physician_id), fun_unknown = list(keep_unknown(clean_physician_id))),
-  list(type = "override", fun = list(naaccr_override), fun_unknown = list(naaccr_override)),
-  list(type = "boolean01", fun = list(naaccr_boolean), fun_unknown = list(naaccr_boolean)),
-  list(type = "telephone", fun = list(clean_telephone), fun_unknown = list(keep_unknown(clean_telephone))),
-  list(type = "count", fun = list(clean_count), fun_unknown = list(keep_unknown(clean_count))),
-  list(type = "ssn", fun = list(clean_ssn), fun_unknown = list(keep_unknown(clean_ssn))),
-  list(type = "boolean12", fun = list(naaccr_boolean12), fun_unknown = list(naaccr_boolean12)),
-  list(type = "Date", fun = list(naaccr_date), fun_unknown = list(naaccr_date)),
-  list(type = "datetime", fun = list(naaccr_datetime), fun_unknown = list(naaccr_datetime))
+  list(type = "integer", cleaner = list(as.integer), unknown_finder = list(is.na)),
+  list(type = "numeric", cleaner = list(as.numeric), unknown_finder = list(is.na)),
+  list(type = "character", cleaner = list(clean_text), unknown_finder = list(unknown_text)),
+  list(type = "factor", cleaner = list(identity), unknown_finder = list(is.na)),
+  list(type = "sentineled_integer", cleaner = list(identity), unknown_finder = list(is.na)),
+  list(type = "sentineled_numeric", cleaner = list(identity), unknown_finder = list(is.na)),
+  list(type = "age", cleaner = list(clean_age), unknown_finder = list(unknown_age)),
+  list(type = "icd_code", cleaner = list(clean_icd_code), unknown_finder = list(unknown_icd_code)),
+  list(type = "postal", cleaner = list(clean_postal), unknown_finder = list(unknown_postal)),
+  list(type = "city", cleaner = list(clean_address_city), unknown_finder = list(unknown_address_city)),
+  list(type = "address", cleaner = list(clean_address_number_and_street), unknown_finder = list(unknown_address_number_and_street)),
+  list(type = "facility", cleaner = list(clean_facility_id), unknown_finder = list(unknown_facility_id)),
+  list(type = "census_block", cleaner = list(clean_census_block), unknown_finder = list(unknown_census_block)),
+  list(type = "census_tract", cleaner = list(clean_census_tract), unknown_finder = list(unknown_census_tract)),
+  list(type = "icd_9", cleaner = list(clean_icd_9_cm), unknown_finder = list(unknown_icd_9_cm)),
+  list(type = "county", cleaner = list(clean_county_fips), unknown_finder = list(unknown_county_fips)),
+  list(type = "physician", cleaner = list(clean_physician_id), unknown_finder = list(unknown_physician_id)),
+  list(type = "override", cleaner = list(naaccr_override), unknown_finder = list(naaccr_override)),
+  list(type = "boolean01", cleaner = list(naaccr_boolean), unknown_finder = list(naaccr_boolean)),
+  list(type = "telephone", cleaner = list(clean_telephone), unknown_finder = list(unknown_telephone)),
+  list(type = "count", cleaner = list(clean_count), unknown_finder = list(unknown_count)),
+  list(type = "ssn", cleaner = list(clean_ssn), unknown_finder = list(unknown_ssn)),
+  list(type = "boolean12", cleaner = list(naaccr_boolean12), unknown_finder = list(is.na)),
+  list(type = "Date", cleaner = list(naaccr_date), unknown_finder = list(is.na)),
+  list(type = "datetime", cleaner = list(naaccr_datetime), unknown_finder = list(is.na))
 ))
 
 
 #' Define custom fields for NAACCR records
 #'
-#' Create a \code{record_format} object, which is used to read NAACCR records.
-#'
-#' To define registry-specific fields in addition to the standard fields, create
-#' a \code{record_format} object for the registry-specific fields and combine it
-#' with one of the formats provided with the package using \code{rbind}.
+#' Create a \code{record_format} object, which is used to prepare NAACCR records
+#' for analysis. Each row of a \code{record_format} describes how to read and
+#' interpret one field.
 #'
 #' @param name Item name appropriate for a \code{data.frame} column name.
 #' @param item NAACCR item number.
@@ -63,9 +50,37 @@ type_converters <- rbindlist(list(
 #' @param padding Single-character strings to use for padding in fixed-width
 #'   files. Default is a blank (\code{" "}).
 #' @param name_literal (Optional) Item name in plain language.
+#' @param cleaner (Optional) List of functions to handle special cases of
+#'   cleaning field data (e.g., convert all values to uppercase).
+#'   Values of \code{NULL} (the default) mean the default cleaning function for
+#'   the \code{type} is used.
+#'   See Details.
+#' @param unknown_finder (Optional) List of functions to detect when codes mean
+#'   the actual values are unknown or not applicable.
+#'   Values of \code{NULL} (the default) mean the default unknown finding
+#'   function for the \code{type} is used.
+#'   See Details.
 #' @param x Object to be coerced to a \code{record_format}, usually a
 #'   \code{data.frame} or \code{list}.
 #' @param ... Other arguments passed to \code{record_format}.
+#'
+#' The functions in \code{cleaner} and \code{unknown_finder} should each accept
+#' a character vector of values from their respective fields and return a vector
+#' with the same length as the input.
+#' The vector returned by a \code{cleaner} function can be of any class and
+#' should be easy to use in an analysis.
+#' To have a cleaning or function change nothing, use \code{\link[base]{identity}}.
+#' To have an unknown finding function change nothing, use \code{\link[base]{is.na}}.
+#'
+#' See Standard Field Types below for the default cleaning and unknown finding
+#' functions for each \code{type}.
+#'
+#' @section Extending a NAACCR Format:
+#'
+#'   To define registry-specific fields in addition to the standard fields,
+#'   create a \code{record_format} object for the registry-specific fields and
+#'   combine it with one of the \link{naaccr_format}{NAACCR record formats}
+#'   provided with the package using \code{rbind}.
 #'
 #' @return An object of class \code{"record_format"} which has the following
 #'   columns:
@@ -96,6 +111,14 @@ type_converters <- rbindlist(list(
 #'     \item{\code{name_literal}}{
 #'       (\code{character}) Field name in plain language.
 #'     }
+#'     \item{\code{cleaner}}{
+#'       (\code{list} of \code{function} objects) Function to prepare the
+#'       field's values for analysis.
+#'     }
+#'     \item{\code{unknown_finder}}{
+#'       (\code{list} of \code{function} objects) Function to detect codes
+#'       meaning the actual values are missing or unknown for the field.
+#'     }
 #'   }
 #'
 #'   The object returned by \code{as.record_format} will also have any extra
@@ -103,7 +126,7 @@ type_converters <- rbindlist(list(
 #'   elements beyond the columns listed above will be an additional column in
 #'   the output.
 #'
-#' @section Format Types:
+#' @section Standard Field Types:
 #'
 #'   The levels \code{type} can take, along with the functions used to process
 #'   them when reading a file:
@@ -198,7 +221,7 @@ type_converters <- rbindlist(list(
 #'       10-digit telephone number.
 #'     }
 #'   }
-#'
+#' @seealso \code{\link{cleaners}}
 #' @examples
 #'   my_fields <- record_format(
 #'     name      = c("foo", "bar"),
@@ -216,22 +239,30 @@ record_format <- function(name,
                           start_col,
                           end_col,
                           type,
-                          alignment    = NULL,
-                          padding      = NULL,
+                          alignment = NULL,
+                          padding = NULL,
+                          cleaner = NULL,
+                          unknown_finder = NULL,
                           name_literal = NULL) {
   # Allow 0-row formats, because why not?
   n_rows <- max(
     length(name), length(item), length(start_col), length(end_col),
     length(type), length(alignment), length(padding), length(name_literal)
+    ,
+    length(cleaner)
   )
   if (n_rows == 0L) {
-    alignment    <- character(0L)
-    padding      <- character(0L)
+    alignment <- character(0L)
+    padding <- character(0L)
     name_literal <- character(0L)
+    cleaner <- list()
+    unknown_finder <- list()
   } else {
     if (is.null(alignment)) alignment <- rep_len("left", n_rows)
     if (is.null(padding)) padding <- rep_len(" ", n_rows)
     if (is.null(name_literal)) name_literal <- rep_len(NA_character_, n_rows)
+    if (is.null(cleaner)) cleaner <- vector("list", n_rows)
+    if (is.null(unknown_finder)) unknown_finder <- vector("list", n_rows)
   }
   padding <- as.character(padding)
   padding_width <- nchar(padding)
@@ -240,14 +271,16 @@ record_format <- function(name,
   }
   # Create the format
   fmt <- data.table(
-    name         = as.character(name),
-    item         = as.integer(item),
-    start_col    = as.integer(start_col),
-    end_col      = as.integer(end_col),
-    type         = factor(as.character(type), sort(type_converters[["type"]])),
-    alignment    = factor(as.character(alignment), c("left", "right")),
-    padding      = as.character(padding),
-    name_literal = as.character(name_literal)
+    name = as.character(name),
+    item = as.integer(item),
+    start_col = as.integer(start_col),
+    end_col = as.integer(end_col),
+    type = factor(as.character(type), sort(type_converters[["type"]])),
+    alignment = factor(as.character(alignment), c("left", "right")),
+    padding = as.character(padding),
+    name_literal = as.character(name_literal),
+    cleaner = as.list(cleaner),
+    unknown_finder = as.list(unknown_finder)
   )
   if (anyNA(fmt[["alignment"]])) {
     stop("'alignment' must only contain values of \"left\" or \"right\"")
@@ -257,6 +290,16 @@ record_format <- function(name,
       "'type' must be one of ",
       paste0("'", levels(fmt[["type"]]), "'", collapse = ", ")
     )
+  }
+  for (fun_col in c("cleaner", "unknown_finder")) {
+    need_fun <- vapply(fmt[[fun_col]], is.null, logical(1L))
+    if (any(need_fun)) {
+      types <- fmt[["type"]][need_fun]
+      defaults <- type_converters[list(type = types), on = "type"][[fun_col]]
+      no_default <- vapply(defaults, is.null, logical(1L))
+      defaults[no_default] <- list(identity)
+      set(x = fmt, i = which(need_fun), j = fun_col, value = defaults)
+    }
   }
   setattr(fmt, "class", c("record_format", class(fmt)))
   fmt

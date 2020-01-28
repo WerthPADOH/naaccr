@@ -152,26 +152,23 @@ as.naaccr_record.data.frame <- function(x,
       )
     }
   }
-  unresolved <- setdiff(all_items[["name"]], c(count_items[["name"]], coded_fields))
-  name <- NULL
-  type_groups <- all_items[
-    list(name = unresolved),
-    on = "name"
-  ][
-    ,
-    list(fields = list(name)),
-    by = "type"
-  ][
-    type_converters,
-    on = "type"
-  ]
-  set(type_groups, j = "type", value = as.character(type_groups[["type"]]))
-  fun_type <- if (keep_unknown) "fun_unknown" else "fun"
-  for (ii in seq_len(nrow(type_groups))) {
-    converter_fun <- type_groups[[fun_type]][[ii]]
-    columns <- type_groups[["fields"]][[ii]]
-    for (column in columns) {
-      set(x = record, j = column, value = converter_fun(record[[column]]))
+  for (jj in seq_len(nrow(all_items))) {
+    column <- all_items[["name"]][ii]
+    cleaner <- all_items[["cleaner"]][[ii]]
+    if (is.character(cleaner)) {
+      cleaner <- getFunction(cleaner)
+    }
+    if (!identical(cleaner, base::identity)) {
+      set(x = record, j = column, value = cleaner(record[[column]]))
+    }
+    if (!keep_unknown) {
+      unknown_finder <- all_items[["unknown_finder"]][[ii]]
+      set(
+        x = record,
+        i = which(unknown_finder(record[[column]])),
+        j = column,
+        value = NA
+      )
     }
   }
   # Have each "Flag" column following the one it describes
