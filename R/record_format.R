@@ -223,6 +223,8 @@ type_converters <- rbindlist(list(
 #'   }
 #' @seealso \code{\link{cleaners}}
 #' @examples
+#'   # Add custom fields to a standard format
+#'   # record_format objects use the data.table method for rbind
 #'   my_fields <- record_format(
 #'     name      = c("foo", "bar"),
 #'     item      = c(2163, 1180),
@@ -230,8 +232,20 @@ type_converters <- rbindlist(list(
 #'     end_col   = c(975, 1435),
 #'     type      = c("numeric", "facility")
 #'   )
-#'   # Uses the data.table method of rbind
 #'   my_format <- rbind(naaccr_format_16, my_fields, fill = TRUE)
+#'
+#'   # Convert an object with format details to a record_format
+#'   rough_format <- list(
+#'     name = c("bizz", "bang"),
+#'     item = c("888", "999"),
+#'     start_col = c(200.0, 300.0),
+#'     end_col = c(205, 305),
+#'     type = "numeric",
+#'     padding = 0
+#'   )
+#'   safe_format <- as.record_format(rough_format)
+#'   str(rough_format)
+#'   str(safe_format)
 #' @import data.table
 #' @export
 record_format <- function(name,
