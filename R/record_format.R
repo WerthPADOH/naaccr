@@ -2,32 +2,42 @@
 naaccr_boolean12 <- function(x) naaccr_boolean(x, false_value = '1')
 
 
+#' Wrapper setting keep_unknown = TRUE for cleaner functions
+#' @noRd
+keep_unknown <- function(fun) {
+  fun_args <- formals(fun)
+  fun_args[["keep_unknown"]] <- TRUE
+  formals(fun) <- fun_args
+  fun
+}
+
+
 #' Default cleaner and unknown finder functions for each field type
 #' See the docs of record_format below for details
 #' @noRd
 type_converters <- rbindlist(list(
   list(type = "integer", cleaner = list(as.integer), unknown_finder = list(is.na)),
   list(type = "numeric", cleaner = list(as.numeric), unknown_finder = list(is.na)),
-  list(type = "character", cleaner = list(clean_text), unknown_finder = list(unknown_text)),
+  list(type = "character", cleaner = list(keep_unknown(clean_text)), unknown_finder = list(unknown_text)),
   list(type = "factor", cleaner = list(identity), unknown_finder = list(is.na)),
   list(type = "sentineled_integer", cleaner = list(identity), unknown_finder = list(is.na)),
   list(type = "sentineled_numeric", cleaner = list(identity), unknown_finder = list(is.na)),
-  list(type = "age", cleaner = list(clean_age), unknown_finder = list(unknown_age)),
-  list(type = "icd_code", cleaner = list(clean_icd_code), unknown_finder = list(unknown_icd_code)),
-  list(type = "postal", cleaner = list(clean_postal), unknown_finder = list(unknown_postal)),
-  list(type = "city", cleaner = list(clean_address_city), unknown_finder = list(unknown_address_city)),
-  list(type = "address", cleaner = list(clean_address_number_and_street), unknown_finder = list(unknown_address_number_and_street)),
-  list(type = "facility", cleaner = list(clean_facility_id), unknown_finder = list(unknown_facility_id)),
-  list(type = "census_block", cleaner = list(clean_census_block), unknown_finder = list(unknown_census_block)),
-  list(type = "census_tract", cleaner = list(clean_census_tract), unknown_finder = list(unknown_census_tract)),
-  list(type = "icd_9", cleaner = list(clean_icd_9_cm), unknown_finder = list(unknown_icd_9_cm)),
-  list(type = "county", cleaner = list(clean_county_fips), unknown_finder = list(unknown_county_fips)),
-  list(type = "physician", cleaner = list(clean_physician_id), unknown_finder = list(unknown_physician_id)),
+  list(type = "age", cleaner = list(keep_unknown(clean_age)), unknown_finder = list(unknown_age)),
+  list(type = "icd_code", cleaner = list(keep_unknown(clean_icd_code)), unknown_finder = list(unknown_icd_code)),
+  list(type = "postal", cleaner = list(keep_unknown(clean_postal)), unknown_finder = list(unknown_postal)),
+  list(type = "city", cleaner = list(keep_unknown(clean_address_city)), unknown_finder = list(unknown_address_city)),
+  list(type = "address", cleaner = list(keep_unknown(clean_address_number_and_street)), unknown_finder = list(unknown_address_number_and_street)),
+  list(type = "facility", cleaner = list(keep_unknown(clean_facility_id)), unknown_finder = list(unknown_facility_id)),
+  list(type = "census_block", cleaner = list(keep_unknown(clean_census_block)), unknown_finder = list(unknown_census_block)),
+  list(type = "census_tract", cleaner = list(keep_unknown(clean_census_tract)), unknown_finder = list(unknown_census_tract)),
+  list(type = "icd_9", cleaner = list(keep_unknown(clean_icd_9_cm)), unknown_finder = list(unknown_icd_9_cm)),
+  list(type = "county", cleaner = list(keep_unknown(clean_county_fips)), unknown_finder = list(unknown_county_fips)),
+  list(type = "physician", cleaner = list(keep_unknown(clean_physician_id)), unknown_finder = list(unknown_physician_id)),
   list(type = "override", cleaner = list(naaccr_override), unknown_finder = list(naaccr_override)),
   list(type = "boolean01", cleaner = list(naaccr_boolean), unknown_finder = list(naaccr_boolean)),
-  list(type = "telephone", cleaner = list(clean_telephone), unknown_finder = list(unknown_telephone)),
-  list(type = "count", cleaner = list(clean_count), unknown_finder = list(unknown_count)),
-  list(type = "ssn", cleaner = list(clean_ssn), unknown_finder = list(unknown_ssn)),
+  list(type = "telephone", cleaner = list(keep_unknown(clean_telephone)), unknown_finder = list(unknown_telephone)),
+  list(type = "count", cleaner = list(keep_unknown(clean_count)), unknown_finder = list(unknown_count)),
+  list(type = "ssn", cleaner = list(keep_unknown(clean_ssn)), unknown_finder = list(unknown_ssn)),
   list(type = "boolean12", cleaner = list(naaccr_boolean12), unknown_finder = list(is.na)),
   list(type = "Date", cleaner = list(naaccr_date), unknown_finder = list(is.na)),
   list(type = "datetime", cleaner = list(naaccr_datetime), unknown_finder = list(is.na))
