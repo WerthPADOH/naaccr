@@ -257,6 +257,7 @@ type_converters <- rbindlist(list(
 #'   str(rough_format)
 #'   str(safe_format)
 #' @import data.table
+#' @importFrom methods formalArgs
 #' @export
 record_format <- function(name,
                           item,
@@ -322,6 +323,16 @@ record_format <- function(name,
       defaults <- type_converters[list(type = types), on = "type"][[fun_col]]
       no_default <- vapply(defaults, is.null, logical(1L))
       defaults[no_default] <- list(identity)
+      # Fill in field_width for functions that need it
+      for (ii in seq_along(defaults)) {
+        d_fun <- defaults[[ii]]
+        d_args <- formals(d_fun)
+        if ("field_width" %in% names(d_args)) {
+          d_args[["field_width"]] <- fmt[["end_col"]][ii] - fmt[["start_col"]][ii] + 1L
+          formals(d_fun) <- d_args
+          defaults[[ii]] <- d_fun
+        }
+      }
       set(x = fmt, i = which(need_fun), j = fun_col, value = defaults)
     }
   }
