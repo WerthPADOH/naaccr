@@ -347,9 +347,6 @@ record_format <- function(name,
 #' @importFrom methods formalArgs
 #' @export
 as.record_format <- function(x, ...) {
-  if (inherits(x, "record_format")) {
-    return(x)
-  }
   xlist <- as.list(x)
   xlist <- utils::modifyList(xlist, list(...), keep.null = TRUE)
   used_names <- intersect(formalArgs(record_format), names(xlist))
