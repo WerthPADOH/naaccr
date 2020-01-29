@@ -303,9 +303,9 @@ record_format <- function(name,
     type = factor(as.character(type), sort(type_converters[["type"]])),
     alignment = factor(as.character(alignment), c("left", "right")),
     padding = as.character(padding),
-    name_literal = as.character(name_literal),
     cleaner = as.list(cleaner),
-    unknown_finder = as.list(unknown_finder)
+    unknown_finder = as.list(unknown_finder),
+    name_literal = as.character(name_literal)
   )
   if (anyNA(fmt[["alignment"]])) {
     stop("'alignment' must only contain values of \"left\" or \"right\"")
