@@ -47,14 +47,17 @@ type_converters <- rbindlist(list(
 #' Define custom fields for NAACCR records
 #'
 #' Create a \code{record_format} object, which is used to prepare NAACCR records
-#' for analysis. Each row of a \code{record_format} describes how to read and
-#' interpret one field.
+#' for analysis by the \code{\link{naaccr_record}},
+#' \code{\link{as.naaccr_record}} and \code{\link{read_naaccr}} functions.
+#' Each row of a \code{record_format} describes how to read and interpret one
+#' field.
 #'
 #' @param name Item name appropriate for a \code{data.frame} column name.
 #' @param item NAACCR item number.
 #' @param start_col First column of the field in a fixed-width record.
 #' @param end_col Last column of the field in a fixed-width record.
-#' @param type Name of the column class.
+#' @param type Name of the column class. See the Field Types section for
+#'   predefined types with a default \code{cleaner} and \code{unknown_finder}.
 #' @param alignment Alignment of the field in fixed-width files. Either
 #'   \code{"left"} (default) or \code{"right"}.
 #' @param padding Single-character strings to use for padding in fixed-width
@@ -84,13 +87,6 @@ type_converters <- rbindlist(list(
 #'
 #' See Standard Field Types below for the default cleaning and unknown finding
 #' functions for each \code{type}.
-#'
-#' @section Extending a NAACCR Format:
-#'
-#'   To define registry-specific fields in addition to the standard fields,
-#'   create a \code{record_format} object for the registry-specific fields and
-#'   combine it with one of the \link{naaccr_format}{NAACCR record formats}
-#'   provided with the package using \code{rbind}.
 #'
 #' @return An object of class \code{"record_format"} which has the following
 #'   columns:
@@ -136,100 +132,172 @@ type_converters <- rbindlist(list(
 #'   elements beyond the columns listed above will be an additional column in
 #'   the output.
 #'
-#' @section Standard Field Types:
+#' @section How a Record Format is Used:
 #'
-#'   The levels \code{type} can take, along with the functions used to process
-#'   them when reading a file:
+#'   The \code{\link{naaccr_record}}, \code{\link{read_naaccr}} and
+#'   \code{\link{as.naaccr_record}} functions use a record format to determine
+#'   how to read, interpret and prepare the data for NAACCR fields.
 #'
-#'   \describe{
-#'     \item{\code{address}}{
-#'       (\code{\link{clean_address_number_and_street}})
-#'       Street number and street name parts of an address.
-#'     }
-#'     \item{\code{age}}{
-#'       (\code{\link{clean_age}})
-#'       Age in years.
-#'     }
-#'     \item{\code{boolean01}}{
-#'       (\code{\link{naaccr_boolean}}, with \code{false_value = "0"})
-#'       True/false, where \code{"0"} means false and \code{"1"} means true.
-#'     }
-#'     \item{\code{boolean12}}{
-#'       (\code{\link{naaccr_boolean}}, with \code{false_value = "1"})
-#'       True/false, where \code{"1"} means false and \code{"2"} means true.
-#'     }
-#'     \item{\code{census_block}}{
-#'       (\code{\link{clean_census_block}})
-#'       Census Block ID number.
-#'     }
-#'     \item{\code{census_tract}}{
-#'       (\code{\link{clean_census_tract}})
-#'       Census Tract ID number.
-#'     }
-#'     \item{\code{character}}{
-#'       (\code{\link{clean_text}})
-#'       Miscellaneous text.
-#'     }
-#'     \item{\code{city}}{
-#'       (\code{\link{clean_address_city}})
-#'       City name.
-#'     }
-#'     \item{\code{count}}{
-#'       (\code{\link{clean_count}})
-#'       Integer count.
-#'     }
-#'     \item{\code{county}}{
-#'       (\code{\link{clean_county_fips}})
-#'       County FIPS code.
-#'     }
-#'     \item{\code{Date}}{
-#'       (\code{\link{as.Date}}, with \code{format = "\%Y\%m\%d"})
-#'       NAACCR-formatted date (YYYYMMDD).
-#'     }
-#'     \item{\code{datetime}}{
-#'       (\code{\link{as.POSIXct}}, with \code{format = "\%Y\%m\%d\%H\%M\%S"})
-#'       NAACCR-formatted datetime (YYYYMMDDHHMMSS)
-#'     }
-#'     \item{\code{facility}}{
-#'       (\code{\link{clean_facility_id}})
-#'       Facility ID number.
-#'     }
-#'     \item{\code{icd_9}}{
-#'       (\code{\link{clean_icd_9_cm}})
-#'       ICD-9-CM code.
-#'     }
-#'     \item{\code{icd_code}}{
-#'       (\code{\link{clean_icd_code}})
-#'       ICD-9 or ICD-10 code.
-#'     }
-#'     \item{\code{integer}}{
-#'       (\code{\link{as.integer}})
-#'       Miscellaneous whole number.
-#'     }
-#'     \item{\code{numeric}}{
-#'       (\code{\link{as.numeric}})
-#'       Miscellaneous decimal number.
-#'     }
-#'     \item{\code{override}}{
-#'       (\code{\link{naaccr_override}})
-#'       Field describing why another field's value was over-ridden.
-#'     }
-#'     \item{\code{physician}}{
-#'       (\code{\link{clean_physician_id}})
-#'       Physician ID number.
-#'     }
-#'     \item{\code{postal}}{
-#'       (\code{\link{clean_postal}})
-#'       Postal code for an address (a.k.a. ZIP code in the United States).
-#'     }
-#'     \item{\code{ssn}}{
-#'       (\code{\link{clean_ssn}})
-#'       Social Security Number.
-#'     }
-#'     \item{\code{telephone}}{
-#'       (\code{\link{clean_telephone}})
-#'       10-digit telephone number.
-#'     }
+#'   In general, each field goes through this process:
+#'
+#'   \enumerate{
+#'     \item For \code{read_naaccr}, find the data in the file between
+#'       \code{start_col} and \code{end_col}, and read it in as character values.
+#'       Otherwise, take the values from the \code{name} column.
+#'     \item Apply the \code{cleaner} function and replace the field values with
+#'       the result.
+#'     \item If \code{keep_unknown} is \code{FALSE} for the function creating
+#'       the records data set, apply the \code{unknown_finder} function, and
+#'       replace all values that returned \code{TRUE} with \code{NA}.
+#'     \item If the field is from a format included with this package and has
+#'       the \code{"factor"} type, it will be replaced with the results of
+#'       \code{\link{naaccr_factor}}.
+#'     \item If the field is from a format included with this package and has
+#'       the \code{"sentineled_integer"} or \code{"sentineled_numeric"} type,
+#'       it will be replaced with the results of
+#'       \code{\link{split_sentineled}} function.
+#'   }
+#'
+#' @section Extending a NAACCR Format:
+#'
+#'   To define registry-specific fields in addition to the standard fields,
+#'   create a \code{record_format} object for the registry-specific fields and
+#'   combine it with one of the \link[=naaccr_format]{NAACCR record formats}
+#'   provided with the package using \code{rbind}.
+#'
+#'   Fields with type \code{"factor"} are converted to factors by default if
+#'   they are in a format included in this package. If you want to add a new
+#'   factor field, define your own \code{cleaner} function to create a
+#'   \code{factor} vector from the character values. Also define an
+#'   \code{unknown_finder} function to flag which levels stand for "unknown."
+#'   Feel free to still use the \code{"factor"} type to help organize your format.
+#'
+#'   Defining custom fields with the \code{"sentineled_integer"} or
+#'   \code{"sentineled_numeric"} types is not as easy. The \code{cleaner}
+#'   function should only return a single vector. For now, consider writing your
+#'   own function to create \code{naaccr_record} data sets that looks for
+#'   sentineled fields and splits their continuous and categorical values into
+#'   multiple columns. You can still specify the fields' types as
+#'   \code{"sentineled_integer"} and \code{"sentineled_numeric"} to help your
+#'   code handle the fields.
+#'
+#' @section Field Types:
+#'
+#'   The \code{type} column of a format serves two purposes.
+#'   First, it lets users understand and program around the type of data each
+#'   field holds.
+#'   Second, if the type is one of the default values listed below,
+#'   \code{record_format} will replace \code{NULL} values for \code{cleaner} and
+#'   \code{unknown_finder} with good defaults.
+#'
+#'   Note the \code{factor}, \code{sentineled_integer} and
+#'   \code{sentineled_numeric} have \dQuote{\enc{naïve}{naive}} default cleaning
+#'   and unknown-finding functions. Because each field of those types is very
+#'   different from the rest, they are read as simply as possible and then dealt
+#'   with individually in \code{as.naaccr_record}.
+#'
+#'   \tabular{llll}{
+#'     Standard type \tab Description \tab Default cleaner \tab Default unknown finder\cr
+#'     \code{integer}
+#'       \tab Miscellaneous whole number.
+#'       \tab \code{\link{as.integer}}
+#'       \tab \code{\link{is.na}}\cr
+#'     \code{numeric}
+#'       \tab Miscellaneous decimal number.
+#'       \tab \code{\link{as.numeric}}
+#'       \tab \code{\link{is.na}}\cr
+#'     \code{character}
+#'       \tab Miscellaneous text.
+#'       \tab \code{\link{clean_text}}
+#'       \tab \code{\link{unknown_text}}\cr
+#'     \code{factor}
+#'       \tab Categorical values. See \code{\link{naaccr_factor}}.
+#'       \tab \code{\link{identity}}
+#'       \tab \code{\link{is.na}}\cr
+#'     \code{sentineled_integer}
+#'       \tab Mix of integer and categorical values. See \code{\link{split_sentineled}}.
+#'       \tab \code{\link{identity}}
+#'       \tab \code{\link{is.na}}\cr
+#'     \code{sentineled_numeric}
+#'       \tab Mix of numeric and categorical values. See \code{\link{split_sentineled}}.
+#'       \tab \code{\link{identity}}
+#'       \tab \code{\link{is.na}}\cr
+#'     \code{age}
+#'       \tab Age in years.
+#'       \tab \code{\link{clean_age}}
+#'       \tab \code{\link{unknown_age}}\cr
+#'     \code{icd_code}
+#'       \tab ICD-9 or ICD-10 code.
+#'       \tab \code{\link{clean_icd_code}}
+#'       \tab \code{\link{unknown_icd_code}}\cr
+#'     \code{postal}
+#'       \tab Postal code for an address (a.k.a. ZIP code in the United States).
+#'       \tab \code{\link{clean_postal}}
+#'       \tab \code{\link{unknown_postal}}\cr
+#'     \code{city}
+#'       \tab City name.
+#'       \tab \code{\link{clean_address_city}}
+#'       \tab \code{\link{unknown_address_city}}\cr
+#'     \code{address}
+#'       \tab Street number and street name parts of an address.
+#'       \tab \code{\link{clean_address_number_and_street}}
+#'       \tab \code{\link{unknown_address_number_and_street}}\cr
+#'     \code{facility}
+#'       \tab Facility ID number.
+#'       \tab \code{\link{clean_facility_id}}
+#'       \tab \code{\link{unknown_facility_id}}\cr
+#'     \code{census_block}
+#'       \tab Census Block ID number.
+#'       \tab \code{\link{clean_census_block}}
+#'       \tab \code{\link{unknown_census_block}}\cr
+#'     \code{census_tract}
+#'       \tab Census Tract ID number.
+#'       \tab \code{\link{clean_census_tract}}
+#'       \tab \code{\link{unknown_census_tract}}\cr
+#'     \code{icd_9}
+#'       \tab ICD-9-CM code.
+#'       \tab \code{\link{clean_icd_9_cm}}
+#'       \tab \code{\link{unknown_icd_9_cm}}\cr
+#'     \code{county}
+#'       \tab County FIPS code.
+#'       \tab \code{\link{clean_county_fips}}
+#'       \tab \code{\link{unknown_county_fips}}\cr
+#'     \code{physician}
+#'       \tab Physician ID number.
+#'       \tab \code{\link{clean_physician_id}}
+#'       \tab \code{\link{unknown_physician_id}}\cr
+#'     \code{override}
+#'       \tab Field describing why another field's value was over-ridden.
+#'       \tab \code{\link{naaccr_override}}
+#'       \tab \code{\link{is.na}}\cr
+#'     \code{boolean01}
+#'       \tab True/false, where \code{"0"} means false and \code{"1"} means true.
+#'       \tab \code{\link{naaccr_boolean}}
+#'       \tab \code{\link{is.na}}\cr
+#'     \code{telephone}
+#'       \tab 10-digit telephone number.
+#'       \tab \code{\link{clean_telephone}}
+#'       \tab \code{\link{unknown_telephone}}\cr
+#'     \code{count}
+#'       \tab Integer count.
+#'       \tab \code{\link{clean_count}}
+#'       \tab \code{\link{unknown_count}}\cr
+#'     \code{ssn}
+#'       \tab Social Security Number.
+#'       \tab \code{\link{clean_ssn}}
+#'       \tab \code{\link{unknown_ssn}}\cr
+#'     \code{boolean12}
+#'       \tab True/false, where \code{"1"} means false and \code{"2"} means true.
+#'       \tab \code{\link{naaccr_boolean}}
+#'       \tab \code{\link{is.na}}\cr
+#'     \code{Date}
+#'       \tab NAACCR-formatted date (YYYYMMDD).
+#'       \tab \code{\link{naaccr_date}}
+#'       \tab \code{\link{is.na}}\cr
+#'     \code{datetime}
+#'       \tab NAACCR-formatted datetime (YYYYMMDDHHMMSS)
+#'       \tab \code{\link{naaccr_datetime}}
+#'       \tab \code{\link{is.na}}
 #'   }
 #' @seealso \code{\link{cleaners}}
 #' @examples
@@ -243,6 +311,23 @@ type_converters <- rbindlist(list(
 #'     type      = c("numeric", "facility")
 #'   )
 #'   my_format <- rbind(naaccr_format_16, my_fields, fill = TRUE)
+#'
+#'   # Define a custom factor field
+#'   test_factor <- function(x) {
+#'     ordered(x, c("0", "1", "2", "9"), c("negative", "low", "high", "unknown"))
+#'   }
+#'   test_unknown <- function(x) {
+#'     is.na(x) | x == "unknown"
+#'   }
+#'   factor_fmt <- record_format(
+#'     name           = "testResult",
+#'     item           = 2700,
+#'     start_col      = 2195,
+#'     end_col        = 2195,
+#'     type           = "factor",
+#'     cleaner        = list(test_factor),
+#'     unknown_finder = list(test_unknown)
+#'   )
 #'
 #'   # Convert an object with format details to a record_format
 #'   rough_format <- list(
