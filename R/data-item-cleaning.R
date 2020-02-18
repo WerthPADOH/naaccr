@@ -328,6 +328,7 @@ unknown_facility_id <- function(fin) {
 
 
 #' @export
+#' @rdname cleaners
 clean_facility_id <- function(fin, keep_unknown = FALSE) {
   if (is.numeric(fin)) {
     fin <- format(as.integer(fin), scientific = FALSE)
@@ -348,6 +349,7 @@ unknown_physician_id <- function(physician) {
 
 
 #' @export
+#' @rdname cleaners
 clean_physician_id <- function(physician, keep_unknown = FALSE) {
   if (is.numeric(physician)) {
     physician <- format(as.integer(physician), scientific = FALSE)

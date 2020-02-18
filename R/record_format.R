@@ -79,8 +79,8 @@ type_converters <- rbindlist(list(
 #' with the same length as the input.
 #' The vector returned by a \code{cleaner} function can be of any class and
 #' should be easy to use in an analysis.
-#' To have a cleaning or function change nothing, use \code{\link[base]{identity}}.
-#' To have an unknown finding function change nothing, use \code{\link[base]{is.na}}.
+#' To have a cleaning or function change nothing, use \code{\link[base=]{identity}}.
+#' To have an unknown finding function change nothing, use \code{\link[base=NA]{is.na}}.
 #'
 #' See Standard Field Types below for the default cleaning and unknown finding
 #' functions for each \code{type}.
@@ -318,22 +318,31 @@ record_format <- function(name,
   }
   for (fun_col in c("cleaner", "unknown_finder")) {
     need_fun <- vapply(fmt[[fun_col]], is.null, logical(1L))
-    if (any(need_fun)) {
-      types <- fmt[["type"]][need_fun]
-      defaults <- type_converters[list(type = types), on = "type"][[fun_col]]
-      no_default <- vapply(defaults, is.null, logical(1L))
-      defaults[no_default] <- list(identity)
-      # Fill in field_width for functions that need it
-      for (ii in seq_along(defaults)) {
-        d_fun <- defaults[[ii]]
-        d_args <- formals(d_fun)
-        if ("field_width" %in% names(d_args)) {
-          d_args[["field_width"]] <- fmt[["end_col"]][ii] - fmt[["start_col"]][ii] + 1L
-          formals(d_fun) <- d_args
-          defaults[[ii]] <- d_fun
-        }
+    need_by_type <- split(which(need_fun), fmt[["type"]][need_fun])
+    need_by_type[lengths(need_by_type) == 0L] <- NULL
+    for (tt in names(need_by_type)) {
+      need_indices <- need_by_type[[tt]]
+      default <- type_converters[list(type = tt), on = "type"][[fun_col]][[1L]]
+      if (is.null(default)) {
+        default <- list(identity)
       }
-      set(x = fmt, i = which(need_fun), j = fun_col, value = defaults)
+      default_list <- rep_len(list(default), length(need_indices))
+      mem_addr <- vapply(default_list, address, character(1))
+      stopifnot(all(mem_addr == mem_addr[1]))
+      # Fill in field_width for functions that need it
+      def_args <- formals(default)
+      if ("field_width" %in% names(def_args)) {
+        widths <- fmt[["end_col"]][need_indices] - fmt[["start_col"]][need_indices] + 1L
+        default_list <- lapply(
+          X = widths,
+          FUN = function(w) {
+            def_args[["field_width"]] <- w
+            formals(default) <- def_args
+            default
+          }
+        )
+      }
+      set(x = fmt, i = need_indices, j = fun_col, value = default_list)
     }
   }
   setattr(fmt, "class", c("record_format", class(fmt)))
@@ -341,7 +350,6 @@ record_format <- function(name,
 }
 
 
-#' @inheritParams record_format
 #' @rdname record_format
 #' @importFrom utils modifyList
 #' @importFrom methods formalArgs
@@ -421,7 +429,7 @@ as.record_format <- function(x, ...) {
 #'
 #' @seealso \code{\link{record_format}}.
 #'
-#' @rdname naaccr_format
+#' @name naaccr_format
 #' @export
 "naaccr_format_12"
 
