@@ -352,7 +352,9 @@ as.record_format <- function(x, ...) {
   used_names <- intersect(formalArgs(record_format), names(xlist))
   fmt <- do.call(record_format, xlist[used_names])
   extra_cols <- setdiff(names(xlist), names(fmt))
-  set(x = fmt, j = extra_cols, value = xlist[extra_cols])
+  if (length(extra_cols) > 0L) {
+    set(x = fmt, j = extra_cols, value = xlist[extra_cols])
+  }
   fmt
 }
 
