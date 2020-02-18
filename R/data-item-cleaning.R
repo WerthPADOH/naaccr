@@ -6,7 +6,8 @@
 #' Clean free-form text
 #'
 #' @param age A character vector of ages following the coding scheme of
-#'   {ageAtDiagnosis}.
+#'   \code{ageAtDiagnosis}.
+#' @param city A character vector of city names.
 #' @param block A character vector of Census block group codes.
 #' @param icd A character vector of ICD-7, ICD-8, ICD-9, and/or ICD-10 codes.
 #' @param icd_cm A character vector of ICD-9-CM codes.
@@ -329,7 +330,7 @@ clean_icd_code <- function(icd, keep_unknown = FALSE) {
   }
   icd <- stri_trim_both(icd)
   if (!keep_unknown) {
-    icd[unknown_icd_icd(icd)] <- NA_character_
+    icd[unknown_icd_code(icd)] <- NA_character_
   }
   icd
 }
