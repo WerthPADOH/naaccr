@@ -86,6 +86,7 @@ sequence_number_columns <- matrix(
 
 #' @rdname as.naaccr_record
 #' @import data.table
+#' @importFrom methods getFunction
 #' @export
 as.naaccr_record.data.frame <- function(x,
                                         keep_unknown = FALSE,
@@ -163,6 +164,9 @@ as.naaccr_record.data.frame <- function(x,
     }
     if (!keep_unknown) {
       unknown_finder <- all_items[["unknown_finder"]][[jj]]
+      if (is.character(unknown_finder)) {
+        unknown_finder <- getFunction(unknown_finder)
+      }
       set(
         x = record,
         i = which(unknown_finder(record[[column]])),

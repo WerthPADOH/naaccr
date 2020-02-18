@@ -67,11 +67,15 @@ type_converters <- rbindlist(list(
 #'   cleaning field data (e.g., convert all values to uppercase).
 #'   Values of \code{NULL} (the default) mean the default cleaning function for
 #'   the \code{type} is used.
+#'   The value can also be the name of a function to retrieve with
+#'   \code{\link[methods=methodUtilities]{getFunction}}.
 #'   See Details.
 #' @param unknown_finder (Optional) List of functions to detect when codes mean
 #'   the actual values are unknown or not applicable.
 #'   Values of \code{NULL} (the default) mean the default unknown finding
 #'   function for the \code{type} is used.
+#'   The value can also be the name of a function to retrieve with
+#'   \code{\link[methods=methodUtilities]{getFunction}}.
 #'   See Details.
 #' @param x Object to be coerced to a \code{record_format}, usually a
 #'   \code{data.frame} or \code{list}.
