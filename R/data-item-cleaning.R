@@ -119,14 +119,15 @@
 #' @export
 #' @name cleaners
 unknown_text <- function(text) {
-  !nzchar(text)
+  is.na(text) | !nzchar(text)
 }
 
 
+#' @import stringi
 #' @export
 #' @rdname cleaners
 clean_text <- function(text, keep_unknown = FALSE) {
-  trimmed <- trimws(text)
+  trimmed <- stri_trim_both(text)
   if (!keep_unknown) {
     trimmed[unknown_text(trimmed)] <- NA_character_
   }
@@ -137,7 +138,7 @@ clean_text <- function(text, keep_unknown = FALSE) {
 #' @export
 #' @rdname cleaners
 unknown_age <- function(age) {
-  age > 120L
+  is.na(age) | age > 120L
 }
 
 
@@ -153,17 +154,19 @@ clean_age <- function(age, keep_unknown = FALSE) {
 }
 
 
+#' @import stringi
 #' @export
 #' @rdname cleaners
 unknown_address_city <- function(city) {
-  toupper(city) %in% c('', 'UNKNOWN')
+  stri_trans_toupper(city) %in% c(NA, '', 'UNKNOWN')
 }
 
 
+#' @import stringi
 #' @export
 #' @rdname cleaners
 clean_address_city <- function(city, keep_unknown = FALSE) {
-  city <- trimws(city)
+  city <- stri_trim_both(city)
   if (!keep_unknown) {
     city[unknown_address_city(city)] <- NA_character_
   }
@@ -171,17 +174,19 @@ clean_address_city <- function(city, keep_unknown = FALSE) {
 }
 
 
+#' @import stringi
 #' @export
 #' @rdname cleaners
 unknown_address_number_and_street <- function(location) {
-  toupper(location) %in% c('', 'UNKNOWN')
+  stri_trans_toupper(location) %in% c(NA, '', 'UNKNOWN')
 }
 
 
+#' @import stringi
 #' @export
 #' @rdname cleaners
 clean_address_number_and_street <- function(location, keep_unknown = FALSE) {
-  location <- trimws(location)
+  location <- stri_trim_both(location)
   if (!keep_unknown) {
     location[unknown_address_number_and_street(location)] <- NA_character_
   }
@@ -192,17 +197,18 @@ clean_address_number_and_street <- function(location, keep_unknown = FALSE) {
 #' @export
 #' @rdname cleaners
 unknown_postal <- function(postal) {
-  postal %in% c('', '888888888', '999999999', '999999')
+  postal %in% c(NA, '', '888888888', '999999999', '999999')
 }
 
 
+#' @import stringi
 #' @export
 #' @rdname cleaners
 clean_postal <- function(postal, keep_unknown = FALSE) {
   if (is.numeric(postal)) {
     postal <- format(as.integer(postal), scientific = FALSE)
   }
-  postal <- trimws(postal)
+  postal <- stri_trim_both(postal)
   if (!keep_unknown) {
     postal[unknown_postal(postal)] <- NA_character_
   }
@@ -210,20 +216,22 @@ clean_postal <- function(postal, keep_unknown = FALSE) {
 }
 
 
+#' @import stringi
 #' @export
 #' @rdname cleaners
 unknown_census_block <- function(block) {
-  !grepl("^[1-9]$", block)
+  is.na(block) | stri_detect_regex(block, "[^1-9]")
 }
 
 
+#' @import stringi
 #' @export
 #' @rdname cleaners
 clean_census_block <- function(block, keep_unknown = FALSE) {
   if (is.numeric(block)) {
     block <- format(as.integer(block), scientific = FALSE)
   }
-  block <- trimws(block)
+  block <- stri_trim_both(block)
   if (!keep_unknown) {
     block[unknown_census_block(block)] <- NA_character_
   }
@@ -236,10 +244,11 @@ clean_census_block <- function(block, keep_unknown = FALSE) {
 unknown_census_tract <- function(tract) {
   is_tract <- data.table::between(tract, '000100', '949999')
   is_bna <- data.table::between(tract, '950100', '998999')
-  !is_tract & !is_bna
+  is.na(tract) | (!is_tract & !is_bna)
 }
 
 
+#' @import stringi
 #' @import data.table
 #' @export
 #' @rdname cleaners
@@ -247,7 +256,7 @@ clean_census_tract <- function(tract, keep_unknown = FALSE) {
   if (is.numeric(tract)) {
     tract <- format(as.integer(tract), scientific = FALSE)
   }
-  tract <- trimws(tract)
+  tract <- stri_trim_both(tract)
   if (!keep_unknown) {
     tract[unknown_census_tract(tract)] <- NA_character_
   }
@@ -255,11 +264,15 @@ clean_census_tract <- function(tract, keep_unknown = FALSE) {
 }
 
 
+#' @import stringi
 #' @export
 #' @rdname cleaners
 unknown_county_fips <- function(county) {
-  stri_subset_regex(county, "^\\d{3}$", negate = TRUE) <- NA_character_
-  !nzchar(county)
+  county <- stri_trim_both(county)
+  is.na(county) |
+    !nzchar(county) |
+    stri_detect_regex(county, "[^0-9]") |
+    county %in% c("998", "999")
 }
 
 
@@ -270,7 +283,7 @@ clean_county_fips <- function(county, keep_unknown = FALSE) {
   if (is.numeric(county)) {
     county <- format(as.integer(county), scientific = FALSE)
   }
-  county <- trimws(county)
+  county <- stri_trim_both(county)
   if (!keep_unknown) {
     county[unknown_county_fips(county)] <- NA_character_
   }
@@ -281,17 +294,18 @@ clean_county_fips <- function(county, keep_unknown = FALSE) {
 #' @export
 #' @rdname cleaners
 unknown_icd_9_cm <- function(icd_cm) {
-  icd_cm %in% c('', '00000')
+  icd_cm %in% c(NA, '', '00000')
 }
 
 
+#' @import stringi
 #' @export
 #' @rdname cleaners
 clean_icd_9_cm <- function(icd_cm, keep_unknown = FALSE) {
   if (is.numeric(icd_cm)) {
     icd_cm <- format(as.integer(icd_cm), scientific = FALSE)
   }
-  icd_cm <- trimws(icd_cm)
+  icd_cm <- stri_trim_both(icd_cm)
   if (!keep_unknown) {
     icd_cm[unknown_icd_9_cm(icd_cm)] <- NA_character_
   }
@@ -302,17 +316,18 @@ clean_icd_9_cm <- function(icd_cm, keep_unknown = FALSE) {
 #' @export
 #' @rdname cleaners
 unknown_icd_code <- function(icd) {
-  icd %in% c('', '0000', '7777', '7797')
+  icd %in% c(NA, '', '0000', '7777', '7797')
 }
 
 
+#' @import stringi
 #' @export
 #' @rdname cleaners
 clean_icd_code <- function(icd, keep_unknown = FALSE) {
   if (is.numeric(icd)) {
     icd <- format(as.integer(icd), scientific = FALSE)
   }
-  icd <- trimws(icd)
+  icd <- stri_trim_both(icd)
   if (!keep_unknown) {
     icd[unknown_icd_icd(icd)] <- NA_character_
   }
@@ -323,17 +338,18 @@ clean_icd_code <- function(icd, keep_unknown = FALSE) {
 #' @export
 #' @rdname cleaners
 unknown_facility_id <- function(fin) {
-  fin %in% c('', '0000000000', '0099999999')
+  fin %in% c(NA, '', '0000000000', '0099999999')
 }
 
 
+#' @import stringi
 #' @export
 #' @rdname cleaners
 clean_facility_id <- function(fin, keep_unknown = FALSE) {
   if (is.numeric(fin)) {
     fin <- format(as.integer(fin), scientific = FALSE)
   }
-  fin <- trimws(fin)
+  fin <- stri_trim_both(fin)
   if (!keep_unknown) {
     fin[unknown_facility_id(fin)] <- NA_character_
   }
@@ -344,17 +360,18 @@ clean_facility_id <- function(fin, keep_unknown = FALSE) {
 #' @export
 #' @rdname cleaners
 unknown_physician_id <- function(physician) {
-  physician %in% c('', '00000000', '99999999')
+  physician %in% c(NA, '', '00000000', '99999999')
 }
 
 
+#' @import stringi
 #' @export
 #' @rdname cleaners
 clean_physician_id <- function(physician, keep_unknown = FALSE) {
   if (is.numeric(physician)) {
     physician <- format(as.integer(physician), scientific = FALSE)
   }
-  physician <- trimws(physician)
+  physician <- stri_trim_both(physician)
   if (!keep_unknown) {
     physician[unknown_physician_id(physician)] <- NA_character_
   }
@@ -362,21 +379,28 @@ clean_physician_id <- function(physician, keep_unknown = FALSE) {
 }
 
 
+#' @import stringi
 #' @export
 #' @rdname cleaners
 unknown_telephone <- function(phone) {
-  grepl("\\D", phone) | !nzchar(phone) | grepl("^[09]+$", phone)
+  phone <- stri_trim_both(phone)
+  is.na(phone) |
+    !nzchar(phone) |
+    stri_detect_regex(phone, "[^0-9]")
 }
 
 
+#' @import stringi
 #' @export
 #' @rdname cleaners
 clean_telephone <- function(phone, keep_unknown = FALSE) {
   if (is.numeric(phone)) {
     phone <- format(as.integer(phone), scientific = FALSE)
   }
-  phone <- trimws(phone)
-  phone <- stri_replace_all_fixed(phone, "[[:punct:][:space:]]", "")
+  phone <- stri_trim_both(phone)
+  # See ?"stringi-search-charclass"
+  punct_space <- "[\\p{Wspace}[:Pd:][:Ps:][:Pe:][:Pc:][:Po:][:Pi:][:Pf:]]"
+  phone <- stri_replace_all_fixed(phone, punct_space, "")
   if (!keep_unknown) {
     phone[unknown_telephone(phone)] <- NA_character_
   }
@@ -389,7 +413,7 @@ clean_telephone <- function(phone, keep_unknown = FALSE) {
 #' @rdname cleaners
 unknown_count <- function(count, field_width) {
   na_code <- stri_dup("9", field_width)
-  count == na_code
+  count %in% c(NA, na_code)
 }
 
 
@@ -408,17 +432,18 @@ clean_count <- function(count, field_width, keep_unknown = FALSE) {
 #' @export
 #' @rdname cleaners
 unknown_ssn <- function(ssn) {
-  ssn %in% c("", "999999999")
+  ssn %in% c(NA, "", "999999999")
 }
 
 
+#' @import stringi
 #' @export
 #' @rdname cleaners
 clean_ssn <- function(ssn, keep_unknown = FALSE) {
   if (is.numeric(ssn)) {
     ssn <- format(as.integer(ssn), scientific = FALSE)
   }
-  ssn <- trimws(ssn)
+  ssn <- stri_trim_both(ssn)
   if (!keep_unknown) {
     ssn[unknown_ssn(ssn)] <- NA_character_
   }
