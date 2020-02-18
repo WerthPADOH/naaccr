@@ -314,3 +314,38 @@ test_that("read_naaccr reads empty files into a 0-row tabel with all columns", {
   expect_is(processed[["secondaryDiagnosis1"]] ,"character")
   expect_is(processed[["latitude"]], "numeric")
 })
+
+test_that("record_format handles custom cleaning/unknown finding functions", {
+  new_format <- record_format(
+    name = c("foo", "bar", "gau"),
+    item = 1:3,
+    start_col = NA,
+    end_col = NA,
+    type = c("county", "character", "character"),
+    cleaner = list(
+      NULL,
+      NULL,
+      function(x) gsub("[aeiou]", "", x)
+    ),
+    unknown_finder = list(
+      NULL,
+      function(x) grepl("[^aeiou]", x),
+      NULL
+    )
+  )
+  records <- data.frame(
+    foo = c("001", "002", "999", NA),
+    bar = c("a", "b", "", NA),
+    gau = c("a", "b", "", NA),
+    stringsAsFactors = FALSE
+  )
+  result <- as.naaccr_record(records, format = new_format)
+  expected <- data.frame(
+    foo = c("001", "002", NA, NA),
+    bar = c("a", NA, "", NA),
+    gau = c(NA, "b", NA, NA),
+    stringsAsFactors = FALSE
+  )
+  class(expected) <- class(result)
+  expect_identical(result, expected)
+})
