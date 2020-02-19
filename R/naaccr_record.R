@@ -109,6 +109,18 @@ as.naaccr_record.data.frame <- function(x,
       set(record, j = column, value = as.character(record[[column]]))
     }
   }
+  need_padding <- all_items[["padding"]] != " " & !is.na(all_items[["padding"]])
+  for (pad_col in all_items[["name"]][need_padding]) {
+    set(
+      record,
+      j = pad_col,
+      value = naaccr_encode(
+        x = record[[pad_col]],
+        field = pad_col,
+        format = all_items
+      )
+    )
+  }
   count_items <- all_items[list(type = "count"), on = "type", nomatch = 0L]
   for (ii in seq_len(nrow(count_items))) {
     column <- count_items[["name"]][ii]
