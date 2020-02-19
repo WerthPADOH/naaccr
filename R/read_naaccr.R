@@ -284,7 +284,7 @@ read_naaccr_xml_plain <- function(input,
                                   as_text = FALSE,
                                   encoding = getOption("encoding")) {
   tree <- xmlInternalTreeParse(
-    file = input, ignoreBlanks = FALSE, asText = as_text
+    file = input, ignoreBlanks = FALSE, asText = as_text, encoding = encoding
   )
   on.exit(free(tree), add = TRUE)
   registry_nodes <- getNodeSet(tree, "//ns:NaaccrData", namespaces = "ns")

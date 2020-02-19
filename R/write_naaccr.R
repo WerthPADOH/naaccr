@@ -292,9 +292,10 @@ prepare_writing_format <- function(format, fields) {
 #'   and \code{format} are \code{NULL} (the default), the most recent version is
 #'   used.
 #' @param format A \code{\link{record_format}} object for writing the records.
+#' @param encoding String specifying the character encoding for the output file.
 #' @import stringi
 #' @export
-write_naaccr <- function(records, con, version = NULL, format = NULL) {
+write_naaccr <- function(records, con, version = NULL, format = NULL, encoding = "UTF-8") {
   records <- if (is.data.table(records)) copy(records) else as.data.table(records)
   write_format <- choose_naaccr_format(version = version, format = format)
   write_format <- prepare_writing_format(write_format, names(records))
@@ -391,7 +392,7 @@ write_naaccr_xml <- function(records,
                              user_dictionary = NULL,
                              encoding = "UTF-8") {
   if (is.character(con)) {
-    con <- file(con, "w", encoding = "UTF-8")
+    con <- file(con, "w", encoding = encoding)
     on.exit(try(close(con)), add = TRUE)
   }
   write_format <- choose_naaccr_format(version = version, format = format)
