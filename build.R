@@ -30,7 +30,13 @@ sys_objects <- new.env()
 for (sdf in sys_data_files) {
   load(sdf, envir = sys_objects)
 }
-save(list = names(sys_objects), envir = sys_objects, file = "R/sysdata.rda", version = 2)
+save(
+  list = names(sys_objects),
+  envir = sys_objects,
+  file = "R/sysdata.rda",
+  version = 2,
+  compress = "xz"
+)
 
 # Tests ------------------------------------------------------------------------
 results <- devtools::test()

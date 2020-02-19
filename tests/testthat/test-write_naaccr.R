@@ -80,16 +80,19 @@ test_that("write_naaccr can handle custom formats", {
   new_format <- naaccr_format_16[
     list(name = c("recordType", "patientIdNumber", "reserved00")),
     on = "name"
-  ][
+  ]
+  new_field_fmt <- record_format(
+    name = "newField",
+    item = -2,
+    start_col = new_format[name == "reserved00", start_col],
+    end_col = new_format[name == "reserved00", end_col],
+    type = "Date",
+    alignment = "left",
+    padding = " "
+  )
+  new_format[
     name == "reserved00",
-    ":="(
-      name = "newField",
-      item = -2,
-      type = "Date",
-      alignment = "left",
-      padding = " ",
-      name_literal = "new new new"
-    )
+    (names(new_field_fmt)) := new_field_fmt
   ]
   recs <- read_naaccr(
     "../data/synthetic-naaccr-16-incidence.txt",
@@ -102,6 +105,11 @@ test_that("write_naaccr can handle custom formats", {
   write_naaccr(recs, tf, format = new_format)
   recs_2 <- read_naaccr(tf, format = new_format)
   for (column in names(recs_2)) {
-    expect_equivalent(recs_2[[column]], recs[[column]])
+    result <- recs_2[[column]]
+    expected <- recs[[column]]
+    expect_equivalent(
+      result, expected,
+      label = paste0(c(column, all.equal(result, expected)), collapse = "\n")
+    )
   }
 })
