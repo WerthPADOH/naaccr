@@ -224,19 +224,39 @@ record_format <- function(name,
                           type         = "character",
                           alignment    = "left",
                           padding      = " ",
-                          name_literal = NULL,
+                          name_literal = NA,
                           parent       = NA) {
   # Allow 0-row formats, because why not?
-  n_rows <- max(
-    length(name), length(item), length(start_col), length(end_col),
-    length(type), length(name_literal)
+  arg_lengths <- c(
+    name = length(name),
+    item = length(item),
+    start_col = length(start_col),
+    end_col = length(end_col),
+    type = length(type),
+    alignment = length(alignment),
+    padding = length(padding),
+    name_literal = length(name_literal),
+    parent = length(parent)
   )
-  if (n_rows == 0L) {
-    alignment    <- character(0L)
-    padding      <- character(0L)
-    name_literal <- character(0L)
-  } else if (is.null(name_literal)) {
-    name_literal <- NA_character_
+  n_rows <- max(arg_lengths)
+  if (n_rows > 1L) {
+    length_zero <- arg_lengths == 0L
+    if (any(length_zero)) {
+      warning(
+        "Arguments with length 0 given defaults: ",
+        paste0(names(arg_lengths)[length_zero], collapse = ", ")
+      )
+    }
+    if (arg_lengths["name"] == 0L) name <- NA_character_
+    if (arg_lengths["item"] == 0L) item <- NA_integer_
+    defaults <- formals()
+    if (arg_lengths["start_col"] == 0L) start_col <- defaults[["start_col"]]
+    if (arg_lengths["end_col"] == 0L) end_col <- defaults[["end_col"]]
+    if (arg_lengths["type"] == 0L) type <- defaults[["type"]]
+    if (arg_lengths["alignment"] == 0L) alignment <- defaults[["alignment"]]
+    if (arg_lengths["padding"] == 0L) padding <- defaults[["padding"]]
+    if (arg_lengths["name_literal"] == 0L) name_literal <- defaults[["name_literal"]]
+    if (arg_lengths["parent"] == 0L) parent <- defaults[["parent"]]
   }
   padding   <- as.character(padding)
   padding_width <- nchar(padding)
