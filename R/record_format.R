@@ -264,10 +264,9 @@ record_format <- function(name,
     stop("'padding' must only contain single-character values")
   }
   parent_nodes <- c("NaaccrData", "Patient", "Tumor")
-  if (any(!is.na(parent) & !(parent %in% parent_nodes), na.rm = TRUE)) {
+  if (!all(parent %in% c(NA, parent_nodes))) {
     parent_list <- paste0("'", parent_nodes, "'", collapse = ", ")
     warning("Replacing values of 'parent' other than (", parent_list, ") with NA")
-    warning(paste0(setdiff(parent, c(parent_nodes, NA)), collapse = ", "))
   }
   # Create the format
   fmt <- data.table(
