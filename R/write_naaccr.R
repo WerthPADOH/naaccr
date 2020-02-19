@@ -328,6 +328,7 @@ select_first_cautiously <- function(x, warning_name = NULL) {
 
 
 #' XML-ize a dataset of NAACCR fields, with one node per row
+#' @importFrom XML newXMLNode
 #' @noRd
 group_values <- function(dataset, node_name) {
   items <- vapply(
