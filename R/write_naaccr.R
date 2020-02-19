@@ -66,6 +66,7 @@ naaccr_unsentinel <- function(value,
 #' @import stringi
 #' @noRd
 format_decimal <- function(x, width) {
+  x <- as.numeric(x)
   expanded <- formatC(x, width = width, format = "f")
   non_finite <- !is.finite(x)
   if (any(non_finite & !is.na(x))) {
@@ -86,6 +87,7 @@ format_decimal <- function(x, width) {
 #' @import stringi
 #' @noRd
 format_integer <- function(x, width) {
+  x <- as.integer(x)
   expanded <- formatC(x, width = width, format = "d")
   non_finite <- !is.finite(x)
   if (any(non_finite & !is.na(x))) {
