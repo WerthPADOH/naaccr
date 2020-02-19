@@ -63,17 +63,25 @@ split_fields <- function(record_lines,
 }
 
 
-#' Read NAACCR records
+#' Read NAACCR records from a file
 #'
-#' Read and parse cancer incidence records according to a NAACCR format.
-#' \code{read_naaccr} returns a data set suited for analysis in R, and
-#' \code{read_naaccr_plain} returns a data set with the unchanged record values.
+#' Read and parse cancer incidence records according to a NAACCR format from
+#' either fixed-width files (\code{read_naaccr} and \code{read_naaccr_plain})
+#' or XML documents (\code{read_naaccr_xml} and \code{read_naaccr_xml_plain}).
 #'
-#' Anyone who wants to analyze the records in R should use \code{read_naaccr}.
-#' In the returned \code{data.frame}, columns are of appropriate classes, coded
-#' values are replaced with factors, and unknowns are replaced with \code{NA}.
+#' \code{read_naaccr} and \code{read_naaccr_xml} return data sets suited for
+#' analysis in R.
+#' \code{read_naaccr_plain} and \code{read_naaccr_xml_plain} return data sets
+#' with the unchanged record values.
 #'
-#' \code{read_naaccr_plain} is a "format strict" way to read incidence records.
+#' Anyone who wants to analyze the records in R should use \code{read_naaccr}
+#' or \code{read_naaccr_xml}.
+#' In the returned \code{\link{naaccr_record}}, columns are of appropriate
+#' classes, coded values are replaced with factors, and unknowns are replaced
+#' with \code{NA}.
+#'
+#' \code{read_naaccr_plain} and \code{read_naaccr_xml_plain} is a "format strict"
+#' way to read incidence records.
 #' All values returned are the literal character values from the records.
 #' The only processing done is that leading and trailing whitespace is trimmed.
 #' This is useful if the values will be passed to other software that expects
@@ -91,6 +99,12 @@ split_fields <- function(record_lines,
 #' @param buffersize Maximum number of lines to read at one time.
 #' @param encoding String giving the input's encoding. See the 'Encoding'
 #'   section of \code{\link[base]{file}} in the \pkg{base} package.
+#'   For \code{read_naaccr_xml} and \code{read_naaccr_xml_plain}, this is a
+#'   \emph{backup} encoding. If the XML document includes an encoding
+#'   specification, that will be used. Otherwise, \code{encoding} will be used.
+#' @param as_text Logical indicating (if \code{TRUE}) that \code{input} is a
+#'   character string containing XML or (if \code{FALSE}) it is the path to a
+#'   file with XML content.
 #' @param ... Additional arguments passed onto \code{\link{as.naaccr_record}}.
 #' @inheritParams naaccr_record
 #' @return
@@ -105,6 +119,15 @@ split_fields <- function(record_lines,
 #'   Some of the parameter text was shamelessly copied from the
 #'   \code{\link[utils]{read.table}} and \code{\link[utils]{read.fwf}} help
 #'   pages.
+#' @references
+#'  North American Association of Central Cancer Registries (October 2018).
+#'  Standards for Cancer Registries Volume II: Data Standards and Data Dictionary.
+#'  Twenty first edition.
+#'  \url{datadictionary.naaccr.org/}.
+#'
+#'  North American Association of Central Cancer Registries (April 2019).
+#'  NAACCR XML Data Exchange Standard. Version 1.4.
+#'  \url{https://www.naaccr.org/xml-data-exchange-standard}.
 #' @seealso \code{\link{naaccr_record}}
 #' @examples
 #'   # This file has synthetic abstract records
@@ -272,12 +295,9 @@ make_registry_table <- function(registry, keep_fields) {
 }
 
 
-#' @inheritParams read_naaccr_plain
-#' @param as_text Logical indicating (if \code{TRUE}) that \code{input} is a
-#'   character string containing XML or (if \code{FALSE}) it is the path to a
-#'   file with XML content
 #' @importFrom XML xmlInternalTreeParse free getNodeSet
 #' @import data.table
+#' @rdname read_naaccr
 #' @export
 read_naaccr_xml_plain <- function(input,
                                   keep_fields = NULL,
@@ -302,7 +322,7 @@ read_naaccr_xml_plain <- function(input,
 }
 
 
-#' @inheritParams read_naaccr
+#' @rdname read_naaccr
 #' @export
 read_naaccr_xml <- function(input,
                             version = NULL,
