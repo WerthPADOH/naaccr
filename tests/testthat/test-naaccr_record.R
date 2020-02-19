@@ -349,3 +349,28 @@ test_that("record_format handles custom cleaning/unknown finding functions", {
   class(expected) <- class(result)
   expect_identical(result, expected)
 })
+
+test_that("Fields with non-blank padding characters get padded", {
+  pad_fmt <- record_format(
+    name = c("foo", "bar", "baz"),
+    item = 1:3,
+    start_col = c(1, 3, 6),
+    end_col = c(2, 5, 9),
+    alignment = c("left", "right", "left"),
+    padding = c(" ", "0", "+"),
+    type = "character"
+  )
+  result <- naaccr_record(
+    foo = c("", NA, "x", "xx"),
+    bar = c("", NA, "x", "xx"),
+    baz = c("", NA, "x", "xx"),
+    format = pad_fmt
+  )
+  expected <- naaccr_record(
+    foo = c(NA, NA, "x", "xx"), # Remember: blanks become BA
+    bar = c(NA, NA, "00x", "0xx"),
+    baz = c(NA, NA, "x+++", "xx++"),
+    format = pad_fmt
+  )
+  expect_identical(result, expected)
+})
