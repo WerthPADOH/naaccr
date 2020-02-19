@@ -446,6 +446,7 @@ write_naaccr_xml <- function(records,
   }
   patient_vars <- union("patientIdNumber", tiered_items[["Patient"]])
   patients <- unique(records[, patient_vars, with = FALSE])
+  patient_items <- NULL
   if (length(tiered_items[["Patient"]])) {
     patients[
       ,
@@ -453,7 +454,7 @@ write_naaccr_xml <- function(records,
       .SDcols = tiered_items[["Patient"]]
     ]
   } else {
-    set(patient, j = "patient_items", value = "")
+    set(patients, j = "patient_items", value = "")
   }
   records[
     patients,
