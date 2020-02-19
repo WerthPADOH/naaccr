@@ -68,14 +68,14 @@ type_converters <- rbindlist(list(
 #'   Values of \code{NULL} (the default) mean the default cleaning function for
 #'   the \code{type} is used.
 #'   The value can also be the name of a function to retrieve with
-#'   \code{\link[methods=methodUtilities]{getFunction}}.
+#'   \code{\link[methods:methodUtilities]{getFunction}}.
 #'   See Details.
 #' @param unknown_finder (Optional) List of functions to detect when codes mean
 #'   the actual values are unknown or not applicable.
 #'   Values of \code{NULL} (the default) mean the default unknown finding
 #'   function for the \code{type} is used.
 #'   The value can also be the name of a function to retrieve with
-#'   \code{\link[methods=methodUtilities]{getFunction}}.
+#'   \code{\link[methods:methodUtilities]{getFunction}}.
 #'   See Details.
 #' @param x Object to be coerced to a \code{record_format}, usually a
 #'   \code{data.frame} or \code{list}.
@@ -86,8 +86,8 @@ type_converters <- rbindlist(list(
 #' with the same length as the input.
 #' The vector returned by a \code{cleaner} function can be of any class and
 #' should be easy to use in an analysis.
-#' To have a cleaning or function change nothing, use \code{\link[base=]{identity}}.
-#' To have an unknown finding function change nothing, use \code{\link[base=NA]{is.na}}.
+#' To have a cleaning or function change nothing, use \code{\link[base]{identity}}.
+#' To have an unknown finding function change nothing, use \code{\link[base:NA]{is.na}}.
 #'
 #' See Standard Field Types below for the default cleaning and unknown finding
 #' functions for each \code{type}.
