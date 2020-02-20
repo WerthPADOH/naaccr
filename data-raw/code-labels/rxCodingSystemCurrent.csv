@@ -7,4 +7,4 @@
 "05","1998 SEER Manual",FALSE,"Treatment data coded according to 1998 SEER Manual"
 "06","FORDS",FALSE,"Treatment data coded according to FORDS manual"
 "07","2010 SEER Coding Manual",FALSE,"Treatment data coded according to 2010 SEER Coding Manual"
-"99","other",TRUE,"Other coding, including partial or nonstandard coding"
+"99","other",FALSE,"Other coding, including partial or nonstandard coding"
