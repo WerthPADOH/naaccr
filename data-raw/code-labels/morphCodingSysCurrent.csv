@@ -7,4 +7,4 @@
 "6","ICD-O-2 1998 ",FALSE,"ICD-O, Second Edition, plus FAB codes effective 1/1/98"
 "7","ICD-O-3",FALSE,"ICD-O, Third Edition"
 "8","ICD-O-3 2010",FALSE,"ICD-O, Third Edition, plus 2008 WHO hematopoietic/lymphoid new terms used for conditions diagnosed 1/1/2010 and later"
-"9","other",TRUE,"Other"
+"9","other",FALSE,"Other"
