@@ -63,6 +63,11 @@ type_converters <- rbindlist(list(
 #' @param padding Single-character strings to use for padding in fixed-width
 #'   files. Default is a blank (\code{" "}).
 #' @param name_literal (Optional) Item name in plain language.
+#' @param parent Name of the parent node to include this field under when
+#'   writing to an XML file.
+#'   Values can be \code{"NaaccrData"}, \code{"Patient"}, \code{"Tumor"}, or
+#'   \code{NA} (default).
+#'   Fields with \code{NA} for parent won't be included in an XML file.
 #' @param cleaner (Optional) List of functions to handle special cases of
 #'   cleaning field data (e.g., convert all values to uppercase).
 #'   Values of \code{NULL} (the default) mean the default cleaning function for
@@ -103,9 +108,13 @@ type_converters <- rbindlist(list(
 #'     }
 #'     \item{\code{start_col}}{
 #'       (\code{integer}) First column of the field in a fixed-width text file.
+#'       If \code{NA}, the field will not be read from or written to fixed-width
+#'       files. They will included in XML files.
 #'     }
 #'     \item{\code{end_col}}{
 #'       (\code{integer}) Last column of the field in a fixed-width text file.
+#'       If \code{NA}, the field will not be read from or written to fixed-width
+#'       files. They will included in XML files.
 #'     }
 #'     \item{\code{type}}{
 #'       (\code{factor}) R class for the column vector.
@@ -120,6 +129,9 @@ type_converters <- rbindlist(list(
 #'     }
 #'     \item{\code{name_literal}}{
 #'       (\code{character}) Field name in plain language.
+#'     }
+#'     \item{\code{parent}}{
+#'       (\code{factor}) Parent XML node for the field.
 #'     }
 #'     \item{\code{cleaner}}{
 #'       (\code{list} of \code{function} objects) Function to prepare the
@@ -350,38 +362,46 @@ type_converters <- rbindlist(list(
 #' @export
 record_format <- function(name,
                           item,
-                          start_col,
-                          end_col,
-                          type,
-                          alignment = NULL,
-                          padding = NULL,
-                          cleaner = NULL,
-                          unknown_finder = NULL,
-                          name_literal = NULL) {
+                          start_col = NA_integer_,
+                          end_col = NA_integer_,
+                          type = "character",
+                          alignment = "left",
+                          padding = " ",
+                          parent = "Tumor",
+                          cleaner = list(NULL),
+                          unknown_finder = list(NULL),
+                          name_literal = NA_character_) {
+  if (is.function(cleaner)) {
+    cleaner <- list(cleaner)
+  } else if (is.atomic(cleaner)) {
+    cleaner <- as.list(as.character(cleaner))
+  }
+  if (is.function(unknown_finder)) {
+    unknown_finder <- list(unknown_finder)
+  } else if (is.atomic(unknown_finder)) {
+    unknown_finder <- as.list(as.character(unknown_finder))
+  }
   # Allow 0-row formats, because why not?
-  n_rows <- max(
-    length(name), length(item), length(start_col), length(end_col),
-    length(type), length(alignment), length(padding), length(name_literal)
-    ,
-    length(cleaner)
-  )
-  if (n_rows == 0L) {
-    alignment <- character(0L)
-    padding <- character(0L)
-    name_literal <- character(0L)
-    cleaner <- list()
-    unknown_finder <- list()
-  } else {
-    if (is.null(alignment)) alignment <- rep_len("left", n_rows)
-    if (is.null(padding)) padding <- rep_len(" ", n_rows)
-    if (is.null(name_literal)) name_literal <- rep_len(NA_character_, n_rows)
-    if (is.null(cleaner)) cleaner <- vector("list", n_rows)
-    if (is.null(unknown_finder)) unknown_finder <- vector("list", n_rows)
+  if (length(name) == 0L && length(item) == 0L) {
+    start_col <- start_col[0L]
+    end_col <- end_col[0L]
+    type <- type[0L]
+    alignment <- alignment[0L]
+    padding <- padding[0L]
+    parent <- parent[0L]
+    cleaner <- cleaner[0L]
+    unknown_finder <- unknown_finder[0L]
+    name_literal <- name_literal[0L]
   }
   padding <- as.character(padding)
   padding_width <- nchar(padding)
   if (any(padding_width > 1L, na.rm = TRUE)) {
     stop("'padding' must only contain single-character values")
+  }
+  parent_nodes <- c("NaaccrData", "Patient", "Tumor")
+  if (!all(parent %in% c(NA, parent_nodes))) {
+    parent_list <- paste0("'", parent_nodes, "'", collapse = ", ")
+    warning("Replacing values of 'parent' other than (", parent_list, ") with NA")
   }
   # Create the format
   fmt <- data.table(
@@ -392,6 +412,7 @@ record_format <- function(name,
     type = factor(as.character(type), sort(type_converters[["type"]])),
     alignment = factor(as.character(alignment), c("left", "right")),
     padding = as.character(padding),
+    parent = factor(parent, parent_nodes),
     cleaner = as.list(cleaner),
     unknown_finder = as.list(unknown_finder),
     name_literal = as.character(name_literal)

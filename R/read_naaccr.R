@@ -63,17 +63,25 @@ split_fields <- function(record_lines,
 }
 
 
-#' Read NAACCR records
+#' Read NAACCR records from a file
 #'
-#' Read and parse cancer incidence records according to a NAACCR format.
-#' \code{read_naaccr} returns a data set suited for analysis in R, and
-#' \code{read_naaccr_plain} returns a data set with the unchanged record values.
+#' Read and parse cancer incidence records according to a NAACCR format from
+#' either fixed-width files (\code{read_naaccr} and \code{read_naaccr_plain})
+#' or XML documents (\code{read_naaccr_xml} and \code{read_naaccr_xml_plain}).
 #'
-#' Anyone who wants to analyze the records in R should use \code{read_naaccr}.
-#' In the returned \code{data.frame}, columns are of appropriate classes, coded
-#' values are replaced with factors, and unknowns are replaced with \code{NA}.
+#' \code{read_naaccr} and \code{read_naaccr_xml} return data sets suited for
+#' analysis in R.
+#' \code{read_naaccr_plain} and \code{read_naaccr_xml_plain} return data sets
+#' with the unchanged record values.
 #'
-#' \code{read_naaccr_plain} is a "format strict" way to read incidence records.
+#' Anyone who wants to analyze the records in R should use \code{read_naaccr}
+#' or \code{read_naaccr_xml}.
+#' In the returned \code{\link{naaccr_record}}, columns are of appropriate
+#' classes, coded values are replaced with factors, and unknowns are replaced
+#' with \code{NA}.
+#'
+#' \code{read_naaccr_plain} and \code{read_naaccr_xml_plain} is a "format strict"
+#' way to read incidence records.
 #' All values returned are the literal character values from the records.
 #' The only processing done is that leading and trailing whitespace is trimmed.
 #' This is useful if the values will be passed to other software that expects
@@ -91,6 +99,12 @@ split_fields <- function(record_lines,
 #' @param buffersize Maximum number of lines to read at one time.
 #' @param encoding String giving the input's encoding. See the 'Encoding'
 #'   section of \code{\link[base]{file}} in the \pkg{base} package.
+#'   For \code{read_naaccr_xml} and \code{read_naaccr_xml_plain}, this is a
+#'   \emph{backup} encoding. If the XML document includes an encoding
+#'   specification, that will be used. Otherwise, \code{encoding} will be used.
+#' @param as_text Logical indicating (if \code{TRUE}) that \code{input} is a
+#'   character string containing XML or (if \code{FALSE}) it is the path to a
+#'   file with XML content.
 #' @param ... Additional arguments passed onto \code{\link{as.naaccr_record}}.
 #' @inheritParams naaccr_record
 #' @return
@@ -105,6 +119,15 @@ split_fields <- function(record_lines,
 #'   Some of the parameter text was shamelessly copied from the
 #'   \code{\link[utils]{read.table}} and \code{\link[utils]{read.fwf}} help
 #'   pages.
+#' @references
+#'  North American Association of Central Cancer Registries (October 2018).
+#'  Standards for Cancer Registries Volume II: Data Standards and Data Dictionary.
+#'  Twenty first edition.
+#'  \url{datadictionary.naaccr.org/}.
+#'
+#'  North American Association of Central Cancer Registries (April 2019).
+#'  NAACCR XML Data Exchange Standard. Version 1.4.
+#'  \url{https://www.naaccr.org/xml-data-exchange-standard}.
 #' @seealso \code{\link{naaccr_record}}
 #' @examples
 #'   # This file has synthetic abstract records
@@ -212,6 +235,107 @@ read_naaccr <- function(input,
     skip = skip,
     nrows = nrows,
     buffersize = buffersize,
+    encoding = encoding
+  )
+  as.naaccr_record(
+    x = records,
+    keep_unknown = keep_unknown,
+    version = version,
+    format = format,
+    ...
+  )
+}
+
+
+#' Gather all <Item> nodes under a <NaaccrData>, <Patient>, or <Tumor>.
+#' These will be combined with other node-items in a single table.
+#' @importFrom XML getNodeSet xmlGetAttr xmlValue
+#' @import stringi
+#' @noRd
+items_to_row <- function(parent_node, keep_fields) {
+  items <- getNodeSet(parent_node, "ns:Item", namespaces = "ns")
+  ids <- vapply(items, xmlGetAttr, character(1), name = "naaccrId")
+  names(items) <- ids
+  if (!is.null(keep_fields)) {
+    items <- items[ids %in% keep_fields]
+  }
+  values <- vapply(items, xmlValue, character(1))
+  values <- stringi::stri_trim_both(values)
+  out <- as.list(values)
+  names(out) <- names(items)
+  out
+}
+
+
+#' @importFrom XML getNodeSet
+#' @noRd
+make_patient_table <- function(patient, keep_fields) {
+  tumors <- getNodeSet(patient, "ns:Tumor", namespaces = "ns")
+  tumor_rows <- lapply(tumors, items_to_row, keep_fields = keep_fields)
+  patient_table <- rbindlist(tumor_rows, use.names = TRUE, fill = TRUE)
+  patient_items <- items_to_row(patient, keep_fields = keep_fields)
+  if (length(patient_items)) {
+    set(patient_table, j = names(patient_items), value = patient_items)
+  }
+  patient_table
+}
+
+
+#' @importFrom XML getNodeSet
+#' @noRd
+make_registry_table <- function(registry, keep_fields) {
+  patients <- getNodeSet(registry, "ns:Patient", namespaces = "ns")
+  patient_rows <- lapply(patients, make_patient_table, keep_fields = keep_fields)
+  registry_table <- rbindlist(patient_rows, use.names = TRUE, fill = TRUE)
+  registry_items <- items_to_row(registry, keep_fields = keep_fields)
+  if (length(registry_items)) {
+    set(registry_table, j = names(registry_items), value = registry_items)
+  }
+  registry_table
+}
+
+
+#' @importFrom XML xmlInternalTreeParse free getNodeSet
+#' @import data.table
+#' @rdname read_naaccr
+#' @export
+read_naaccr_xml_plain <- function(input,
+                                  keep_fields = NULL,
+                                  as_text = FALSE,
+                                  encoding = getOption("encoding")) {
+  tree <- xmlInternalTreeParse(
+    file = input, ignoreBlanks = FALSE, asText = as_text, encoding = encoding
+  )
+  on.exit(free(tree), add = TRUE)
+  registry_nodes <- getNodeSet(tree, "//ns:NaaccrData", namespaces = "ns")
+  registry_tables <- lapply(
+    registry_nodes, make_registry_table, keep_fields = keep_fields
+  )
+  records <- rbindlist(registry_tables, use.names = TRUE, fill = TRUE)
+  if (!is.null(keep_fields)) {
+    # Preserve order of keep_fields
+    kept <- match(names(records), keep_fields)
+    records <- records[, keep_fields[sort(kept)], with = FALSE]
+  }
+  setDF(records)
+  records
+}
+
+
+#' @rdname read_naaccr
+#' @export
+read_naaccr_xml <- function(input,
+                            version = NULL,
+                            format = NULL,
+                            keep_fields = NULL,
+                            keep_unknown = FALSE,
+                            as_text = FALSE,
+                            encoding = getOption("encoding"),
+                            ...) {
+  records <- read_naaccr_xml_plain(
+    input = input,
+    keep_fields = keep_fields,
+    as_text = as_text,
     encoding = encoding
   )
   as.naaccr_record(

@@ -1,5 +1,6 @@
 library(testthat)
 library(naaccr)
+library(XML)
 
 
 context("write_naaccr")
@@ -112,4 +113,71 @@ test_that("write_naaccr can handle custom formats", {
       label = paste0(c(column, all.equal(result, expected)), collapse = "\n")
     )
   }
+})
+
+
+write_naaccr_xml_to_vector <- function(records, version = NULL, format = NULL) {
+  tc <- textConnection(NULL, open = "w")
+  on.exit(close(tc), add = TRUE)
+  write_naaccr_xml(records, tc, version = version, format = format)
+  textConnectionValue(tc)
+}
+
+
+get_ids <- function(node) {
+  xmlAttrs(node)[["naaccrId"]]
+}
+
+
+test_that("write_naaccr_xml includes all and only items in format and records", {
+  records <- naaccr_record(
+    ageAtDiagnosis = 65,
+    patientIdNumber = 999,
+    recordType = "A",
+    foo = "bar"
+  )
+
+  xml_text <- write_naaccr_xml_to_vector(records, version = 18)
+  tree <- xmlParse(xml_text, asText = TRUE)
+  ids <- xpathSApply(tree, "//x:Item", get_ids, namespaces = "x")
+  expect_setequal(ids, c("ageAtDiagnosis", "patientIdNumber", "recordType"))
+
+  subfmt <- naaccr_format_18[name == "patientIdNumber"]
+  xml_text <- write_naaccr_xml_to_vector(records, format = subfmt)
+  tree <- xmlParse(xml_text, asText = TRUE)
+  ids <- xpathSApply(tree, "//x:Item", get_ids, namespaces = "x")
+  expect_setequal(ids, "patientIdNumber")
+})
+
+test_that("write_naaccr_xml puts items under correct parent node", {
+  records <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt", version = 18)
+  subfmt <- naaccr_format_18[name %in% names(records)]
+  item_tiers <- split(subfmt[["name"]], subfmt[["parent"]])
+  xml_text <- write_naaccr_xml_to_vector(records, format = subfmt)
+  tree <- xmlParse(xml_text, asText = TRUE)
+
+  naaccr_ids <- xpathSApply(tree, "//x:NaaccrData/x:Item", get_ids, namespaces = "x")
+  expect_identical(sort(naaccr_ids), sort(item_tiers[["NaaccrData"]]))
+
+  patient_ids <- xpathSApply(tree, "//x:Patient/x:Item", get_ids, namespaces = "x")
+  expect_setequal(sort(patient_ids), sort(item_tiers[["Patient"]]))
+
+  tumor_ids <- xpathSApply(tree, "//x:Tumor/x:Item", get_ids, namespaces = "x")
+  expect_setequal(sort(tumor_ids), sort(item_tiers[["Tumor"]]))
+})
+
+test_that("write_naaccr_xml handles custom fields without column info", {
+  rf <- record_format(
+    name = "blah",
+    item = 9999,
+    start_col = NA,
+    end_col = NA,
+    type = "integer",
+    alignment = "left",
+    padding = "0",
+    name_literal = "blah blah",
+    parent = "Patient"
+  )
+  recs <- data.frame(blah = 1:4)
+  expect_silent(write_naaccr_xml_to_vector(recs, format = rf))
 })

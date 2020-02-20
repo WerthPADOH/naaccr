@@ -203,6 +203,7 @@ To build the `naaccr` package, you’ll need the following R packages:
   - `stringi`
   - `testthat`
   - `utils`
+  - `XML`
   - `xml2`
 
 To document, build, and test the package, run the `build.R` script with

@@ -21,7 +21,8 @@ Imports:
     data.table,
     methods,
     stringi,
-    utils
+    utils,
+    XML
 Suggests:
     devtools,
     httr,
