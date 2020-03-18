@@ -75,6 +75,39 @@ test_that("partial dates work as columns in popular data set classes", {
 })
 
 test_that("Algebra with partially-known dates uses what's known when possible", {
+  cases <- expand.grid(
+    known = seq.Date(as.Date("1999-12-31"), as.Date("2004-12-31"), by = "26 days"),
+    partial_to = c("year", "month", "day"),
+    offset = -367:367
+  )
+  cases[["partial"]] <- as.partial_date(cases[["known"]])
+  known_month <- cases[["partial_to"]] == "month"
+  cases[known_month, "partial"] <- partial_date(
+    year = year(cases[known_month, "known"]),
+    month = month(cases[known_month, "known"]), day = NA
+  )
+  known_year <- cases[["partial_to"]] == "year"
+  cases[known_year, "partial"] <- partial_date(
+    year = year(cases[known_year, "known"]), month = NA, day = NA
+  )
+  known_day <- cases[["partial_to"]] == "day"
+  result_known <- cases[["known"]] + cases[["offset"]]
+  result_partial <- cases[["partial"]] + cases[["offset"]]
+  expect_true(all(result_partial[known_day] == result_known[known_day]))
+  expect_true(all(
+    month(result_partial[known_month]) == month(result_known[known_month]) |
+      is.na(result_partial[known_month])
+  ))
+  expect_true(all(
+    year(result_partial[known_month]) == year(result_known[known_month]) |
+      is.na(result_partial[known_month])
+  ))
+  expect_true(all(
+    year(result_partial[known_year]) == year(result_known[known_year]) |
+      is.na(result_partial[known_year])
+  ))
+
+  # Specific edge cases
   p <- partial_date(c(2000, 2000, 2000, NA), c(2, 2, NA, NA), c(15, NA, NA, NA))
   expect_identical(year(p + 350), c(2001L, 2001L, NA, NA)) # maybe next year
   expect_identical(year(p + 325), c(2001L, NA, NA, NA)) # less maybe next year
