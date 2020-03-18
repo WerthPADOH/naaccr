@@ -415,28 +415,12 @@ date_bounds <- function(x) {
     )
   }
   orig_bounds <- date_bounds(e1)
-  orig_m_agree <- month(orig_bounds[["earliest"]]) == month(orig_bounds[["latest"]])
   new_bounds <- lapply(orig_bounds, `+`, e2)
   y_agree <- year(new_bounds[["earliest"]]) == year(new_bounds[["latest"]])
-  y_agree <- which(y_agree)
-  m_agree <- orig_m_agree & month(new_bounds[["earliest"]]) ==  month(new_bounds[["latest"]])
-  m_agree <- which(m_agree)
+  m_agree <- y_agree & month(new_bounds[["earliest"]]) == month(new_bounds[["latest"]])
   d_agree <- new_bounds[["earliest"]] == new_bounds[["latest"]]
-  maybe_day <- !d_agree & is.finite(new_bounds[["earliest"]]) & is.finite(new_bounds[["latest"]])
-  if (any(maybe_day)) {
-    d_agree[maybe_day] <- mapply(
-      FUN = function(ear, lat) {
-        month_breaks <- c(seq.Date(ear, lat, by = "month"), lat)
-        months_covered <- month(month_breaks)
-        max_days <- month_days[months_covered]
-        max_days[is_leap_year(year(month_breaks)) & months_covered == 2L] <- 29L
-        mday(ear) <= min(max_days) && mday(lat) <= min(max_days)
-      },
-      ear = new_bounds[["earliest"]][maybe_day],
-      lat = new_bounds[["latest"]][maybe_day],
-      SIMPLIFY = TRUE
-    )
-  }
+  y_agree <- which(y_agree)
+  m_agree <- which(m_agree)
   d_agree <- which(d_agree)
   y <- m <- d <- rep_len(NA_integer_, length(new_bounds[["earliest"]]))
   y[y_agree] <- year(new_bounds[["earliest"]][y_agree])
