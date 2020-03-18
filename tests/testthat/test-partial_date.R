@@ -60,6 +60,20 @@ test_that("Logical comparisons of partial_date uses what's known", {
   expect_identical(p <= r, c(TRUE, TRUE, FALSE))
 })
 
+test_that("partial dates work as columns in popular data set classes", {
+  p <- partial_date(c(2000, 2005, 2019, NA), c(1, 5, NA, NA), c(20, NA, NA, NA))
+  dframe <- data.frame(p = p)
+  dtable <- data.table::data.table(p = p)
+  tib <- tibble::tibble(p = p)
+  expect_identical(dframe[, "p", drop = TRUE], p)
+  expect_identical(dframe[c(2, 3), "p", drop = TRUE], p[2:3])
+  expect_identical(tib[, "p", drop = TRUE], p)
+  skip("Currently needs fixed in data,table package")
+  expect_identical(tib[c(2, 3), "p", drop = TRUE], p[2:3])
+  testthat::expect_identical(dtable[, p], p)
+  expect_identical(dtable[c(2, 3), p], p[2:3])
+})
+
 test_that("Algebra with partially-known dates uses what's known when possible", {
   p <- partial_date(c(2000, 2000, 2000, NA), c(2, 2, NA, NA), c(15, NA, NA, NA))
   expect_identical(year(p + 350), c(2001L, 2001L, NA, NA)) # maybe next year
