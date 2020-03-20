@@ -68,7 +68,7 @@ test_that("partial dates work as columns in popular data set classes", {
   expect_identical(dframe[, "p", drop = TRUE], p)
   expect_identical(dframe[c(2, 3), "p", drop = TRUE], p[2:3])
   expect_identical(tib[, "p", drop = TRUE], p)
-  skip("Currently needs fixed in data,table package")
+  skip("Currently needs fixed in data.table package")
   expect_identical(tib[c(2, 3), "p", drop = TRUE], p[2:3])
   testthat::expect_identical(dtable[, p], p)
   expect_identical(dtable[c(2, 3), p], p[2:3])
