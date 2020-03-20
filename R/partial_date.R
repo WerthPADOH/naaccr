@@ -100,9 +100,6 @@ as.Date.partial_date <- function(x, ...) {
 as.POSIXlt.partial_date <- function(x, ...) {
   dates <- as.Date(x)
   out <- as.POSIXlt(dates, ...)
-  if (is.null(out$zone)) {
-    out$zone <- as.POSIXlt(NA)$zone
-  }
   na <- is.na(out)
   if (any(na)) {
     out$year[na] <- year(x)[na]
