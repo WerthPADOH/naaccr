@@ -412,7 +412,7 @@ date_bounds <- function(x) {
     )
   }
   orig_bounds <- date_bounds(e1)
-  new_bounds <- lapply(orig_bounds, `+`, e2)
+  new_bounds <- orig_bounds + e2
   y_agree <- year(new_bounds[["earliest"]]) == year(new_bounds[["latest"]])
   m_agree <- y_agree & month(new_bounds[["earliest"]]) == month(new_bounds[["latest"]])
   d_agree <- new_bounds[["earliest"]] == new_bounds[["latest"]]
