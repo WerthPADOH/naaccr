@@ -249,6 +249,17 @@ as.partial_date.character <- function(x, fmt = "%Y%m%d", ...) {
 }
 
 
+#' @export
+#' @noRd
+rep.partial_date <- function(x, ...) {
+  partial_date(
+    year = rep(year(x), ...),
+    month = rep(month(x), ...),
+    day = rep(mday(x), ...)
+  )
+}
+
+
 #' Extract parts of a date
 #'
 #' @param x A datetime object (e.g., \code{\link{partial_date}} or one of the
