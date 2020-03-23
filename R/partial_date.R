@@ -423,6 +423,15 @@ date_bounds <- function(x) {
   y[y_agree] <- year(new_bounds[["earliest"]][y_agree])
   m[m_agree] <- month(new_bounds[["earliest"]][m_agree])
   d[d_agree] <- mday(new_bounds[["earliest"]][d_agree])
+  # Known day, unknown month
+  me1 <- month(e1)
+  de1 <- mday(e1)
+  m_na <- is.na(me1)
+  d_na <- is.na(de1)
+  new_day <- de1 + e2
+  can_day_shift <- !d_na & m_na & between(new_day, 1L, 28L)
+  d[can_day_shift] <- new_day[can_day_shift]
+
   partial_date(y, m, d)
 }
 

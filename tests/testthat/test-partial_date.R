@@ -117,6 +117,13 @@ test_that("Algebra with partially-known dates uses what's known when possible", 
   p2 <- partial_date(c(2001, 2001, 2001, NA), c(2, 2, NA, NA), c(15, NA, NA, NA))
   expect_identical(year(p2 + 365), c(2002L, 2002L, 2002L, NA)) # definitely next year
 
+  q <- partial_date(2001, NA, c(5, 10, 24))
+  expect_identical(q - 4, partial_date(2001, NA, c(1, 6, 20)))
+  expect_identical(q - 5, partial_date(c(NA, 2001, 2001), NA, c(NA, 5, 19)))
+  expect_identical(q + 4, partial_date(2001, NA, c(9, 14, 28)))
+  expect_identical(q + 5, partial_date(2001, NA, c(10, 15, NA)))
+  expect_identical(q + 8, partial_date(c(2001, 2001, NA), NA, c(13, 18, NA)))
+
   # Regression test cases (were buggy once)
   expect_identical(partial_date(2001, 04, NA) + 1, partial_date(2001, NA, NA))
   expect_identical(partial_date(2003, NA, 5) + 30, partial_date(NA, NA, NA))
