@@ -422,6 +422,47 @@ date_bounds <- function(x) {
       secs = e2 / 86400, mins = e2/1440, hours = e2/24, days = e2, weeks = 7 * e2
     )
   }
+  out_length <- max(length(e1), length(e2))
+  if (length(e1) < out_length) {
+    e1 <- rep(e1, length.out = out_length)
+  } else if (length(e2) < out_length) {
+    e2 <- rep(e2, length.out = out_length)
+  }
+  out <- rep(partial_date(NA, NA, NA), length.out = out_length)
+  simple <- rep_len(FALSE, out_length)
+  no_change <- which(e2 == 0)
+  out[no_change] <- e1[no_change]
+  simple[no_change] <- TRUE
+  all_known <- which(!simple & !is.na(e1))
+  out[all_known] <- as.partial_date(as.Date(e1)[all_known] + e2[all_known])
+  simple[all_known] <- TRUE
+  add_na <- is.na(e2)
+  simple[add_na] <- TRUE
+  y_na <- is.na(year(e1))
+  m_na <- is.na(month(e1))
+  d_na <- is.na(mday(e1))
+  # Handle combos of known/missing parts: ymd subbed with x for missing
+  # ymx
+  ymx <- which(!simple & !y_na & !m_na & d_na)
+  if (length(ymx)) out[ymx] <- partial_algebra_ymx(e1[ymx], e2[ymx])
+  # yxd
+  yxd <- which(!simple & !y_na & m_na & !d_na)
+  if (length(yxd)) out[yxd] <- partial_algebra_yxd(e1[yxd], e2[yxd])
+  # xmd
+  xmd <- which(!simple & y_na & !m_na & !d_na)
+  if (length(xmd)) out[xmd] <- partial_algebra_xmd(e1[xmd], e2[xmd])
+  # yxx
+  yxx <- which(!simple & !y_na & m_na & d_na)
+  if (length(yxx)) out[yxx] <- partial_algebra_yxx(e1[yxx], e2[yxx])
+  # xmx has no inferrable parts
+  # xxd
+  xxd <- which(!simple & y_na & m_na & !d_na)
+  if (length(xxd)) out[xxd] <- partial_algebra_xxd(e1[xxd], e2[xxd])
+  out
+}
+
+#' @noRd
+partial_algebra_ymx <- function(e1, e2) {
   orig_bounds <- date_bounds(e1)
   new_bounds <- orig_bounds + e2
   y_agree <- year(new_bounds[["earliest"]]) == year(new_bounds[["latest"]])
@@ -434,18 +475,61 @@ date_bounds <- function(x) {
   y[y_agree] <- year(new_bounds[["earliest"]][y_agree])
   m[m_agree] <- month(new_bounds[["earliest"]][m_agree])
   d[d_agree] <- mday(new_bounds[["earliest"]][d_agree])
-  # Known day, unknown month
-  me1 <- month(e1)
-  de1 <- mday(e1)
-  m_na <- is.na(me1)
-  d_na <- is.na(de1)
-  new_day <- de1 + e2
-  can_day_shift <- !d_na & m_na & between(new_day, 1L, 28L)
-  d[can_day_shift] <- new_day[can_day_shift]
-
   partial_date(y, m, d)
 }
 
+#' @noRd
+partial_algebra_yxd <- function(e1, e2) {
+  y <- year(e1)
+  d <- mday(e1)
+  min_mdays <- rep_len(28L, length(e1))
+  leap <- is_leap_year(y)
+  min_mdays[leap] <- min_mdays[leap] + 1L
+  new_day <- d + e2
+  below <- new_day < 1L
+  above <- new_day > min_mdays
+  maybe_new_year <- new_day > 31L
+  new_y <- y
+  new_y[below | maybe_new_year] <- NA_integer_
+  new_day[below | above] <- NA_integer_
+  partial_date(year = new_y, month = NA_integer_, day = new_day)
+}
+
+#' @noRd
+partial_algebra_xmd <- function(e1, e2) {
+  m <- month(e1)
+  d <- mday(e1)
+  ee <- partial_date(year = 2002, month = m, day = d)
+  new_date <- ee + e2
+  leap_bounds <- as.Date(c("2001-02-28", "2002-02-28", "2003-02-28"))
+  crossed_feb <- findInterval(ee, leap_bounds) != findInterval(new_date, leap_bounds)
+  new_date[crossed_feb] <- NA
+  partial_date(
+    year = year(e1),
+    month = replace(m, crossed_feb, NA_integer_),
+    day = replace(d, crossed_feb, NA_integer_)
+  )
+}
+
+#' @noRd
+partial_algebra_yxx <- function(e1, e2) {
+  y <- year(e1)
+  leap <- is_leap_year(y)
+  new_y <- rep_len(NA_integer_, length(y))
+  one_back <- !leap & !is_leap_year(y - 1L) & e2 == 365
+  new_y[one_back] <- y[one_back] - 1L
+  one_forward <- !leap & !is_leap_year(y + 1L) & e2 == 365
+  new_y[one_forward] <- y[one_forward] + 1L
+  partial_date(year = new_y, month = NA_integer_, day = NA_integer_)
+}
+
+#' @noRd
+partial_algebra_xxd <- function(e1, e2) {
+  d <- mday(e1)
+  new_day <- d + e2
+  new_day[!between(new_day, 1L, 28L)] <- NA_integer_
+  partial_date(year = NA_integer_, month = NA_integer_, day = new_day)
+}
 
 #' @export
 #' @noRd
