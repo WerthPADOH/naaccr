@@ -516,9 +516,9 @@ partial_algebra_yxx <- function(e1, e2) {
   y <- year(e1)
   leap <- is_leap_year(y)
   new_y <- rep_len(NA_integer_, length(y))
-  one_back <- !leap & !is_leap_year(y - 1L) & e2 == 365
+  one_back <- !leap & (e2 == -365 | (is_leap_year(y - 1L) & e2 == -366))
   new_y[one_back] <- y[one_back] - 1L
-  one_forward <- !leap & !is_leap_year(y + 1L) & e2 == 365
+  one_forward <- !leap & (e2 == 365 | (is_leap_year(y + 1L) & e2 == 366))
   new_y[one_forward] <- y[one_forward] + 1L
   partial_date(year = new_y, month = NA_integer_, day = NA_integer_)
 }
