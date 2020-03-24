@@ -156,3 +156,15 @@ test_that("midpoint and means", {
   expect_identical(mean(p), as.Date(NA))
   expect_identical(mean(p, na.rm = TRUE, impute_fun = NULL), as.Date("1950-03-10"))
 })
+
+test_that("partial date formats", {
+  p <- partial_date(
+    year = c(1950, 1950, 1950, NA, NA),
+    month = c(  3,    3,   NA,  3, NA),
+    day = c(   10,   NA,   10, 10, NA)
+  )
+  expect_identical(
+    format(p, "%m/%d/%y"),
+    c("03/10/50", "03/??/50", "??/10/50", "03/10/??", NA)
+  )
+})

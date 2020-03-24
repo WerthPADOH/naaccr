@@ -355,16 +355,8 @@ mday.partial_date <- function(x, ...) attr(x, "day")
 #' @export
 #' @noRd
 print.partial_date <- function(x, ...) {
-  ytext <- formatC(year(x), width = 4, flag = "0", format = "d")
-  ytext[is.na(year(x))] <- "????"
-  mtext <- formatC(month(x), width = 2, flag = "0", format = "d")
-  mtext[is.na(month(x))] <- "??"
-  dtext <- formatC(mday(x), width = 2, flag = "0", format = "d")
-  dtext[is.na(mday(x))] <- "??"
-  full_text <- stri_join(ytext, mtext, dtext, sep = "-")
-  names(full_text) <- names(x)
   cat("An object of class \"partial_date\"\n")
-  print(full_text, ...)
+  print(format(x), ...)
 }
 
 
@@ -573,4 +565,97 @@ mean.partial_date <- function(x, trim = 0, na.rm = FALSE,
     x <- impute_fun(x)
   }
   mean(as.Date(x), trim = trim, na.rm = na.rm, ...)
+}
+
+#' @param format Character string giving the format for printing a partial date.
+#'   See \code{\link[base::strptime]{strftime}} for valid components.
+#'   See Partial Date Formats below for details.
+#' @section Partial Date Formats:
+#'   \code{format} will attempt to use what is known about partial dates.
+#'   If the year, month and day of a partial date value are all unknown, the
+#'   output will be \code{NA}. However, if any part is known, a string will be
+#'   returned for that value. In that string, any format components relying on
+#'   missing parts will be replaced by one or more question marks (\code{"?"}).
+#'
+#'   Locale-dependent formats may not behave like they do with \code{Date}
+#'   objects. This is because the format is intercepted and broken into parts to
+#'   find out where the year, month and day values are inserted.
+#'   All locale-dependent formats are replaced with the "standard"
+#'   interpretations described in \code{\link[base::strptime]{strftime}}.
+#' @importFrom stringi stri_replace_all_fixed stri_extract_all_regex
+#' @export
+#' @rdname
+format.partial_date <- function(x, format = "", ...) {
+  format[format == ""] <- "%Y-%m-%d"
+  # Violates some locales, but need to know pieces to replace them
+  format <- stri_replace_all_fixed(format, "%c", "%a %b %e %H:%M:%S %Y")
+  format <- stri_replace_all_fixed(format, "%D", "%m/%d/%y")
+  format <- stri_replace_all_fixed(format, "%F", "%Y-%m-%d")
+  format <- stri_replace_all_fixed(format, "%h", "%b")
+  format <- stri_replace_all_fixed(format, "%x", "%y/%m/%d")
+  format <- stri_replace_all_fixed(format, "%+", "%a %b %e %H:%M:%S %Z %Y")
+  fmt_specs <- unique(unlist(stri_extract_all_regex(format, "%[a-zA-Z]")))
+  names(fmt_specs) <- fmt_specs
+  pieces <- outer(
+    X = as.POSIXlt(x), Y = fmt_specs,
+    FUN = function(values, fmts) format(values, format = fmts)
+  )
+  totally_missing <- is.na(year(x)) & is.na(month(x)) & is.na(mday(x))
+  is_partial <- is.na(x) & !totally_missing
+  y_part <- year(x)[is_partial]
+  m_part <- month(x)[is_partial]
+  d_part <- mday(x)[is_partial]
+  if ("%b" %in% colnames(pieces)) {
+    b_fmt <- month.abb[m_part]
+    abbr_widths <- stri_width(month.abb)
+    unknown_abbr <- if (all(abbr_widths == abbr_widths[1L])) {
+      stri_dup("?", times = abbr_widths[1L])
+    } else {
+      "?"
+    }
+    b_fmt[is.na(m_part)] <- unknown_abbr
+    pieces[is_partial, "%b"] <- b_fmt
+  }
+  if ("%B" %in% colnames(pieces)) {
+    B_fmt <- month.name[m_part]
+    B_fmt[is.na(m_part)] <- "?"
+    pieces[is_partial, "%B"] <- B_fmt
+  }
+  if ("%C" %in% colnames(pieces)) {
+    C_fmt <- formatC(y_part %/% 100, width = 2L, flag = "0", format = "d")
+    C_fmt[is.na(y_part)] <- "??"
+    pieces[is_partial, "%C"] <- C_fmt
+  }
+  if ("%d" %in% colnames(pieces)) {
+    d_fmt <- formatC(d_part, width = 2L, flag = "0", format = "d")
+    d_fmt[is.na(d_part)] <- "??"
+    pieces[is_partial, "%d"] <- d_fmt
+  }
+  if ("%e" %in% colnames(pieces)) {
+    e_fmt <- formatC(d_part, format = "d")
+    e_fmt[is.na(d_part)] <- "??"
+    pieces[is_partial, "%e"] <- e_fmt
+  }
+  if ("%m" %in% colnames(pieces)) {
+    m_fmt <- formatC(m_part, width = 2L, flag = "0", format = "d")
+    m_fmt[is.na(m_part)] <- "??"
+    pieces[is_partial, "%m"] <- m_fmt
+  }
+  if ("%y" %in% colnames(pieces)) {
+    y_fmt <- formatC(y_part %% 100L, width = 2L, flag = "0", format = "d")
+    y_fmt[is.na(y_part)] <- "??"
+    pieces[is_partial, "%y"] <- y_fmt
+  }
+  if ("%Y" %in% colnames(pieces)) {
+    Y_fmt <- formatC(y_part, flag = "0", format = "d")
+    Y_fmt[is.na(y_part)] <- "????"
+    pieces[is_partial, "%Y"] <- Y_fmt
+  }
+
+  out <- format
+  for (spec in fmt_specs) {
+    out <- stri_replace_all_fixed(out, spec, pieces[, spec])
+  }
+  names(out) <- names(x)
+  out
 }
