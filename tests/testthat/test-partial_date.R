@@ -141,3 +141,18 @@ test_that("Algebra with partially-known dates uses what's known when possible", 
   expect_identical(partial_date(2001, 04, NA) + 1, partial_date(2001, NA, NA))
   expect_identical(partial_date(2003, NA, 5) + 30, partial_date(NA, NA, NA))
 })
+
+test_that("midpoint and means", {
+  p <- partial_date(
+    year = c(1950, 1950, 1950, NA, NA),
+    month = c(3, 3, NA, 3, NA),
+    day = c(10, NA, 10, 10, NA)
+  )
+  expect_identical(
+    midpoint_partial_date(p),
+    as.Date(c("1950-03-10", "1950-03-16", "1950-06-26", NA, NA))
+  )
+  expect_identical(mean(p[1:2]), as.Date("1950-03-13"))
+  expect_identical(mean(p), as.Date(NA))
+  expect_identical(mean(p, na.rm = TRUE, impute_fun = NULL), as.Date("1950-03-10"))
+})

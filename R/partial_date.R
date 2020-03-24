@@ -371,12 +371,16 @@ print.partial_date <- function(x, ...) {
 #' Get the earliest and latest possible values of a partial date
 #'
 #' @param x \code{\link{partial_date}} object.
-#' @return A \code{data.frame} with two columns containing \code{Date} vectors:
-#'   \code{"earliest"} and \code{"latest"}.
+#' @return \code{date_bounds} returns a \code{data.frame} with two columns
+#'   containing \code{Date} vectors: \code{"earliest"} and \code{"latest"}.
 #'   Each row is the earliest and latest possible dates for each value of \code{x}.
+#'
+#'   \code{midpoint_partial_date} returns a \code{Date} vector with the midpoint
+#'   dates between each of the lower and upper bounds of values in \code{x}.
 #' @examples
 #'   p <- as.partial_date(c("20050908", "201102", "201202  ", "2015  31"))
 #'   date_bounds(p)
+#'   midpoint_partial_date(p)
 #' @import data.table
 #' @export
 date_bounds <- function(x) {
@@ -401,6 +405,19 @@ date_bounds <- function(x) {
   )
   row.names(out) <- names(x)
   out
+}
+
+#' @export
+#' @rdname date_bounds
+midpoint_partial_date <- function(x) {
+  out <- rep_len(NA_integer_, length(x))
+  known <- !is.na(x)
+  out[known] <- x[known]
+  unbounded <- is.na(year(x))
+  bounds <- date_bounds(x[!known & !unbounded])
+  bounds[] <- lapply(bounds, as.numeric)
+  out[!known & !unbounded] <- rowMeans(bounds)
+  as.Date(out, origin = as.Date("1970-01-01"))
 }
 
 
@@ -538,4 +555,22 @@ partial_algebra_xxd <- function(e1, e2) {
     stop('Can only subtract from "partial_date" objects')
   }
   e1 + -e2
+}
+
+#' @inheritParams base::mean.default
+#' @param impute_fun Function applied to "impute" partial dates. Will be passed
+#'   the \code{partial_date} from \code{x} as an argument and should return a
+#'   \code{Date} vector.
+#'   By default, uses \code{\link{midpoint_partial_date}}.
+#'   If \code{NULL}, no imputation is done. Values with \code{NA} for year,
+#'   month or day will be treated as \code{NA}.
+#' @export
+#' @rdname partial_date
+mean.partial_date <- function(x, trim = 0, na.rm = FALSE,
+                              impute_fun = midpoint_partial_date, ...) {
+  if (!is.null(impute_fun)) {
+    impute_fun <- match.fun(impute_fun)
+    x <- impute_fun(x)
+  }
+  mean(as.Date(x), trim = trim, na.rm = na.rm, ...)
 }
