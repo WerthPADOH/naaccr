@@ -412,6 +412,15 @@ midpoint_partial_date <- function(x) {
   as.Date(out, origin = as.Date("1970-01-01"))
 }
 
+#' @export
+#' @noRd
+Ops.partial_date <- function(e1, e2) {
+  message("I'm in ops!")
+  if (nargs() == 1L) stop('unary %s not defined for "partial_date" objects')
+  if (is.partial_date(e1)) e1 <- as.Date(e1)
+  if (is.partial_date(e2)) e2 <- as.Date(e2)
+  NextMethod(.Generic)
+}
 
 #' @export
 #' @noRd
@@ -547,6 +556,78 @@ partial_algebra_xxd <- function(e1, e2) {
     stop('Can only subtract from "partial_date" objects')
   }
   e1 + -e2
+}
+
+#' @noRd
+prep_binary_operands <- function(e1, e2) {
+  if (!is.partial_date(e1)) e1 <- as.partial_date(e1)
+  if (!is.partial_date(e2)) e2 <- as.partial_date(e2)
+  if (length(e1) < length(e2)) {
+    e1 <- rep(e1, length.out = length(e2))
+  } else if (length(e1) > length(e2)) {
+    e2 <- rep(e2, length.out = length(e1))
+  }
+  list(e1 = e1, e2 = e2)
+}
+
+#' @export
+#' @noRd
+`==.partial_date` <- function(e1, e2) {
+  message("I'm in ==.partial_date!")
+  prepped <- prep_binary_operands(e1, e2)
+  e1 <- prepped[["e1"]]
+  e2 <- prepped[["e2"]]
+  year(e1) == year(e2) & month(e1) == month(e2) & mday(e1) == mday(e2)
+}
+
+#' @export
+#' @noRd
+`!=.partial_date` <- function(e1, e2) {
+  !(e1 == e2)
+}
+
+#' @export
+#' @noRd
+`<.partial_date` <- function(e1, e2) {
+  prepped <- prep_binary_operands(e1, e2)
+  e1 <- prepped[["e1"]]
+  e2 <- prepped[["e2"]]
+  bounds1 <- date_bounds(e1)
+  bounds2 <- date_bounds(e2)
+  bounds1[, "latest"] < bounds2[, "earliest"]
+}
+
+#' @export
+#' @noRd
+`>.partial_date` <- function(e1, e2) {
+  prepped <- prep_binary_operands(e1, e2)
+  e1 <- prepped[["e1"]]
+  e2 <- prepped[["e2"]]
+  bounds1 <- date_bounds(e1)
+  bounds2 <- date_bounds(e2)
+  bounds1[, "earliest"] > bounds2[, "latest"]
+}
+
+#' @export
+#' @noRd
+`<=.partial_date` <- function(e1, e2) {
+  prepped <- prep_binary_operands(e1, e2)
+  e1 <- prepped[["e1"]]
+  e2 <- prepped[["e2"]]
+  bounds1 <- date_bounds(e1)
+  bounds2 <- date_bounds(e2)
+  bounds1[, "latest"] <= bounds2[, "earliest"]
+}
+
+#' @export
+#' @noRd
+`>=.partial_date` <- function(e1, e2) {
+  prepped <- prep_binary_operands(e1, e2)
+  e1 <- prepped[["e1"]]
+  e2 <- prepped[["e2"]]
+  bounds1 <- date_bounds(e1)
+  bounds2 <- date_bounds(e2)
+  bounds1[, "earliest"] >= bounds2[, "latest"]
 }
 
 #' @inheritParams base::mean.default
