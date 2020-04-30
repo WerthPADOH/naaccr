@@ -772,9 +772,35 @@ format.partial_date <- function(x, format = "", ...) {
 
 #' @export
 #' @noRd
+quarters.partial_date <- function(x, ...) {
+  q <- 1 + ((month(x) - 1) %/% 3L)
+  stri_join("Q", formatC(q, format = "d"))
+}
+
+#' @export
+#' @noRd
+julian.partial_date <- function(x, origin = as.Date("1970-01-01"), ...) {
+  if (length(origin) != 1L) stop("'origin' must be of length one")
+  if (!inherits(origin, "Date")) origin <- as.Date(origin)
+  out <- as.numeric(x) - as.numeric(origin)
+  names(out) <- names(x)
+  attr(out, "origin") <- origin
+  out
+}
+
+#' @export
+#' @noRd
 `length<-.partial_date` <- function(x, value) {
   value <- as.integer(value)
   if (length(value) != 1L) stop("new length must be a single value")
   if (value < 0L || !is.finite(value)) stop("invalid value for new length")
   x[seq(0L, value, by = 1L)]
+}
+
+#' @export
+#' @noRd
+months.partial_date <- function(x, abbreviate = FALSE) {
+  out <- format(x, ifelse(abbreviate, "%b", "%B"))
+  out[is.na(month(x))] <- NA
+  out
 }

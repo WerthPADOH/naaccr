@@ -13,6 +13,16 @@ test_that("Can extract parts from partial dates", {
   expect_identical(year(d), c(2000L, 2005L, 2007L))
   expect_identical(month(d), c(1L, 4L, NA_integer_))
   expect_identical(mday(d), c(2L, NA_integer_, NA_integer_))
+  expect_identical(
+    quarters(d),
+    quarters(as.Date(c("2000-01-02", "2005-04-01", NA)))
+  )
+  expect_identical(
+    julian(d),
+    structure(c(10958, NA, NA), origin = as.Date("1970-01-01"))
+  )
+  expect_identical(months(d), c(month.name[c(1, 4)], NA))
+  expect_identical(weekdays(d), weekdays(as.Date(c("2000-01-02", NA, NA))))
 })
 
 test_that("Can assign parts to partial dates (with invalid dates becoming NA)", {
