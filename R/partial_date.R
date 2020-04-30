@@ -96,6 +96,8 @@ create_partial_date <- function(dates, y, m, d) {
 }
 
 
+# Miscellaneous methods ----
+
 #' @export
 as.Date.partial_date <- function(x, ...) {
   out <- as.Date(as.integer(x), origin = as.Date("1970-01-01"), ...)
@@ -638,6 +640,25 @@ prep_binary_operands <- function(e1, e2) {
   bounds1[, "earliest"] >= bounds2[, "latest"]
 }
 
+#' @export
+#' @noRd
+as.list.partial_date <- function(x, ...) {
+  mapply(
+    FUN = partial_date, year = year(x), month = month(x), day = mday(x),
+    SIMPLIFY = FALSE
+  )
+}
+
+#' @export
+#' @noRd
+c.partial_date <- function(..., recursive = FALSE) {
+  dots <- lapply(list(...), as.partial_date)
+  y <- unlist(lapply(dots, year))
+  m <- unlist(lapply(dots, month))
+  d <- unlist(lapply(dots, mday))
+  partial_date(year = y, month = m, day = d)
+}
+
 #' @inheritParams base::mean.default
 #' @param impute_fun Function applied to "impute" partial dates. Will be passed
 #'   the \code{partial_date} from \code{x} as an argument and should return a
@@ -747,4 +768,13 @@ format.partial_date <- function(x, format = "", ...) {
   }
   names(out) <- names(x)
   out
+}
+
+#' @export
+#' @noRd
+`length<-.partial_date` <- function(x, value) {
+  value <- as.integer(value)
+  if (length(value) != 1L) stop("new length must be a single value")
+  if (value < 0L || !is.finite(value)) stop("invalid value for new length")
+  x[seq(0L, value, by = 1L)]
 }

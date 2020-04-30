@@ -168,3 +168,16 @@ test_that("partial date formats", {
     c("03/10/50", "03/??/50", "??/10/50", "03/10/??", NA)
   )
 })
+
+test_that("Basic vector methods for partial dates", {
+  p <- partial_date(2001:2002, 1:2, 21:22)
+  q <- partial_date(2003:2004, 3:4, 23:24)
+  expect_identical(c(p, q), partial_date(2001:2004, 1:4, 21:24))
+  expect_identical(
+    as.list(p),
+    list(partial_date(2001, 1, 21), partial_date(2002, 2, 22))
+  )
+  length(p) <- 3
+  expect_length(p, 3)
+  expect_identical(p, partial_date(c(2001:2002, NA), c(1:2, NA), c(21:22, NA)))
+})
