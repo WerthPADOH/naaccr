@@ -25,6 +25,11 @@ date_ymd <- function(year, month, day) {
 
 
 #' Dates without all known parts
+#'
+#' A \code{partial_date} vector stores dates where the year, month, or day of
+#' the month is unknown. These dates can be used like regular \code{Date} values
+#' in addition, subtraction, and logical comparisons.
+#'
 #' @param year  Integer of the calendar year.
 #' @param month Integer of the month of the year.
 #' @param day   Integer of the day of the month.
@@ -32,8 +37,11 @@ date_ymd <- function(year, month, day) {
 #'   object. Known parts of the dates can be extracted using the
 #'   \code{\link[data.table]{year}}, \code{\link[data.table]{month}}, and
 #'   \code{\link[data.table]{mday}} functions.
-#' @seealso \code{\link{date_bounds}}, \code{\link{mday}}, \code{\link{month}},
-#'   \code{\link{year}}.
+#' @seealso
+#'   \code{\link{date_bounds}}, \code{\link{mday}}, \code{\link{month}},
+#'   \code{\link{year}}
+#'
+#'   \code{\link{naaccr_encode}} to convert to a "YYYYMMDD"-formatted string
 #' @examples
 #'   p <- partial_date(c(2001, 2002, 2003), c(4, 9, NA), c(1, NA, 5))
 #'   p
