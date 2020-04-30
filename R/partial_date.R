@@ -209,6 +209,13 @@ as.partial_date.character <- function(x, fmt = "%Y%m%d", ...) {
 
 #' @export
 #' @noRd
+as.partial_date.numeric <- function(x, origin = as.Date("1970-01-01"), ...) {
+  as.partial_date(as.Date(x, origin = origin, ...))
+}
+
+
+#' @export
+#' @noRd
 `[.partial_date` <- function(x, i) {
   create_partial_date(as.Date(x)[i], year(x)[i], month(x)[i], mday(x)[i])
 }
