@@ -701,7 +701,7 @@ mean.partial_date <- function(x, trim = 0, na.rm = FALSE,
 #'   interpretations described in \code{\link[base::strptime]{strftime}}.
 #' @importFrom stringi stri_replace_all_fixed stri_extract_all_regex
 #' @export
-#' @rdname
+#' @rdname partial_date
 format.partial_date <- function(x, format = "", ...) {
   format[format == ""] <- "%Y-%m-%d"
   # Violates some locales, but need to know pieces to replace them
