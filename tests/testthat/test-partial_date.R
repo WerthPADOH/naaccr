@@ -68,6 +68,12 @@ test_that("Logical comparisons of partial_date uses what's known", {
   expect_identical(p >= r, c(TRUE, FALSE, TRUE))
   expect_identical(p < r, c(FALSE, TRUE, FALSE))
   expect_identical(p <= r, c(TRUE, TRUE, FALSE))
+  s <- as.partial_date(r)
+  expect_identical(p == s, c(TRUE, FALSE, FALSE))
+  expect_identical(p > s, c(FALSE, FALSE, TRUE))
+  expect_identical(p >= s, c(TRUE, FALSE, TRUE))
+  expect_identical(p < s, c(FALSE, TRUE, FALSE))
+  expect_identical(p <= s, c(TRUE, TRUE, FALSE))
 })
 
 test_that("partial dates work as columns in popular data set classes", {
