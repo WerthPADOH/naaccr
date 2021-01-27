@@ -42,6 +42,9 @@ if (any(results_df[["failed"]] > 0 | results_df[["error"]] > 0)) {
 # Build ------------------------------------------------------------------------
 devtools::document()
 rmarkdown::render("README.Rmd")
+description <- readLines("DESCRIPTION")
+description <- description[!startsWith(tolower(description), "roxygen")]
+writeLines(description, "DESCRIPTION")
 built_path <- devtools::build(binary = FALSE)
 devtools::build(binary = TRUE)
 check_results <- devtools::check_built(built_path)

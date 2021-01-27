@@ -34,4 +34,3 @@ License: MIT + file LICENSE
 Copyright: file COPYRIGHTS
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
