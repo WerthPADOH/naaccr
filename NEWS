@@ -11,6 +11,7 @@
 -   Removed AJCC-copyright material.
 -   Functions are safer: more argument checking, warnings, and option-robustness.
 -   Fixed bugs with handling custom formats and columns not in the format.
+-   Fixed bug with formats that included fields not found in text files
 
 ## 0.5.0
 

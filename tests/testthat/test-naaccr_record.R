@@ -86,6 +86,32 @@ test_that("read_naaccr can handle different versions", {
   )
 })
 
+test_that("read_naaccr can handle custom formats", {
+  sub_format <-naaccr_format_18[1:5]
+  custom_format <- rbind(
+    sub_format,
+    record_format(
+      name = c("copyRecordType", "fieldNotInFile"), item = 998:999,
+      start_col = c(1, NA), end_col = c(1, NA), type = "character"
+    )
+  )
+  plain <- read_naaccr(
+    input = "../data/synthetic-naaccr-18-incidence.txt", format = sub_format,
+    nrows = 10
+  )
+  custom <- read_naaccr(
+    input = "../data/synthetic-naaccr-18-incidence.txt", format = custom_format,
+    nrows = 10
+  )
+  expect_identical(plain[, sub_format[["name"]]], custom[, sub_format[["name"]]])
+  expect_identical(
+    plain[["recordType"]],
+    naaccr_factor(custom[["copyRecordType"]], field = "recordType")
+  )
+  expect_true(all(is.na(custom[["fieldNotInFile"]])))
+  expect_true(is.character(custom[["fieldNotInFile"]]))
+})
+
 test_that("read_naaccr only keeps requested columns and their flags", {
   kept <- c("nameMiddle", "rxDateHormone", "diagnosticConfirmation")
   nr <- read_naaccr(
