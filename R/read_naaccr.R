@@ -161,9 +161,16 @@ read_naaccr_plain <- function(input,
       add = TRUE
     )
   }
-  read_format <- choose_naaccr_format(
+  format <- choose_naaccr_format(
     version = version, format = format, keep_fields = keep_fields
   )
+  unread_fields <- !is.finite(format[["start_col"]]) |
+    !is.finite(format[["end_col"]])
+  unread_format <- format[unread_fields]
+  read_format <- format[!unread_fields]
+  if (nrow(read_format) == 0L) {
+    stop("No fields in the format have a finite start or end column")
+  }
   # Read all record types as the longest type, padding and then truncating
   # Break the reading into chunks because of the typically large files.
   # "Growing" vectors is inefficient, so allocate many new spaces when needed
@@ -186,7 +193,7 @@ read_naaccr_plain <- function(input,
     rows_read <- rows_read + length(record_lines)
     index <- index + 1L
     line_lengths <- stringi::stri_width(record_lines)
-    record_width <- max(read_format[["end_col"]])
+    record_width <- max(read_format[["end_col"]], na.rm = TRUE)
     record_lines <- stringi::stri_pad_right(
       record_lines,
       width = record_width - line_lengths
@@ -203,13 +210,16 @@ read_naaccr_plain <- function(input,
     }
   }
   if (rows_read == 0L) {
-    records <- rep(list(character(0L)), length(keep_fields))
+    records <- rep(list(character(0L)), nrow(format))
     setDT(records)
-    setnames(records, keep_fields)
+    setnames(records, format[["name"]])
   } else {
     records <- data.table::rbindlist(chunks)
-    setcolorder(records, keep_fields)
+    if (nrow(unread_format) > 0L) {
+      set(records, j = unread_format[["name"]], value = "")
+    }
   }
+  setcolorder(records, format[["name"]])
   setDF(records)
   records
 }

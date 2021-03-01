@@ -86,6 +86,32 @@ test_that("read_naaccr can handle different versions", {
   )
 })
 
+test_that("read_naaccr can handle custom formats", {
+  sub_format <-naaccr_format_18[1:5]
+  custom_format <- rbind(
+    sub_format,
+    record_format(
+      name = c("copyRecordType", "fieldNotInFile"), item = 998:999,
+      start_col = c(1, NA), end_col = c(1, NA), type = "character"
+    )
+  )
+  plain <- read_naaccr(
+    input = "../data/synthetic-naaccr-18-incidence.txt", format = sub_format,
+    nrows = 10
+  )
+  custom <- read_naaccr(
+    input = "../data/synthetic-naaccr-18-incidence.txt", format = custom_format,
+    nrows = 10
+  )
+  expect_identical(plain[, sub_format[["name"]]], custom[, sub_format[["name"]]])
+  expect_identical(
+    plain[["recordType"]],
+    naaccr_factor(custom[["copyRecordType"]], field = "recordType")
+  )
+  expect_true(all(is.na(custom[["fieldNotInFile"]])))
+  expect_true(is.character(custom[["fieldNotInFile"]]))
+})
+
 test_that("read_naaccr only keeps requested columns and their flags", {
   kept <- c("nameMiddle", "rxDateHormone", "diagnosticConfirmation")
   nr <- read_naaccr(
@@ -274,17 +300,19 @@ test_that("read_naaccr can handle different file encodings", {
 })
 
 test_that("read_naaccr can handle a custom format", {
-  custom <- record_format(
-    name = "1 very % unusual name `",
-    item = -2,
-    start_col = 45, # spans two numeric fields
-    end_col = 55,
-    type = "integer",
-    alignment = "left",
-    padding = " ",
-    name_literal = "blah"
+  new_format <- rbind(
+    naaccr_format_18[1:5],
+    record_format(
+      name = "1 very % unusual name `",
+      item = -2,
+      start_col = 45, # spans two numeric fields
+      end_col = 55,
+      type = "integer",
+      alignment = "left",
+      padding = " ",
+      name_literal = "blah"
+    )
   )
-  new_format <- rbindlist(list(custom, naaccr_format_18[1:5]), fill = TRUE)
   recs <- read_naaccr(
     "../data/synthetic-naaccr-18-incidence.txt",
     format = new_format
@@ -313,64 +341,4 @@ test_that("read_naaccr reads empty files into a 0-row tabel with all columns", {
   expect_is(processed[["estrogenReceptorSummary"]], "logical")
   expect_is(processed[["secondaryDiagnosis1"]] ,"character")
   expect_is(processed[["latitude"]], "numeric")
-})
-
-test_that("record_format handles custom cleaning/unknown finding functions", {
-  new_format <- record_format(
-    name = c("foo", "bar", "gau"),
-    item = 1:3,
-    start_col = NA,
-    end_col = NA,
-    type = c("county", "character", "character"),
-    cleaner = list(
-      NULL,
-      NULL,
-      function(x) gsub("[aeiou]", "", x)
-    ),
-    unknown_finder = list(
-      NULL,
-      function(x) grepl("[^aeiou]", x),
-      NULL
-    )
-  )
-  records <- data.frame(
-    foo = c("001", "002", "999", NA),
-    bar = c("a", "b", "", NA),
-    gau = c("a", "b", "", NA),
-    stringsAsFactors = FALSE
-  )
-  result <- as.naaccr_record(records, format = new_format)
-  expected <- data.frame(
-    foo = c("001", "002", NA, NA),
-    bar = c("a", NA, "", NA),
-    gau = c(NA, "b", NA, NA),
-    stringsAsFactors = FALSE
-  )
-  class(expected) <- class(result)
-  expect_identical(result, expected)
-})
-
-test_that("Fields with non-blank padding characters get padded", {
-  pad_fmt <- record_format(
-    name = c("foo", "bar", "baz"),
-    item = 1:3,
-    start_col = c(1, 3, 6),
-    end_col = c(2, 5, 9),
-    alignment = c("left", "right", "left"),
-    padding = c(" ", "0", "+"),
-    type = "character"
-  )
-  result <- naaccr_record(
-    foo = c("", NA, "x", "xx"),
-    bar = c("", NA, "x", "xx"),
-    baz = c("", NA, "x", "xx"),
-    format = pad_fmt
-  )
-  expected <- naaccr_record(
-    foo = c(NA, NA, "x", "xx"), # Remember: blanks become BA
-    bar = c(NA, NA, "00x", "0xx"),
-    baz = c(NA, NA, "x+++", "xx++"),
-    format = pad_fmt
-  )
-  expect_identical(result, expected)
 })

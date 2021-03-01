@@ -160,7 +160,7 @@ split_sentineled.default <- function(x, field) {
   is_empty <- !nzchar(x)
   x[is_empty] <- NA_character_
   is_sentinel <- x %in% sents[["sentinel"]]
-  is_continuous <- !is_sentinel & grepl("^\\d+(\\.\\d+)?$", x, perl = TRUE)
+  is_continuous <- !is_sentinel & grepl("^\\d+(\\.\\d*)?$", x, perl = TRUE)
   is_invalid <- !is_empty & !is_sentinel & !is_continuous & !is.na(x)
   if (any(is_invalid)) {
     warning("Non-blank invalid codes set to NA: ", field)

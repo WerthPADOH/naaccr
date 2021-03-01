@@ -174,3 +174,10 @@ test_that("All factor and sentinel labels are appropriate characters", {
     )
   )
 })
+
+test_that("split_sentineled can handle numbers ending with a decimal point", {
+  expect_silent(split_sentineled("2.", "mitoticRateMelanoma"))
+  mitorate <- split_sentineled("2.", "mitoticRateMelanoma")
+  expect_identical(mitorate[["mitoticRateMelanoma"]], 2)
+  expect_true(is.na(mitorate[["mitoticRateMelanomaFlag"]]))
+})

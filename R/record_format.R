@@ -2,66 +2,66 @@
 naaccr_boolean12 <- function(x) naaccr_boolean(x, false_value = '1')
 
 
-#' Wrapper setting keep_unknown = TRUE for cleaner functions
+#' Wrapper to create "keep unknown" versions of functions
 #' @noRd
 keep_unknown <- function(fun) {
-  fun_args <- formals(fun)
-  fun_args[["keep_unknown"]] <- TRUE
-  formals(fun) <- fun_args
+  formals(fun)[["keep_unknown"]] <- TRUE
   fun
 }
 
 
-#' Default cleaner and unknown finder functions for each field type
-#' See the docs of record_format below for details
+#' `type`: name of the field type (see record_format)
+#' `fun`: normal function used to parse the field (factors and sentinels are
+#'   special).
+#' `fun_unknown`: function used to parse the field when `keep_unknown = TRUE`
+#'   for the reading/parsing function.
 #' @noRd
 type_converters <- rbindlist(list(
-  list(type = "integer", cleaner = list(as.integer), unknown_finder = list(is.na)),
-  list(type = "numeric", cleaner = list(as.numeric), unknown_finder = list(is.na)),
-  list(type = "character", cleaner = list(keep_unknown(clean_text)), unknown_finder = list(unknown_text)),
-  list(type = "factor", cleaner = list(identity), unknown_finder = list(is.na)),
-  list(type = "sentineled_integer", cleaner = list(identity), unknown_finder = list(is.na)),
-  list(type = "sentineled_numeric", cleaner = list(identity), unknown_finder = list(is.na)),
-  list(type = "age", cleaner = list(keep_unknown(clean_age)), unknown_finder = list(unknown_age)),
-  list(type = "icd_code", cleaner = list(keep_unknown(clean_icd_code)), unknown_finder = list(unknown_icd_code)),
-  list(type = "postal", cleaner = list(keep_unknown(clean_postal)), unknown_finder = list(unknown_postal)),
-  list(type = "city", cleaner = list(keep_unknown(clean_address_city)), unknown_finder = list(unknown_address_city)),
-  list(type = "address", cleaner = list(keep_unknown(clean_address_number_and_street)), unknown_finder = list(unknown_address_number_and_street)),
-  list(type = "facility", cleaner = list(keep_unknown(clean_facility_id)), unknown_finder = list(unknown_facility_id)),
-  list(type = "census_block", cleaner = list(keep_unknown(clean_census_block)), unknown_finder = list(unknown_census_block)),
-  list(type = "census_tract", cleaner = list(keep_unknown(clean_census_tract)), unknown_finder = list(unknown_census_tract)),
-  list(type = "icd_9", cleaner = list(keep_unknown(clean_icd_9_cm)), unknown_finder = list(unknown_icd_9_cm)),
-  list(type = "county", cleaner = list(keep_unknown(clean_county_fips)), unknown_finder = list(unknown_county_fips)),
-  list(type = "physician", cleaner = list(keep_unknown(clean_physician_id)), unknown_finder = list(unknown_physician_id)),
-  list(type = "override", cleaner = list(naaccr_override), unknown_finder = list(is.na)),
-  list(type = "boolean01", cleaner = list(naaccr_boolean), unknown_finder = list(is.na)),
-  list(type = "telephone", cleaner = list(keep_unknown(clean_telephone)), unknown_finder = list(unknown_telephone)),
-  list(type = "count", cleaner = list(keep_unknown(clean_count)), unknown_finder = list(unknown_count)),
-  list(type = "ssn", cleaner = list(keep_unknown(clean_ssn)), unknown_finder = list(unknown_ssn)),
-  list(type = "boolean12", cleaner = list(naaccr_boolean12), unknown_finder = list(is.na)),
-  list(type = "Date", cleaner = list(naaccr_date), unknown_finder = list(is.na)),
-  list(type = "datetime", cleaner = list(naaccr_datetime), unknown_finder = list(is.na))
+  list(type = "integer", fun = list(as.integer), fun_unknown = list(as.integer)),
+  list(type = "numeric", fun = list(as.numeric), fun_unknown = list(as.numeric)),
+  list(type = "character", fun = list(clean_text), fun_unknown = list(keep_unknown(clean_text))),
+  list(type = "factor", fun = list(identity), fun_unknown = list(identity)),
+  list(type = "sentineled_integer", fun = list(identity), fun_unknown = list(identity)),
+  list(type = "sentineled_numeric", fun = list(identity), fun_unknown = list(identity)),
+  list(type = "age", fun = list(clean_age), fun_unknown = list(keep_unknown(clean_age))),
+  list(type = "icd_code", fun = list(clean_icd_code), fun_unknown = list(keep_unknown(clean_icd_code))),
+  list(type = "postal", fun = list(clean_postal), fun_unknown = list(keep_unknown(clean_postal))),
+  list(type = "city", fun = list(clean_address_city), fun_unknown = list(keep_unknown(clean_address_city))),
+  list(type = "address", fun = list(clean_address_number_and_street), fun_unknown = list(keep_unknown(clean_address_number_and_street))),
+  list(type = "facility", fun = list(clean_facility_id), fun_unknown = list(keep_unknown(clean_facility_id))),
+  list(type = "census_block", fun = list(clean_census_block), fun_unknown = list(keep_unknown(clean_census_block))),
+  list(type = "census_tract", fun = list(clean_census_tract), fun_unknown = list(keep_unknown(clean_census_tract))),
+  list(type = "icd_9", fun = list(clean_icd_9_cm), fun_unknown = list(keep_unknown(clean_icd_9_cm))),
+  list(type = "county", fun = list(clean_county_fips), fun_unknown = list(keep_unknown(clean_county_fips))),
+  list(type = "physician", fun = list(clean_physician_id), fun_unknown = list(keep_unknown(clean_physician_id))),
+  list(type = "override", fun = list(naaccr_override), fun_unknown = list(naaccr_override)),
+  list(type = "boolean01", fun = list(naaccr_boolean), fun_unknown = list(naaccr_boolean)),
+  list(type = "telephone", fun = list(clean_telephone), fun_unknown = list(keep_unknown(clean_telephone))),
+  list(type = "count", fun = list(clean_count), fun_unknown = list(keep_unknown(clean_count))),
+  list(type = "ssn", fun = list(clean_ssn), fun_unknown = list(keep_unknown(clean_ssn))),
+  list(type = "boolean12", fun = list(naaccr_boolean12), fun_unknown = list(naaccr_boolean12)),
+  list(type = "Date", fun = list(naaccr_date), fun_unknown = list(naaccr_date)),
+  list(type = "datetime", fun = list(naaccr_datetime), fun_unknown = list(naaccr_datetime))
 ))
 
 
 #' Define custom fields for NAACCR records
 #'
-#' Create a \code{record_format} object, which is used to prepare NAACCR records
-#' for analysis by the \code{\link{naaccr_record}},
-#' \code{\link{as.naaccr_record}} and \code{\link{read_naaccr}} functions.
-#' Each row of a \code{record_format} describes how to read and interpret one
-#' field.
+#' Create a \code{record_format} object, which is used to read NAACCR records.
+#'
+#' To define registry-specific fields in addition to the standard fields, create
+#' a \code{record_format} object for the registry-specific fields and combine it
+#' with one of the formats provided with the package using \code{rbind}.
 #'
 #' @param name Item name appropriate for a \code{data.frame} column name.
 #' @param item NAACCR item number.
 #' @param start_col First column of the field in a fixed-width record.
 #' @param end_col Last column of the field in a fixed-width record.
-#' @param type Name of the column class. See the Field Types section for
-#'   predefined types with a default \code{cleaner} and \code{unknown_finder}.
+#' @param type Name of the column class.
 #' @param alignment Alignment of the field in fixed-width files. Either
 #'   \code{"left"} (default) or \code{"right"}.
 #' @param padding Single-character strings to use for padding in fixed-width
-#'   files. Default is a blank (\code{" "}).
+#'   files.
 #' @param name_literal (Optional) Item name in plain language.
 #' @param parent Name of the parent node to include this field under when
 #'   writing to an XML file.
@@ -85,17 +85,6 @@ type_converters <- rbindlist(list(
 #' @param x Object to be coerced to a \code{record_format}, usually a
 #'   \code{data.frame} or \code{list}.
 #' @param ... Other arguments passed to \code{record_format}.
-#'
-#' The functions in \code{cleaner} and \code{unknown_finder} should each accept
-#' a character vector of values from their respective fields and return a vector
-#' with the same length as the input.
-#' The vector returned by a \code{cleaner} function can be of any class and
-#' should be easy to use in an analysis.
-#' To have a cleaning or function change nothing, use \code{\link[base]{identity}}.
-#' To have an unknown finding function change nothing, use \code{\link[base:NA]{is.na}}.
-#'
-#' See Standard Field Types below for the default cleaning and unknown finding
-#' functions for each \code{type}.
 #'
 #' @return An object of class \code{"record_format"} which has the following
 #'   columns:
@@ -143,182 +132,103 @@ type_converters <- rbindlist(list(
 #'     }
 #'   }
 #'
-#'   The object returned by \code{as.record_format} will also have any extra
-#'   information from \code{x}. For example, if \code{x} is a \code{list},
-#'   elements beyond the columns listed above will be an additional column in
-#'   the output.
+#' @section Format Types:
 #'
-#' @section How a Record Format is Used:
+#'   The levels \code{type} can take, along with the functions used to process
+#'   them when reading a file:
 #'
-#'   The \code{\link{naaccr_record}}, \code{\link{read_naaccr}} and
-#'   \code{\link{as.naaccr_record}} functions use a record format to determine
-#'   how to read, interpret and prepare the data for NAACCR fields.
-#'
-#'   In general, each field goes through this process:
-#'
-#'   \enumerate{
-#'     \item For \code{read_naaccr}, find the data in the file between
-#'       \code{start_col} and \code{end_col}, and read it in as character values.
-#'       Otherwise, take the values from the \code{name} column.
-#'     \item Apply the \code{cleaner} function and replace the field values with
-#'       the result.
-#'     \item If \code{keep_unknown} is \code{FALSE} for the function creating
-#'       the records data set, apply the \code{unknown_finder} function, and
-#'       replace all values that returned \code{TRUE} with \code{NA}.
-#'     \item If the field is from a format included with this package and has
-#'       the \code{"factor"} type, it will be replaced with the results of
-#'       \code{\link{naaccr_factor}}.
-#'     \item If the field is from a format included with this package and has
-#'       the \code{"sentineled_integer"} or \code{"sentineled_numeric"} type,
-#'       it will be replaced with the results of
-#'       \code{\link{split_sentineled}} function.
+#'   \describe{
+#'     \item{\code{address}}{
+#'       (\code{\link{clean_address_number_and_street}})
+#'       Street number and street name parts of an address.
+#'     }
+#'     \item{\code{age}}{
+#'       (\code{\link{clean_age}})
+#'       Age in years.
+#'     }
+#'     \item{\code{boolean01}}{
+#'       (\code{\link{naaccr_boolean}}, with \code{false_value = "0"})
+#'       True/false, where \code{"0"} means false and \code{"1"} means true.
+#'     }
+#'     \item{\code{boolean12}}{
+#'       (\code{\link{naaccr_boolean}}, with \code{false_value = "1"})
+#'       True/false, where \code{"1"} means false and \code{"2"} means true.
+#'     }
+#'     \item{\code{census_block}}{
+#'       (\code{\link{clean_census_block}})
+#'       Census Block ID number.
+#'     }
+#'     \item{\code{census_tract}}{
+#'       (\code{\link{clean_census_tract}})
+#'       Census Tract ID number.
+#'     }
+#'     \item{\code{character}}{
+#'       (\code{\link{clean_text}})
+#'       Miscellaneous text.
+#'     }
+#'     \item{\code{city}}{
+#'       (\code{\link{clean_address_city}})
+#'       City name.
+#'     }
+#'     \item{\code{count}}{
+#'       (\code{\link{clean_count}})
+#'       Integer count.
+#'     }
+#'     \item{\code{county}}{
+#'       (\code{\link{clean_county_fips}})
+#'       County FIPS code.
+#'     }
+#'     \item{\code{Date}}{
+#'       (\code{\link{as.Date}}, with \code{format = "\%Y\%m\%d"})
+#'       NAACCR-formatted date (YYYYMMDD).
+#'     }
+#'     \item{\code{datetime}}{
+#'       (\code{\link{as.POSIXct}}, with \code{format = "\%Y\%m\%d\%H\%M\%S"})
+#'       NAACCR-formatted datetime (YYYYMMDDHHMMSS)
+#'     }
+#'     \item{\code{facility}}{
+#'       (\code{\link{clean_facility_id}})
+#'       Facility ID number.
+#'     }
+#'     \item{\code{icd_9}}{
+#'       (\code{\link{clean_icd_9_cm}})
+#'       ICD-9-CM code.
+#'     }
+#'     \item{\code{icd_code}}{
+#'       (\code{\link{clean_icd_code}})
+#'       ICD-9 or ICD-10 code.
+#'     }
+#'     \item{\code{integer}}{
+#'       (\code{\link{as.integer}})
+#'       Miscellaneous whole number.
+#'     }
+#'     \item{\code{numeric}}{
+#'       (\code{\link{as.numeric}})
+#'       Miscellaneous decimal number.
+#'     }
+#'     \item{\code{override}}{
+#'       (\code{\link{naaccr_override}})
+#'       Field describing why another field's value was over-ridden.
+#'     }
+#'     \item{\code{physician}}{
+#'       (\code{\link{clean_physician_id}})
+#'       Physician ID number.
+#'     }
+#'     \item{\code{postal}}{
+#'       (\code{\link{clean_postal}})
+#'       Postal code for an address (a.k.a. ZIP code in the United States).
+#'     }
+#'     \item{\code{ssn}}{
+#'       (\code{\link{clean_ssn}})
+#'       Social Security Number.
+#'     }
+#'     \item{\code{telephone}}{
+#'       (\code{\link{clean_telephone}})
+#'       10-digit telephone number.
+#'     }
 #'   }
 #'
-#' @section Extending a NAACCR Format:
-#'
-#'   To define registry-specific fields in addition to the standard fields,
-#'   create a \code{record_format} object for the registry-specific fields and
-#'   combine it with one of the \link[=naaccr_format]{NAACCR record formats}
-#'   provided with the package using \code{rbind}.
-#'
-#'   Fields with type \code{"factor"} are converted to factors by default if
-#'   they are in a format included in this package. If you want to add a new
-#'   factor field, define your own \code{cleaner} function to create a
-#'   \code{factor} vector from the character values. Also define an
-#'   \code{unknown_finder} function to flag which levels stand for "unknown."
-#'   Feel free to still use the \code{"factor"} type to help organize your format.
-#'
-#'   Defining custom fields with the \code{"sentineled_integer"} or
-#'   \code{"sentineled_numeric"} types is not as easy. The \code{cleaner}
-#'   function should only return a single vector. For now, consider writing your
-#'   own function to create \code{naaccr_record} data sets that looks for
-#'   sentineled fields and splits their continuous and categorical values into
-#'   multiple columns. You can still specify the fields' types as
-#'   \code{"sentineled_integer"} and \code{"sentineled_numeric"} to help your
-#'   code handle the fields.
-#'
-#' @section Field Types:
-#'
-#'   The \code{type} column of a format serves two purposes.
-#'   First, it lets users understand and program around the type of data each
-#'   field holds.
-#'   Second, if the type is one of the default values listed below,
-#'   \code{record_format} will replace \code{NULL} values for \code{cleaner} and
-#'   \code{unknown_finder} with good defaults.
-#'
-#'   Note the \code{factor}, \code{sentineled_integer} and
-#'   \code{sentineled_numeric} have \dQuote{\enc{naïve}{naive}} default cleaning
-#'   and unknown-finding functions. Because each field of those types is very
-#'   different from the rest, they are read as simply as possible and then dealt
-#'   with individually in \code{as.naaccr_record}.
-#'
-#'   \tabular{llll}{
-#'     Standard type \tab Description \tab Default cleaner \tab Default unknown finder\cr
-#'     \code{integer}
-#'       \tab Miscellaneous whole number.
-#'       \tab \code{\link{as.integer}}
-#'       \tab \code{\link{is.na}}\cr
-#'     \code{numeric}
-#'       \tab Miscellaneous decimal number.
-#'       \tab \code{\link{as.numeric}}
-#'       \tab \code{\link{is.na}}\cr
-#'     \code{character}
-#'       \tab Miscellaneous text.
-#'       \tab \code{\link{clean_text}}
-#'       \tab \code{\link{unknown_text}}\cr
-#'     \code{factor}
-#'       \tab Categorical values. See \code{\link{naaccr_factor}}.
-#'       \tab \code{\link{identity}}
-#'       \tab \code{\link{is.na}}\cr
-#'     \code{sentineled_integer}
-#'       \tab Mix of integer and categorical values. See \code{\link{split_sentineled}}.
-#'       \tab \code{\link{identity}}
-#'       \tab \code{\link{is.na}}\cr
-#'     \code{sentineled_numeric}
-#'       \tab Mix of numeric and categorical values. See \code{\link{split_sentineled}}.
-#'       \tab \code{\link{identity}}
-#'       \tab \code{\link{is.na}}\cr
-#'     \code{age}
-#'       \tab Age in years.
-#'       \tab \code{\link{clean_age}}
-#'       \tab \code{\link{unknown_age}}\cr
-#'     \code{icd_code}
-#'       \tab ICD-9 or ICD-10 code.
-#'       \tab \code{\link{clean_icd_code}}
-#'       \tab \code{\link{unknown_icd_code}}\cr
-#'     \code{postal}
-#'       \tab Postal code for an address (a.k.a. ZIP code in the United States).
-#'       \tab \code{\link{clean_postal}}
-#'       \tab \code{\link{unknown_postal}}\cr
-#'     \code{city}
-#'       \tab City name.
-#'       \tab \code{\link{clean_address_city}}
-#'       \tab \code{\link{unknown_address_city}}\cr
-#'     \code{address}
-#'       \tab Street number and street name parts of an address.
-#'       \tab \code{\link{clean_address_number_and_street}}
-#'       \tab \code{\link{unknown_address_number_and_street}}\cr
-#'     \code{facility}
-#'       \tab Facility ID number.
-#'       \tab \code{\link{clean_facility_id}}
-#'       \tab \code{\link{unknown_facility_id}}\cr
-#'     \code{census_block}
-#'       \tab Census Block ID number.
-#'       \tab \code{\link{clean_census_block}}
-#'       \tab \code{\link{unknown_census_block}}\cr
-#'     \code{census_tract}
-#'       \tab Census Tract ID number.
-#'       \tab \code{\link{clean_census_tract}}
-#'       \tab \code{\link{unknown_census_tract}}\cr
-#'     \code{icd_9}
-#'       \tab ICD-9-CM code.
-#'       \tab \code{\link{clean_icd_9_cm}}
-#'       \tab \code{\link{unknown_icd_9_cm}}\cr
-#'     \code{county}
-#'       \tab County FIPS code.
-#'       \tab \code{\link{clean_county_fips}}
-#'       \tab \code{\link{unknown_county_fips}}\cr
-#'     \code{physician}
-#'       \tab Physician ID number.
-#'       \tab \code{\link{clean_physician_id}}
-#'       \tab \code{\link{unknown_physician_id}}\cr
-#'     \code{override}
-#'       \tab Field describing why another field's value was over-ridden.
-#'       \tab \code{\link{naaccr_override}}
-#'       \tab \code{\link{is.na}}\cr
-#'     \code{boolean01}
-#'       \tab True/false, where \code{"0"} means false and \code{"1"} means true.
-#'       \tab \code{\link{naaccr_boolean}}
-#'       \tab \code{\link{is.na}}\cr
-#'     \code{telephone}
-#'       \tab 10-digit telephone number.
-#'       \tab \code{\link{clean_telephone}}
-#'       \tab \code{\link{unknown_telephone}}\cr
-#'     \code{count}
-#'       \tab Integer count.
-#'       \tab \code{\link{clean_count}}
-#'       \tab \code{\link{unknown_count}}\cr
-#'     \code{ssn}
-#'       \tab Social Security Number.
-#'       \tab \code{\link{clean_ssn}}
-#'       \tab \code{\link{unknown_ssn}}\cr
-#'     \code{boolean12}
-#'       \tab True/false, where \code{"1"} means false and \code{"2"} means true.
-#'       \tab \code{\link{naaccr_boolean}}
-#'       \tab \code{\link{is.na}}\cr
-#'     \code{Date}
-#'       \tab NAACCR-formatted date (YYYYMMDD).
-#'       \tab \code{\link{naaccr_date}}
-#'       \tab \code{\link{is.na}}\cr
-#'     \code{datetime}
-#'       \tab NAACCR-formatted datetime (YYYYMMDDHHMMSS)
-#'       \tab \code{\link{naaccr_datetime}}
-#'       \tab \code{\link{is.na}}
-#'   }
-#' @seealso \code{\link{cleaners}}
 #' @examples
-#'   # Add custom fields to a standard format
-#'   # record_format objects use the data.table method for rbind
 #'   my_fields <- record_format(
 #'     name      = c("foo", "bar"),
 #'     item      = c(2163, 1180),
@@ -326,39 +236,8 @@ type_converters <- rbindlist(list(
 #'     end_col   = c(975, 1435),
 #'     type      = c("numeric", "facility")
 #'   )
-#'   my_format <- rbind(naaccr_format_16, my_fields, fill = TRUE)
-#'
-#'   # Define a custom factor field
-#'   test_factor <- function(x) {
-#'     ordered(x, c("0", "1", "2", "9"), c("negative", "low", "high", "unknown"))
-#'   }
-#'   test_unknown <- function(x) {
-#'     is.na(x) | x == "unknown"
-#'   }
-#'   factor_fmt <- record_format(
-#'     name           = "testResult",
-#'     item           = 2700,
-#'     start_col      = 2195,
-#'     end_col        = 2195,
-#'     type           = "factor",
-#'     cleaner        = list(test_factor),
-#'     unknown_finder = list(test_unknown)
-#'   )
-#'
-#'   # Convert an object with format details to a record_format
-#'   rough_format <- list(
-#'     name = c("bizz", "bang"),
-#'     item = c("888", "999"),
-#'     start_col = c(200.0, 300.0),
-#'     end_col = c(205, 305),
-#'     type = "numeric",
-#'     padding = 0
-#'   )
-#'   safe_format <- as.record_format(rough_format)
-#'   str(rough_format)
-#'   str(safe_format)
+#'   my_format <- rbind(naaccr_format_16, my_fields)
 #' @import data.table
-#' @importFrom methods formalArgs
 #' @export
 record_format <- function(name,
                           item,
@@ -393,7 +272,7 @@ record_format <- function(name,
     unknown_finder <- unknown_finder[0L]
     name_literal <- name_literal[0L]
   }
-  padding <- as.character(padding)
+  padding   <- as.character(padding)
   padding_width <- nchar(padding)
   if (any(padding_width > 1L, na.rm = TRUE)) {
     stop("'padding' must only contain single-character values")
@@ -426,120 +305,43 @@ record_format <- function(name,
       paste0("'", levels(fmt[["type"]]), "'", collapse = ", ")
     )
   }
-  for (fun_col in c("cleaner", "unknown_finder")) {
-    need_fun <- vapply(fmt[[fun_col]], is.null, logical(1L))
-    need_by_type <- split(which(need_fun), fmt[["type"]][need_fun])
-    need_by_type[lengths(need_by_type) == 0L] <- NULL
-    for (tt in names(need_by_type)) {
-      need_indices <- need_by_type[[tt]]
-      default <- type_converters[list(type = tt), on = "type"][[fun_col]][[1L]]
-      if (is.null(default)) {
-        default <- list(identity)
-      }
-      default_list <- rep_len(list(default), length(need_indices))
-      mem_addr <- vapply(default_list, address, character(1))
-      stopifnot(all(mem_addr == mem_addr[1]))
-      # Fill in field_width for functions that need it
-      def_args <- formals(default)
-      if ("field_width" %in% names(def_args)) {
-        widths <- fmt[["end_col"]][need_indices] - fmt[["start_col"]][need_indices] + 1L
-        default_list <- lapply(
-          X = widths,
-          FUN = function(w) {
-            def_args[["field_width"]] <- w
-            formals(default) <- def_args
-            default
-          }
-        )
-      }
-      set(x = fmt, i = need_indices, j = fun_col, value = default_list)
-    }
-  }
   setattr(fmt, "class", c("record_format", class(fmt)))
   fmt
 }
 
 
+#' @inheritParams record_format
 #' @rdname record_format
 #' @importFrom utils modifyList
-#' @importFrom methods formalArgs
 #' @export
 as.record_format <- function(x, ...) {
+  if (inherits(x, "record_format")) {
+    return(x)
+  }
   xlist <- as.list(x)
   xlist <- utils::modifyList(xlist, list(...), keep.null = TRUE)
-  used_names <- intersect(formalArgs(record_format), names(xlist))
-  fmt <- do.call(record_format, xlist[used_names])
-  extra_cols <- setdiff(names(xlist), names(fmt))
-  if (length(extra_cols) > 0L) {
-    set(x = fmt, j = extra_cols, value = xlist[extra_cols])
-  }
-  fmt
+  call_args <- args(record_format)
+  arg_names <- names(as.list(call_args))
+  arg_names <- arg_names[nzchar(arg_names)]
+  do.call(record_format, xlist[arg_names])
+}
+
+
+#' @noRd
+rbind.record_format <- function(..., stringsAsFactors = FALSE) {
+  combined <- rbindlist(list(...))
+  as.record_format(combined)
 }
 
 
 #' Field definitions from all NAACCR format versions
 #'
-#' A \code{\link{record_format}} table defining the fields for each version of
-#' NAACCR's fixed-width record file format.
+#' A \code{data.table} object defining the fields for each version of NAACCR's
+#' fixed-width record file format.
 #'
-#' @format
-#'   \describe{
-#'     \item{\code{naaccr_format_12}}{
-#'       An object of class \code{record_format} with 509 rows and 17 columns.
-#'     }
-#'     \item{\code{naaccr_format_13}}{
-#'       An object of class \code{record_format} with 529 rows and 17 columns.
-#'     }
-#'     \item{\code{naaccr_format_14}}{
-#'       An object of class \code{record_format} with 529 rows and 17 columns.
-#'     }
-#'     \item{\code{naaccr_format_15}}{
-#'       An object of class \code{record_format} with 536 rows and 17 columns.
-#'     }
-#'     \item{\code{naaccr_format_16}}{
-#'       An object of class \code{record_format} with 587 rows and 17 columns.
-#'     }
-#'     \item{\code{naaccr_format_18}}{
-#'       An object of class \code{record_format} with 791 rows and 17 columns.
-#'     }
-#'   }
+#' @description See \code{\link{record_format}}.
 #'
-#'   Each table has the usual columns found in any \code{\link{record_format}}
-#'   and these additional details:
-#'
-#'   \describe{
-#'     \item{\code{default}}{
-#'       (\code{character}) Default value for the field.
-#'     }
-#'     \item{\code{parent}}{
-#'       (\code{character}) Parent XML element for the field, according to the
-#'       NAACCR XML format definition.
-#'     }
-#'     \item{\code{section}}{
-#'       (\code{character}) General category of the field.
-#'       Possible values include \code{"Demographic"} and \code{"Pathology"}.
-#'     }
-#'     \item{\code{source}}{
-#'       (\code{character}) Organization which defines the field.
-#'     }
-#'     \item{\code{year_added}}{
-#'       (\code{integer}) First year the field was included in a NAACCR format.
-#'     }
-#'     \item{\code{version_added}}{
-#'       (\code{integer}) First NAACCR format version to include the field.
-#'     }
-#'     \item{\code{year_retired}}{
-#'       (\code{integer}) First year the field was no longer included in a
-#'       NAACCR format.
-#'     }
-#'     \item{\code{version_retired}}{
-#'       (\code{integer}) First NAACCR format to no longer include the field.
-#'     }
-#'   }
-#'
-#' @seealso \code{\link{record_format}}.
-#'
-#' @name naaccr_format
+#' @rdname naaccr_format
 #' @export
 "naaccr_format_12"
 

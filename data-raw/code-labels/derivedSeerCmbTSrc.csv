@@ -1,5 +1,0 @@
-"code","label","means_missing","description"
-"1","clinical",FALSE,"Clinical"
-"2","pathologic",FALSE,"Pathologic"
-"3","clinical and pathologic information used",FALSE,"Clinical and pathologic information used"
-"9","unknown",TRUE,"Unknown"

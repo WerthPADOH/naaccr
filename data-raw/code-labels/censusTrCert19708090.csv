@@ -1,8 +1,0 @@
-"code","label","means_missing","description"
-"1","street address",FALSE,"Census tract/BNA based on complete and valid street address of residence"
-"2","ZIP + 4",FALSE,"Census tract/BNA based on residence ZIP + 4"
-"3","ZIP + 2",FALSE,"Census tract/BNA based on residence ZIP + 2"
-"4","ZIP",FALSE,"Census tract/BNA based on residence ZIP code only"
-"5","P.O. box",FALSE,"Census tract/BNA based on ZIP code of P.O. Box"
-"6","only tract in city or ZIP",FALSE,"Census tract/BNA based on residence city where city has only one census tract, or based on residence ZIP code where ZIP code has only one census tract"
-"9","not assigned, geocoding attempted",TRUE,"Not assigned, geocoding attempted"
