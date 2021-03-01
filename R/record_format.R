@@ -321,7 +321,7 @@ as.record_format <- function(x, ...) {
   xlist <- as.list(x)
   xlist <- utils::modifyList(xlist, list(...), keep.null = TRUE)
   call_args <- args(record_format)
-  arg_names <- names(as.list(call_args))
+  arg_names <- intersect(names(xlist), names(as.list(call_args)))
   arg_names <- arg_names[nzchar(arg_names)]
   do.call(record_format, xlist[arg_names])
 }
@@ -329,7 +329,8 @@ as.record_format <- function(x, ...) {
 
 #' @noRd
 rbind.record_format <- function(..., stringsAsFactors = FALSE) {
-  combined <- rbindlist(list(...))
+  formats <- lapply(list(...), as.record_format)
+  combined <- rbindlist(formats)
   as.record_format(combined)
 }
 
