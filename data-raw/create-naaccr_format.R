@@ -63,10 +63,9 @@ format_env <- new.env()
 for (number in unique(naaccr_format[["version"]])) {
   sub_format <- naaccr_format[
     version == number,
-    list(name, item, start_col, end_col, type, alignment, padding, name_literal)
+    list(name, item, start_col, end_col, type, alignment, padding, parent, name_literal)
   ]
-  setattr(sub_format, "class", c("record_format", class(sub_format)))
-  format_name <- sprintf("naaccr_format_%.0f", number)
+  format_name <- sprintf("naaccr_format_%2d", number)
   format_env[[format_name]] <- sub_format
 }
 
