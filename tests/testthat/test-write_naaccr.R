@@ -121,10 +121,11 @@ get_ids <- function(node) {
 }
 
 
-test_that("write_naaccr_xml includes all and only items in format and records", {
+test_that("write_naaccr_xml includes items iff they're in the format, records, and non-missing", {
   records <- naaccr_record(
     ageAtDiagnosis = 65,
     patientIdNumber = 999,
+    dateOfDiagnosis = "",
     recordType = "A",
     foo = "bar"
   )

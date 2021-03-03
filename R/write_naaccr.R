@@ -375,8 +375,9 @@ compose_items_xml <- function(dataset) {
   vapply(
     X = node_list,
     FUN = function(values) {
+      non_blank <- !stri_isempty(stri_trim_both(values)) & !is.na(values)
       stri_join(
-        '<Item naaccrId="', names(dataset), '">', values, "</Item>",
+        '<Item naaccrId="', names(dataset)[non_blank], '">', values[non_blank], "</Item>",
         collapse = ""
       )
     },
