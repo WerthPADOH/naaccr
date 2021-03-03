@@ -376,10 +376,12 @@ compose_items_xml <- function(dataset) {
     X = node_list,
     FUN = function(values) {
       non_blank <- !stri_isempty(stri_trim_both(values)) & !is.na(values)
-      stri_join(
+      nodes_text <- stri_join(
         '<Item naaccrId="', names(dataset)[non_blank], '">', values[non_blank], "</Item>",
         collapse = ""
       )
+      if (length(nodes_text) == 0L) nodes_text <- ""
+      nodes_text
     },
     FUN.VALUE = character(1L)
   )
