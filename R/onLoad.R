@@ -4,7 +4,6 @@
 #' @importFrom utils assignInMyNamespace
 #' @noRd
 .onLoad <- function(libname, pkgname) {
-  assignInMyNamespace("naaccr_format", as.record_format(naaccr_format))
   ver_fmts <- sprintf("naaccr_format_%2d", unique(naaccr_format[["version"]]))
   pkg_ns <- topenv()
   for (name in ver_fmts) {
