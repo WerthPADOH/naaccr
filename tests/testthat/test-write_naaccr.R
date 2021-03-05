@@ -159,6 +159,27 @@ test_that("write_naaccr_xml puts items under correct parent node", {
   expect_true(all(tumor_ids %in% item_tiers[["Tumor"]]))
 })
 
+test_that("write_naaccr_xml removes leading and trailing white space", {
+  records <- naaccr_record(
+    ageAtDiagnosis = c(" 65", " 3 ", "100"),
+    dateOfDiagnosis = c("2015    ", "201502  ", "20150530"),
+    textRemarks = c(" left", "right ", " both ")
+  )
+  expected_xml_values <- data.frame(
+    ageAtDiagnosis = c("065", "003", "100"),
+    dateOfDiagnosis = c("2015", "201502", "20150530"),
+    textRemarks = c("left", "right", "both"),
+    stringsAsFactors = FALSE
+  )
+  xml_text <- write_naaccr_xml_to_vector(records, version = 18)
+  tree <- xmlParse(xml_text, asText = TRUE)
+  for (column in names(records)) {
+    xpath <- paste0('//x:Tumor/x:Item[@naaccrId="', column, '"]')
+    xml_values <- xpathSApply(tree, xpath, xmlValue, namespaces = "x")
+    expect_identical(xml_values, expected_xml_values[[column]], label = column)
+  }
+})
+
 test_that("write_naaccr_xml handles custom fields without column info", {
   rf <- record_format(
     name = "blah",

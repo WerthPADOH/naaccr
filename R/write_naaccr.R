@@ -436,6 +436,9 @@ write_naaccr_xml <- function(records,
   }
   records <- if (is.data.table(records)) copy(records) else as.data.table(records)
   records <- encode_records(records, write_format)
+  for (ii in seq_along(records)) {
+    set(records, j = ii, value = stri_trim_both(records[[ii]]))
+  }
   tiered_items <- split(write_format[["name"]], write_format[["parent"]])
   time_gen <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S")
   time_gen <- paste0(substr(time_gen, 1, 22), ":", substr(time_gen, 23, 24))
