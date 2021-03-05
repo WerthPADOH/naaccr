@@ -195,3 +195,21 @@ test_that("write_naaccr_xml handles custom fields without column info", {
   recs <- data.frame(blah = 1:4)
   expect_silent(write_naaccr_xml_to_vector(recs, format = rf))
 })
+
+test_that("Special characters are escaped in XML output", {
+  records <- naaccr_record(
+    textRemarks = c("<", ">", "&", "'", '"', "a>b&cd\"e<fg'h", "untouched")
+  )
+  xml_text <- write_naaccr_xml_to_vector(records, version = 18)
+  result <- unlist(stri_extract_all_regex(
+    xml_text, '(?<=<Item naaccrId="textRemarks">).*?(?=</Item>)',
+    omit_no_match = TRUE
+  ))
+  expect_identical(
+    result,
+    c(
+      "&lt;", "&gt;", "&amp;", "&apos;", "&quot;",
+      "a&gt;b&amp;cd&quot;e&lt;fg&apos;h", "untouched"
+    )
+  )
+})

@@ -437,7 +437,13 @@ write_naaccr_xml <- function(records,
   records <- if (is.data.table(records)) copy(records) else as.data.table(records)
   records <- encode_records(records, write_format)
   for (ii in seq_along(records)) {
-    set(records, j = ii, value = stri_trim_both(records[[ii]]))
+    cleaned <- stri_trim_both(records[[ii]])
+    cleaned <- stri_replace_all_fixed(cleaned, "&", "&amp;")
+    cleaned <- stri_replace_all_fixed(
+      cleaned, c("<", ">", '"', "'"), c("&lt;", "&gt;", "&quot;", "&apos;"),
+      vectorize_all = FALSE
+    )
+    set(records, j = ii, value = cleaned)
   }
   tiered_items <- split(write_format[["name"]], write_format[["parent"]])
   time_gen <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S")
