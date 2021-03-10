@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"0","never",FALSE,"Never smoker"
+"1","current",FALSE,"Current smoker"
+"2","former",FALSE,"Former smoker"
+"3","smoker, NOS",FALSE,"Smoker, current status unknown"
+"9","unknown",TRUE,"Unknown if ever smoked"

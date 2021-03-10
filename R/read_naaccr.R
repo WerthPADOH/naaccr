@@ -109,11 +109,13 @@ split_fields <- function(record_lines,
 #' @inheritParams naaccr_record
 #' @return
 #'   For \code{read_naaccr}, a \code{data.frame} of the records.
-#'   The columns included depend on the NAACCR record format version.
+#'   The columns included depend on the NAACCR \code{\link{record_format}} version.
 #'   Columns are atomic vectors; there are too many to describe them all.
 #'
-#'   For \code{read_naaccr_plain}, a \code{data.frame} with the columns
-#'   specified by \code{start_cols}, \code{end_cols}, and \code{col_names}.
+#'   For \code{read_naaccr_plain}, a \code{data.frame} based on the
+#'   \code{record_format} specified by either the \code{version} or
+#'   \code{format} argument.
+#'   The names of the columns will be those in the format's \code{name} column.
 #'   All columns are character vectors.
 #' @note
 #'   Some of the parameter text was shamelessly copied from the
@@ -165,11 +167,11 @@ read_naaccr_plain <- function(input,
     version = version, format = format, keep_fields = keep_fields
   )
   unread_fields <- !is.finite(format[["start_col"]]) |
-    !is.finite(format[["end_col"]])
+    !is.finite(format[["width"]])
   unread_format <- format[unread_fields]
   read_format <- format[!unread_fields]
   if (nrow(read_format) == 0L) {
-    stop("No fields in the format have a finite start or end column")
+    stop("No fields in the format have a finite start column and width")
   }
   # Read all record types as the longest type, padding and then truncating
   # Break the reading into chunks because of the typically large files.
@@ -184,6 +186,7 @@ read_naaccr_plain <- function(input,
   }
   index <- 0L
   rows_read <- 0L
+  end_cols <- read_format[["start_col"]] + read_format[["width"]] - 1L
   while (rows_read < nrows) {
     chunk_size <- min(buffersize, nrows - rows_read)
     record_lines <- readLines(input, n = chunk_size, encoding = encoding)
@@ -193,7 +196,7 @@ read_naaccr_plain <- function(input,
     rows_read <- rows_read + length(record_lines)
     index <- index + 1L
     line_lengths <- stringi::stri_width(record_lines)
-    record_width <- max(read_format[["end_col"]], na.rm = TRUE)
+    record_width <- max(end_cols, na.rm = TRUE)
     record_lines <- stringi::stri_pad_right(
       record_lines,
       width = record_width - line_lengths
@@ -202,7 +205,7 @@ read_naaccr_plain <- function(input,
     chunks[[index]] <- split_fields(
       record_lines = record_lines,
       start_cols   = read_format[["start_col"]],
-      end_cols     = read_format[["end_col"]],
+      end_cols     = end_cols,
       col_names    = read_format[["name"]]
     )
     if (index >= length(chunks)) {

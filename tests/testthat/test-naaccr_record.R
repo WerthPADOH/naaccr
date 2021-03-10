@@ -92,7 +92,7 @@ test_that("read_naaccr can handle custom formats", {
     sub_format,
     record_format(
       name = c("copyRecordType", "fieldNotInFile"), item = 998:999,
-      start_col = c(1, NA), end_col = c(1, NA), type = "character"
+      start_col = c(1, NA), width = c(1, NA), type = "character"
     )
   )
   plain <- read_naaccr(
@@ -136,7 +136,8 @@ test_that("read_naaccr only keeps requested columns and their flags", {
 test_that("read_naaccr fills in fields beyond end of lines", {
   records <- readLines("../data/synthetic-naaccr-18-incidence.txt")
   subformat <- naaccr_format_18[1:3, ]
-  shorn <- substr(records, 1, subformat[["end_col"]][2])
+  end_col <- subformat[["start_col"]] + subformat[["width"]] - 1L
+  shorn <- substr(records, 1, end_col[2])
   result <- read_naaccr(shorn, format = subformat)
   expect_true(all(is.na(result[[3]])))
 })
@@ -306,7 +307,7 @@ test_that("read_naaccr can handle a custom format", {
       name = "1 very % unusual name `",
       item = -2,
       start_col = 45, # spans two numeric fields
-      end_col = 55,
+      width = 11,
       type = "integer",
       alignment = "left",
       padding = " ",

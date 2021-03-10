@@ -11,23 +11,37 @@ library(rvest)
 library(stringi)
 
 
-key_header <- add_headers("X-SEERAPI-Key" = Sys.getenv("SEER_API_KEY"))
+req_header <- add_headers(
+  "X-SEERAPI-Key" = Sys.getenv("SEER_API_KEY"),
+  "Accept-Charset" = "utf-8"
+)
 
 
 query_seer_api <- function(...) {
-  res <- GET("https://api.seer.cancer.gov", path = c(...), key_header)
+  res <- GET("https://api.seer.cancer.gov", path = c(...), req_header, accept_json())
   stop_for_status(res)
-  content(res, as = "text")
+  out <- content(res, as = "text", encoding = "UTF-8")
+  res_headers <- headers(res)
+  attr(out, "rate_limit_remaining") <- as.integer(res_headers["x-ratelimit-remaining"])
+  out
 }
 
 
 # Query details for all items in a format and save results in JSON file
-query_format <- function(version, outfile) {
-  items <- query_seer_api("rest/naaccr", version) %>%
-    parse_json(simplifyDataFrame = TRUE)
+query_format <- function(version, outfile, type = c("flat", "xml")) {
+  type <- match.arg(type)
+  item_resp <- query_seer_api("rest/naaccr", type, version)
+  items <- parse_json(item_resp, simplifyDataFrame = TRUE)
+  req_limit <- attr(item_resp, "rate_limit_remaining")
+  if (nrow(items) > req_limit) {
+    stop(
+      "Number of items (", nrow(items), ") exceeds remaining requests ",
+      "allowed this hour (", req_limit, ")"
+    )
+  }
   details <- vapply(
     X = items[["item"]],
-    FUN = function(num) query_seer_api("rest/naaccr", version, "item", num),
+    FUN = function(num) query_seer_api("rest/naaccr", type, version, "item", num),
     FUN.VALUE = character(1)
   )
   combined_json <- c("[", paste0(details, collapse = ",\n"), "]")
@@ -37,15 +51,14 @@ query_format <- function(version, outfile) {
 }
 
 
-versions <- query_seer_api("rest/naaccr/versions") %>%
+flat_versions <- query_seer_api("rest/naaccr/flat/versions") %>%
   parse_json(simplifyDataFrame = TRUE) %>%
   `[[`("version")
-version_files <- paste0("external/format-sources/version-", versions, ".json")
-needs_queried <- !file.exists(version_files)
-
-for (ii in which(needs_queried)) {
-  query_format(version = versions[ii], outfile = version_files[ii])
-}
+xml_versions <- query_seer_api("rest/naaccr/xml/versions") %>%
+  parse_json(simplifyDataFrame = TRUE) %>%
+  `[[`("version")
+flat_outfiles <- paste0("external/format-sources/flat-version-", flat_versions, ".json")
+xml_outfiles <- paste0("external/format-sources/xml-version-", xml_versions, ".json")
 
 #---- Use the files to create the format data ----
 
@@ -111,76 +124,143 @@ parse_info_table <- function(doc_html) {
 }
 
 
-create_version_format <- function(format_file) {
+create_flat_format <- function(format_file) {
   details <- read_json(format_file)
   items <- rbindlist(details, fill = TRUE)
   setnames(
     items,
-    old = c("name", "default_value", "padding_char"),
-    new = c("name_literal", "default", "padding")
+    old = c("name", "default_value", "padding_char", "id"),
+    new = c("name_literal", "default", "padding", "name")
   )
+  items[, width := end_col - start_col + 1L]
   if (!("section" %in% names(items))) {
     set(items, j = "section", value = NA_character_)
   }
   # If a field has subfields, then it's redundant with them
   is_not_superfield <- vapply(items[["subfield"]], is.null, logical(1))
   items <- items[is_not_superfield]
-  set(items, j = "subfield", value = NULL)
   info_table <- parse_info_table(items[["documentation"]])
   items <- info_table[
     items,
     on = "item"
-  ][
-    ,
-    alignment := factor(tolower(alignment), c("left", "right"))
   ]
-  items[
-    ,
-    c("parent", "name") := documentation %>%
-      stri_match_first_regex( "<strong>NAACCR XML</strong>:\\s+(\\w+)\\.(\\w+)") %>%
-      as.data.table() %>%
-      `[`(TRUE, 2:3, with = FALSE)
-  ]
-  set(items, j = "documentation", value = NULL)
+  set(items, j = c("subfield", "documentation"), value = NULL)
   unique(items)
 }
 
 
-formats <- lapply(version_files, create_version_format)
-names(formats) <- versions
-naaccr_format <- rbindlist(formats, idcol = "version", use.names = TRUE)
-naaccr_format[, version := as.integer(version)]
+create_xml_format <- function(format_file) {
+  details <- read_json(format_file)
+  items <- rbindlist(details, fill = TRUE)
+  setnames(
+    items,
+    old = c("parent_xml_element", "name", "length", "id"),
+    new = c("parent", "name_literal", "width", "name")
+  )
+  if ("start_col" %in% names(items)) {
+    items[, end_col := start_col + width - 1L]
+  } else {
+    set(items, j = c("start_col", "end_col"), value = NA_integer_)
+  }
+  # rbindlist makes one row for every value in record_types, so flatten that out
+  items[, record_types := unlist(record_types)]
+  items[
+    ,
+    ":="(
+      include_incidence = "I" %in% record_types,
+      include_confidential = "C" %in% record_types,
+      include_abstract = "A" %in% record_types
+    ),
+    by = list(item)
+  ]
+  set(items, j = "record_types", value = NULL)
+  items <- items[, .SD[1], by = list(item)]
+  items[
+    startsWith(pad_type, "right"), alignment := "left"
+  ][
+    startsWith(pad_type, "left"), alignment := "right"
+  ][
+    endsWith(pad_type, "Blank"), padding := " "
+  ][
+    endsWith(pad_type, "Zero"), padding := "0"
+  ]
+  set(items, j = c("documentation", "pad_type", "trim_type"), value = NULL)
+  items
+}
 
-# A lot of new info introduced in version 18, so back-propagate it
-previous <- unique(naaccr_format[["version"]])
-previous <- previous[previous < 18]
-back_updates <- formats[["18"]][
-  ,
-  list(
-    version = previous,
-    name_18 = name,
-    parent_18 = parent,
-    section_18 = section,
-    year_added_18 = year_added,
-    version_added_18 = version_added,
-    year_retired_18 = year_retired,
-    version_retired_18 = version_retired
-  ),
-  by = item
-]
+
+flat_formats <- lapply(flat_outfiles, create_flat_format)
+names(flat_formats) <- flat_versions
+combined_flat_format <- rbindlist(flat_formats, idcol = "version", use.names = TRUE)
+combined_flat_format[, ":="(
+  version = as.integer(version),
+  alignment = factor(tolower(alignment), c("left", "right"))
+)]
+
+xml_formats <- lapply(xml_outfiles, create_xml_format)
+names(xml_formats) <- xml_versions
+combined_xml_format <- rbindlist(xml_formats, idcol = "version", use.names = TRUE)
+combined_xml_format[, ":="(
+  version = as.integer(version),
+  alignment = factor(tolower(alignment), c("left", "right"))
+)]
+
+naaccr_format <- merge(
+  combined_flat_format, combined_xml_format,
+  by = c("item", "version"), all = TRUE, suffixes = c(".flat", ".xml")
+)
+# Assume the XML format takes precedence
+shared_columns <- setdiff(
+  intersect(names(combined_flat_format), names(combined_xml_format)),
+  c("item", "version")
+)
+flat_shared <- paste0(shared_columns, ".flat")
+xml_shared <- paste0(shared_columns, ".xml")
+for (ii in seq_along(shared_columns)) {
+  flat_values <- naaccr_format[[flat_shared[ii]]]
+  xml_values <- naaccr_format[[xml_shared[ii]]]
+  na_xml <- which(is.na(xml_values))
+  set(naaccr_format, j = shared_columns[ii], value = xml_values)
+  set(naaccr_format, i = na_xml, j = shared_columns[ii], value = flat_values[na_xml])
+}
+set(naaccr_format, j = c(flat_shared, xml_shared), value = NULL)
+
+# New information is added in subsequent versions, so back-propagate it
+# Also forward-propagate information that's dropped by new versions
+propagate_columns <- c(
+  "name", "parent", "section", "year_added", "version_added", "year_retired",
+  "start_col", "end_col", "version_retired", "data_type", "default", "source",
+  "name_literal", "alignment", "padding", "width", "allow_unlimited_text",
+  "include_incidence", "include_confidential", "include_abstract"
+)
+
+
+back_propagate <- function(x) {
+  if (all(is.na(x)) || all(!is.na(x))) return(x)
+  first_i <- which(!is.na(x))[1]
+  x[seq_len(first_i - 1)] <- x[first_i]
+  x
+}
+
+
+forward_propagate <- function(x) {
+  na_x <- is.na(x)
+  if (all(na_x) || all(na_x)) return(x)
+  valued_i <- which(!na_x)
+  replacement <- findInterval(seq_along(x), valued_i)
+  x[replacement]
+}
 
 naaccr_format[
-  back_updates,
-  on = c("version", "item"),
-  ":="(
-    name = ifelse(is.na(name), name_18, name),
-    parent = ifelse(is.na(parent), parent_18, parent),
-    section = ifelse(is.na(section), section_18, section),
-    year_added = ifelse(is.na(year_added), year_added_18, year_added),
-    version_added = ifelse(is.na(version_added), version_added_18, version_added),
-    year_retired = ifelse(is.na(year_retired), year_retired_18, year_retired),
-    version_retired = ifelse(is.na(version_retired), version_retired_18, version_retired)
-  )
+  order(version),
+  c(propagate_columns) := lapply(.SD, back_propagate),
+  by = list(item),
+  .SDcols = propagate_columns
+][
+  order(version),
+  c(propagate_columns) := lapply(.SD, forward_propagate),
+  by = list(item),
+  .SDcols = propagate_columns
 ]
 
 # Retired fields get a name that's just the descriptive name in XML ID-format
@@ -224,13 +304,17 @@ naaccr_format[
   name := new
 ]
 
-# Fix incorrect names
+# Some items were added in version 16, but not implemented until version 18,
+# and had their name changed
+renamed_items_16 <- c(762, 764, 772, 774, 776)
+renames <- naaccr_format[
+  version == 18 & item %in% renamed_items_16,
+  list(version = 16, item, name_18 = name, name_literal_18 = name_literal)
+]
 naaccr_format[
-  item == 3874,
-  name := "lnDistantAssessMethod"
-][
-  item == 3884,
-  name := "lnStatusFemorInguinParaaortPelv"
+  renames,
+  on = c("version", "item"),
+  ":="(name = name_18, name_literal = name_literal_18)
 ]
 
 # Save the NAACCR-defined formats to files, which should be committed to Git
@@ -238,8 +322,10 @@ setcolorder(
   naaccr_format,
   c(
     "version", "name", "item", "start_col", "end_col", "alignment", "padding",
-    "name_literal", "default", "parent", "section", "source", "year_added",
-    "version_added", "year_retired", "version_retired"
+    "data_type", "width", "name_literal", "default", "allow_unlimited_text",
+    "parent", "section", "source",
+    "year_added", "version_added", "year_retired", "version_retired",
+    "include_incidence", "include_confidential", "include_abstract"
   )
 )
 for (v in unique(naaccr_format[["version"]])) {

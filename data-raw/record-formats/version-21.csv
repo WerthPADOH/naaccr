@@ -3,7 +3,6 @@
 "patientIdNumber",20,42,49,"right","0","digits",8,"Patient ID Number",,FALSE,"Patient","Record ID","Reporting Registry",,,,,TRUE,TRUE,TRUE
 "patientSystemIdHosp",21,50,57,"right","0","digits",8,"Patient System ID-Hosp",,FALSE,"Tumor","Record ID","NAACCR",2006,11,,,TRUE,TRUE,TRUE
 "registryType",30,2,2,"left"," ","digits",1,"Registry Type",,FALSE,"NaaccrData","Record ID","NAACCR",,,,,TRUE,TRUE,TRUE
-"reserved00",37,3,16,"left"," ","text",14,"Reserved 00",,FALSE,"Tumor","Record ID",,2011,,,,TRUE,TRUE,TRUE
 "registryId",40,30,39,"right","0","digits",10,"Registry ID",,FALSE,"NaaccrData","Record ID","NAACCR",,,,,TRUE,TRUE,TRUE
 "npiRegistryId",45,20,29,"left"," ","digits",10,"NPI--Registry ID",,FALSE,"NaaccrData","Record ID","CMS",2007,,,,TRUE,TRUE,TRUE
 "naaccrRecordVersion",50,17,19,"left"," ","digits",3,"NAACCR Record Version","180",FALSE,"NaaccrData","Record ID","NAACCR",,,,,TRUE,TRUE,TRUE
@@ -71,7 +70,6 @@
 "censusTrCertainty2010",367,192,192,"left"," ","digits",1,"Census Tr Certainty 2010",,FALSE,"Tumor","Demographic","NAACCR",2011,,,,TRUE,TRUE,TRUE
 "censusBlockGrp197090",368,164,164,"left"," ","digits",1,"Census Block Grp 1970/80/90",,FALSE,"Tumor","Demographic","Census",2008,,,,TRUE,TRUE,TRUE
 "censusTractCertainty2020",369,205,205,"left"," ","digits",1,"Census Tract Certainty 2020",,FALSE,"Tumor","Demographic","NAACCR",2018,18,,,TRUE,TRUE,TRUE
-"reserved01",370,58,73,"left"," ","text",16,"Reserved 01",,FALSE,"Tumor","Record ID",,2011,,,,TRUE,TRUE,TRUE
 "sequenceNumberCentral",380,542,543,"right","0","digits",2,"Sequence Number--Central",,FALSE,"Tumor","Cancer Identification","SEER",,,,,TRUE,TRUE,TRUE
 "dateOfDiagnosis",390,544,551,"left"," ","date",8,"Date of Diagnosis",,FALSE,"Tumor","Cancer Identification","SEER/CoC",,,,,TRUE,TRUE,TRUE
 "dateOfDiagnosisFlag",391,552,553,"left"," ","digits",2,"Date of Diagnosis Flag",,FALSE,"Tumor","Cancer Identification","NAACCR",2010,12,,,TRUE,TRUE,TRUE
@@ -98,7 +96,6 @@
 "casefindingSource",501,578,579,"left"," ","digits",2,"Casefinding Source",,FALSE,"Tumor","Cancer Identification","NAACCR",2006,11,,,TRUE,TRUE,TRUE
 "histologicTypeIcdO3",522,564,567,"left"," ","digits",4,"Histologic Type ICD-O-3",,FALSE,"Tumor","Cancer Identification","SEER/CoC",2001,9,,,TRUE,TRUE,TRUE
 "behaviorCodeIcdO3",523,568,568,"left"," ","digits",1,"Behavior Code ICD-O-3",,FALSE,"Tumor","Cancer Identification","SEER/CoC",2001,9,,,TRUE,TRUE,TRUE
-"reserved02",530,492,541,"left"," ","text",50,"Reserved 02",,FALSE,"Tumor","Demographic",,2011,,,,TRUE,TRUE,TRUE
 "reportingFacility",540,715,724,"right","0","text",10,"Reporting Facility",,FALSE,"Tumor","Hospital-Specific","CoC",,,,,TRUE,TRUE,TRUE
 "npiReportingFacility",545,705,714,"left"," ","digits",10,"NPI--Reporting Facility",,FALSE,"Tumor","Hospital-Specific","CMS",2007,,,,TRUE,TRUE,TRUE
 "accessionNumberHosp",550,745,753,"left"," ","digits",9,"Accession Number--Hosp",,FALSE,"Tumor","Hospital-Specific","CoC",,,,,TRUE,TRUE,TRUE
@@ -118,7 +115,6 @@
 "rxHospScopeRegLnSur",672,797,797,"left"," ","digits",1,"RX Hosp--Scope Reg LN Sur",,FALSE,"Tumor","Hospital-Specific","CoC",1997,,,,TRUE,TRUE,TRUE
 "rxHospSurgOthRegDis",674,798,798,"left"," ","digits",1,"RX Hosp--Surg Oth Reg/Dis",,FALSE,"Tumor","Hospital-Specific","CoC",1997,,,,TRUE,TRUE,TRUE
 "rxHospRegLnRemoved",676,799,800,"right","0","digits",2,"RX Hosp--Reg LN Removed",,FALSE,"Tumor","Hospital-Specific","CoC",1997,,,,TRUE,TRUE,TRUE
-"reserved03",680,605,704,"left"," ","text",100,"Reserved 03",,FALSE,"Tumor","Cancer Identification",,2011,,,,TRUE,TRUE,TRUE
 "dateRegionalLNDissection",682,1002,1009,"left"," ","date",8,"Date Regional Lymph Node Dissection",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "dateRegionalLNDissectionFlag",683,1010,1011,"left"," ","digits",2,"Date Regional Lymph Node Dissection Flag",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "rxHospRadiation",690,801,801,"left"," ","digits",1,"RX Hosp--Radiation",,FALSE,"Tumor","Hospital-Specific","SEER",,,,,TRUE,TRUE,TRUE
@@ -130,7 +126,6 @@
 "rxHospSurgSite9802",746,812,813,"right","0","digits",2,"RX Hosp--Surg Site 98-02",,FALSE,"Tumor","Hospital-Specific","CoC",,,,,TRUE,TRUE,TRUE
 "rxHospScopeReg9802",747,814,814,"left"," ","digits",1,"RX Hosp--Scope Reg 98-02",,FALSE,"Tumor","Hospital-Specific","CoC",,,,,TRUE,TRUE,TRUE
 "rxHospSurgOth9802",748,815,815,"left"," ","digits",1,"RX Hosp--Surg Oth 98-02",,FALSE,"Tumor","Hospital-Specific","CoC",,,,,TRUE,TRUE,TRUE
-"reserved04",750,816,865,"left"," ","text",50,"Reserved 04",,FALSE,"Tumor","Hospital-Specific",,2011,,,,TRUE,TRUE,TRUE
 "tumorSizeClinical",752,876,878,"left"," ","digits",3,"Tumor Size Clinical",,FALSE,"Tumor","Stage/Prognostic Factors","SEER",2016,16,,,TRUE,TRUE,TRUE
 "tumorSizePathologic",754,879,881,"left"," ","digits",3,"Tumor Size Pathologic",,FALSE,"Tumor","Stage/Prognostic Factors","SEER",2016,16,,,TRUE,TRUE,TRUE
 "tumorSizeSummary",756,882,884,"left"," ","digits",3,"Tumor Size Summary",,FALSE,"Tumor","Stage/Prognostic Factors","NPCR/CoC",2016,16,,,TRUE,TRUE,TRUE
@@ -180,17 +175,24 @@
 "ajccTnmPathN",1012,1169,1183,"left"," ","text",15,"AJCC TNM Path N",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",2018,18,,,TRUE,TRUE,TRUE
 "ajccTnmPathM",1013,1188,1202,"left"," ","text",15,"AJCC TNM Path M",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",2018,18,,,TRUE,TRUE,TRUE
 "ajccTnmPathStageGroup",1014,1203,1217,"left"," ","text",15,"AJCC TNM Path Stage Group",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",2018,18,,,TRUE,TRUE,TRUE
-"ajccTnmPostTherapyT",1021,1218,1232,"left"," ","text",15,"AJCC TNM Post Therapy T",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",2018,18,,,TRUE,TRUE,TRUE
-"ajccTnmPostTherapyN",1022,1237,1251,"left"," ","text",15,"AJCC TNM Post Therapy N",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",,,,,TRUE,TRUE,TRUE
-"ajccTnmPostTherapyM",1023,1256,1270,"left"," ","text",15,"AJCC TNM Post Therapy M",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",2018,18,,,TRUE,TRUE,TRUE
-"ajccTnmPostTherapyStageGroup",1024,1271,1285,"left"," ","text",15,"AJCC TNM Post Therapy Stage Group",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",2018,18,,,TRUE,TRUE,TRUE
+"ajccTnmPostTherapyT",1021,1218,1232,"left"," ","text",15,"AJCC TNM Post Therapy Path (yp) T",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",2018,18,,,TRUE,TRUE,TRUE
+"ajccTnmPostTherapyN",1022,1237,1251,"left"," ","text",15,"AJCC TNM Post Therapy Path (yp) N",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",,,,,TRUE,TRUE,TRUE
+"ajccTnmPostTherapyM",1023,1256,1270,"left"," ","text",15,"AJCC TNM Post Therapy Path (yp) M",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",2018,18,,,TRUE,TRUE,TRUE
+"ajccTnmPostTherapyStageGroup",1024,1271,1285,"left"," ","text",15,"AJCC TNM Post Therapy Path (yp) Stage Group",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",2018,18,,,TRUE,TRUE,TRUE
 "ajccTnmClinTSuffix",1031,1097,1100,"left"," ","text",4,"AJCC TNM Clin T Suffix",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",2018,18,,,TRUE,TRUE,TRUE
 "ajccTnmPathTSuffix",1032,1165,1168,"left"," ","text",4,"AJCC TNM Path T Suffix",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",,,,,TRUE,TRUE,TRUE
-"ajccTnmPostTherapyTSuffix",1033,1233,1236,"left"," ","text",4,"AJCC TNM Post Therapy T Suffix",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",,,,,TRUE,TRUE,TRUE
+"ajccTnmPostTherapyTSuffix",1033,1233,1236,"left"," ","text",4,"AJCC TNM Post Therapy Path (yp) T Suffix",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",,,,,TRUE,TRUE,TRUE
 "ajccTnmClinNSuffix",1034,1116,1119,"left"," ","text",4,"AJCC TNM Clin N Suffix",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",,,,,TRUE,TRUE,TRUE
 "ajccTnmPathNSuffix",1035,1184,1187,"left"," ","text",4,"AJCC TNM Path N Suffix",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",2018,18,,,TRUE,TRUE,TRUE
-"ajccTnmPostTherapyNSuffix",1036,1252,1255,"left"," ","text",4,"AJCC TNM Post Therapy N Suffix",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",2018,18,,,TRUE,TRUE,TRUE
+"ajccTnmPostTherapyNSuffix",1036,1252,1255,"left"," ","text",4,"AJCC TNM Post Therapy Path (yp) N Suffix",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",2018,18,,,TRUE,TRUE,TRUE
 "tnmEditionNumber",1060,1046,1047,"right","0","text",2,"TNM Edition Number",,FALSE,"Tumor","Stage/Prognostic Factors","CoC",,,,,TRUE,TRUE,TRUE
+"ajccTnmPostTherapyClinT",1062,,,"left"," ","text",15,"AJCC TNM Post Therapy Clin (yc) T",,FALSE,"Tumor","Stage/Prognostic Factors",,,,,,TRUE,TRUE,TRUE
+"ajccTnmPostTherapyClinTSuffix",1063,,,"left"," ","text",4,"AJCC TNM Post Therapy Clin (yc) T Suffix",,FALSE,"Tumor","Stage/Prognostic Factors",,,,,,TRUE,TRUE,TRUE
+"ajccTnmPostTherapyClinN",1064,,,"left"," ","text",15,"AJCC TNM Post Therapy Clin (yc) N",,FALSE,"Tumor","Stage/Prognostic Factors",,,,,,TRUE,TRUE,TRUE
+"ajccTnmPostTherapyClinNSuffix",1065,,,"left"," ","text",4,"AJCC TNM Post Therapy Clin (yc) N Suffix",,FALSE,"Tumor","Stage/Prognostic Factors",,,,,,TRUE,TRUE,TRUE
+"ajccTnmPostTherapyClinM",1066,,,"left"," ","text",15,"AJCC TNM Post Therapy Clin (yc) M",,FALSE,"Tumor","Stage/Prognostic Factors",,,,,,TRUE,TRUE,TRUE
+"ajccTnmPostTherapyClinStageGrp",1067,,,"left"," ","text",15,"AJCC TNM Post Therapy Clin (yc) Stage Group",,FALSE,"Tumor","Stage/Prognostic Factors",,,,,,TRUE,TRUE,TRUE
+"gradePostTherapyClin",1068,,,"left"," ","text",1,"Grade Post Therapy Clin (yc)",,FALSE,"Tumor","Stage/Prognostic Factors",,,,,,TRUE,TRUE,TRUE
 "metsAtDxBone",1112,870,870,"left"," ","digits",1,"Mets at DX-Bone",,FALSE,"Tumor","Stage/Prognostic Factors","SEER",2016,16,,,TRUE,TRUE,TRUE
 "metsAtDxBrain",1113,871,871,"left"," ","digits",1,"Mets at DX-Brain",,FALSE,"Tumor","Stage/Prognostic Factors","SEER",2016,16,,,TRUE,TRUE,TRUE
 "metsAtDxDistantLn",1114,872,872,"left"," ","digits",1,"Mets at Dx-Distant LN",,FALSE,"Tumor","Stage/Prognostic Factors","SEER",2016,16,,,TRUE,TRUE,TRUE
@@ -203,9 +205,7 @@
 "tumorMarker1",1150,1294,1294,"left"," ","digits",1,"Tumor Marker 1",,FALSE,"Tumor","Stage/Prognostic Factors","SEER",,,,,TRUE,TRUE,TRUE
 "tumorMarker2",1160,1295,1295,"left"," ","digits",1,"Tumor Marker 2",,FALSE,"Tumor","Stage/Prognostic Factors","SEER",,,,,TRUE,TRUE,TRUE
 "tumorMarker3",1170,1296,1296,"left"," ","digits",1,"Tumor Marker 3",,FALSE,"Tumor","Stage/Prognostic Factors","SEER",,,,,TRUE,TRUE,TRUE
-"reserved05",1180,1996,2093,"left"," ","text",98,"Reserved 05",,FALSE,"Tumor","Stage/Prognostic Factors",,2011,,,,TRUE,TRUE,TRUE
 "lymphVascularInvasion",1182,1297,1297,"left"," ","digits",1,"Lymphovascular Invasion",,FALSE,"Tumor","Stage/Prognostic Factors","AJCC",2010,12,,,TRUE,TRUE,TRUE
-"reserved06",1190,2357,2456,"left"," ","text",100,"Reserved 06",,FALSE,"Tumor","Treatment-1st Course",,2011,,,,TRUE,TRUE,TRUE
 "rxDateSurgery",1200,2114,2121,"left"," ","date",8,"RX Date Surgery",,FALSE,"Tumor","Treatment-1st Course","CoC",,,,,TRUE,TRUE,TRUE
 "rxDateSurgeryFlag",1201,2122,2123,"left"," ","digits",2,"RX Date Surgery Flag",,FALSE,"Tumor","Treatment-1st Course","NAACCR",2010,12,,,TRUE,TRUE,TRUE
 "rxDateRadiation",1210,2144,2151,"left"," ","date",8,"RX Date Radiation",,FALSE,"Tumor","Treatment-1st Course","CoC",,,,,TRUE,TRUE,TRUE
@@ -229,7 +229,6 @@
 "rxSummScopeRegLnSur",1292,2227,2227,"left"," ","digits",1,"RX Summ--Scope Reg LN Sur",,FALSE,"Tumor","Treatment-1st Course","SEER/CoC",1997,,,,TRUE,TRUE,TRUE
 "rxSummSurgOthRegDis",1294,2228,2228,"left"," ","digits",1,"RX Summ--Surg Oth Reg/Dis",,FALSE,"Tumor","Treatment-1st Course","SEER/CoC",1997,,,,TRUE,TRUE,TRUE
 "rxSummRegLnExamined",1296,2229,2230,"right","0","digits",2,"RX Summ--Reg LN Examined",,FALSE,"Tumor","Treatment-1st Course","SEER/CoC",1997,,,,TRUE,TRUE,TRUE
-"reserved07",1300,2521,2570,"left"," ","text",50,"Reserved 07",,FALSE,"Tumor","Treatment-Subsequent & Other",,2011,,,,TRUE,TRUE,TRUE
 "rxSummSurgicalApproch",1310,2231,2231,"left"," ","digits",1,"RX Summ--Surgical Approch",,FALSE,"Tumor","Treatment-1st Course","CoC",,,,,TRUE,TRUE,TRUE
 "rxSummSurgicalMargins",1320,2232,2232,"left"," ","digits",1,"RX Summ--Surgical Margins",,FALSE,"Tumor","Treatment-1st Course","CoC",,,,,TRUE,TRUE,TRUE
 "rxSummReconstruct1st",1330,2233,2233,"left"," ","digits",1,"RX Summ--Reconstruct 1st",,FALSE,"Tumor","Treatment-1st Course","SEER",,,,,TRUE,TRUE,TRUE
@@ -273,12 +272,14 @@
 "radTreatmentVolume",1540,2261,2262,"right","0","digits",2,"Rad--Treatment Volume",,FALSE,"Tumor","Treatment-1st Course","CoC",,,,,TRUE,TRUE,TRUE
 "radLocationOfRx",1550,2263,2263,"left"," ","digits",1,"Rad--Location of RX",,FALSE,"Tumor","Treatment-1st Course","CoC",,,,,TRUE,TRUE,TRUE
 "radRegionalRxModality",1570,2264,2265,"right","0","digits",2,"Rad--Regional RX Modality",,FALSE,"Tumor","Treatment-1st Course","CoC",,,,,TRUE,TRUE,TRUE
+"neoadjuvantTherapy",1632,,,"left"," ","text",1,"Neoadjuvant Therapy",,FALSE,"Tumor","Treatment-1st Course",,,,,,TRUE,TRUE,TRUE
+"neoadjuvTherapyClinicalResponse",1633,,,"left"," ","text",1,"Neoadjuvant Therapy-Clinical Response",,FALSE,"Tumor","Treatment-1st Course",,,,,,TRUE,TRUE,TRUE
+"neoadjuvTherapyTreatmentEffect",1634,,,"left"," ","text",1,"Neoadjuvant Therapy-Treatment Effect",,FALSE,"Tumor","Treatment-1st Course",,,,,,TRUE,TRUE,TRUE
 "rxSummSystemicSurSeq",1639,2273,2273,"left"," ","digits",1,"RX Summ--Systemic/Sur Seq",,FALSE,"Tumor","Treatment-1st Course","CoC",2006,11,,,TRUE,TRUE,TRUE
 "rxSummSurgeryType",1640,2274,2275,"right","0","digits",2,"RX Summ--Surgery Type",,FALSE,"Tumor","Treatment-1st Course","SEER",2011,,,,TRUE,TRUE,TRUE
 "rxSummSurgSite9802",1646,2277,2278,"right","0","digits",2,"RX Summ--Surg Site 98-02",,FALSE,"Tumor","Treatment-1st Course","SEER/CoC",,,,,TRUE,TRUE,TRUE
 "rxSummScopeReg9802",1647,2279,2279,"left"," ","digits",1,"RX Summ--Scope Reg 98-02",,FALSE,"Tumor","Treatment-1st Course","SEER/CoC",,,,,TRUE,TRUE,TRUE
 "rxSummSurgOth9802",1648,2280,2280,"left"," ","digits",1,"RX Summ--Surg Oth 98-02",,FALSE,"Tumor","Treatment-1st Course","SEER/CoC",,,,,TRUE,TRUE,TRUE
-"reserved08",1650,2725,2774,"left"," ","text",50,"Reserved 08",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin",,2011,,,,TRUE,TRUE,TRUE
 "subsqRx2ndCourseDate",1660,2457,2464,"left"," ","date",8,"Subsq RX 2nd Course Date",,FALSE,"Tumor","Treatment-Subsequent & Other","CoC",,,,,TRUE,TRUE,TRUE
 "subsqRx2ndcrsDateFlag",1661,2465,2466,"left"," ","digits",2,"Subsq RX 2ndCrs Date Flag",,FALSE,"Tumor","Treatment-Subsequent & Other","NAACCR",2010,12,,,TRUE,TRUE,TRUE
 "subsqRx2ndCourseSurg",1671,2467,2468,"right","0","digits",2,"Subsq RX 2nd Course Surg",,FALSE,"Tumor","Treatment-Subsequent & Other","CoC",2011,,,,TRUE,TRUE,TRUE
@@ -312,7 +313,6 @@
 "subsqRx4thScopeLnSu",1717,2511,2511,"left"," ","digits",1,"Subsq RX 4th--Scope LN Su",,FALSE,"Tumor","Treatment-Subsequent & Other","CoC",1997,,,,TRUE,TRUE,TRUE
 "subsqRx4thSurgOth",1718,2512,2512,"left"," ","digits",1,"Subsq RX 4th--Surg Oth",,FALSE,"Tumor","Treatment-Subsequent & Other","CoC",1997,,,,TRUE,TRUE,TRUE
 "subsqRx4thRegLnRem",1719,2513,2514,"right","0","digits",2,"Subsq RX 4th--Reg LN Rem",,FALSE,"Tumor","Treatment-Subsequent & Other","CoC",1997,,,,TRUE,TRUE,TRUE
-"reserved09",1740,2999,3048,"left"," ","text",50,"Reserved 09",,FALSE,"Tumor","Follow-up/Recurrence/Death",,2011,,,,TRUE,TRUE,TRUE
 "subsqRxReconstructDel",1741,2520,2520,"left"," ","digits",1,"Subsq RX--Reconstruct Del",,FALSE,"Tumor","Treatment-Subsequent & Other","CoC",1997,,,,TRUE,TRUE,TRUE
 "dateOfLastContact",1750,2775,2782,"left"," ","date",8,"Date of Last Contact",,FALSE,"Patient","Follow-up/Recurrence/Death","SEER/CoC",,,,,TRUE,TRUE,TRUE
 "dateOfLastContactFlag",1751,2783,2784,"left"," ","digits",2,"Date of Last Contact Flag",,FALSE,"Patient","Follow-up/Recurrence/Death","NAACCR",2010,12,,,TRUE,TRUE,TRUE
@@ -339,7 +339,6 @@
 "addrCurrentState",1820,2853,2854,"left"," ","alpha",2,"Addr Current--State",,FALSE,"Patient","Follow-up/Recurrence/Death","CoC",,,,,TRUE,TRUE,TRUE
 "addrCurrentPostalCode",1830,2855,2863,"left"," ","text",9,"Addr Current--Postal Code",,FALSE,"Patient","Follow-up/Recurrence/Death","CoC",,,,,TRUE,TRUE,TRUE
 "addrCurrentCountry",1832,467,469,"left"," ","alpha",3,"Addr Current--Country",,FALSE,"Patient","Demographic","NAACCR",2013,13,,,TRUE,TRUE,TRUE
-"reserved10",1835,4805,4904,"left"," ","text",100,"Reserved 10",,FALSE,"Tumor","Patient-Confidential",,2011,,,,FALSE,TRUE,TRUE
 "countyCurrent",1840,2864,2866,"right","0","digits",3,"County--Current",,FALSE,"Patient","Follow-up/Recurrence/Death","NAACCR",,,,,TRUE,TRUE,TRUE
 "followUpContactCity",1842,2879,2928,"left"," ","text",50,"Follow-Up Contact--City",,FALSE,"Tumor","Follow-up/Recurrence/Death","SEER",1997,,,,TRUE,TRUE,TRUE
 "followUpContactState",1844,2929,2930,"left"," ","alpha",2,"Follow-Up Contact--State",,FALSE,"Tumor","Follow-up/Recurrence/Death","SEER",1997,,,,TRUE,TRUE,TRUE
@@ -349,7 +348,6 @@
 "recurrenceDate1st",1860,2867,2874,"left"," ","date",8,"Recurrence Date--1st",,FALSE,"Tumor","Follow-up/Recurrence/Death","CoC",,,,,TRUE,TRUE,TRUE
 "recurrenceDate1stFlag",1861,2875,2876,"left"," ","digits",2,"Recurrence Date--1st Flag",,FALSE,"Tumor","Follow-up/Recurrence/Death","NAACCR",2010,12,,,TRUE,TRUE,TRUE
 "recurrenceType1st",1880,2877,2878,"right","0","digits",2,"Recurrence Type--1st",,FALSE,"Tumor","Follow-up/Recurrence/Death","CoC",,,,,TRUE,TRUE,TRUE
-"reserved11",1900,4965,5014,"left"," ","text",50,"Reserved 11",,FALSE,"Tumor","Hospital-Confidential",,2011,,,,FALSE,TRUE,TRUE
 "causeOfDeath",1910,2940,2943,"left"," ","text",4,"Cause of Death",,FALSE,"Patient","Follow-up/Recurrence/Death","SEER",,,,,TRUE,TRUE,TRUE
 "seerCauseSpecificCod",1914,2944,2944,"left"," ","digits",1,"SEER Cause Specific COD",,FALSE,"Tumor","Follow-up/Recurrence/Death","SEER",2018,18,,,TRUE,TRUE,TRUE
 "seerOtherCod",1915,2945,2945,"left"," ","digits",1,"SEER Other COD",,FALSE,"Tumor","Follow-up/Recurrence/Death","SEER",2018,18,,,TRUE,TRUE,TRUE
@@ -388,7 +386,6 @@
 "overRideSiteLatEod",2073,2593,2593,"left"," ","digits",1,"Over-ride Site/Lat/EOD",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin","SEER",1997,,,,TRUE,TRUE,TRUE
 "overRideSiteLatMorph",2074,2594,2594,"left"," ","digits",1,"Over-ride Site/Lat/Morph",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin","SEER",1997,,,,TRUE,TRUE,TRUE
 "overRideNameSex",2078,2595,2595,"left"," ","digits",1,"Over-ride Name/Sex",,FALSE,"Patient","Edit Overrides/Conversion History/System Admin","NAACCR",2018,18,,,TRUE,TRUE,TRUE
-"reserved13",2080,6685,6934,"left"," ","text",250,"Reserved 13",,FALSE,"Tumor","Pathology",,2011,,,,FALSE,FALSE,TRUE
 "crcChecksum",2081,2607,2616,"left"," ","text",10,"CRC CHECKSUM",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin","NAACCR",1998,6,,,TRUE,TRUE,TRUE
 "dateCaseInitiated",2085,2640,2647,"left"," ","date",8,"Date Case Initiated",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin","NAACCR",2010,12,,,TRUE,TRUE,TRUE
 "dateCaseCompleted",2090,2648,2655,"left"," ","date",8,"Date Case Completed",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin","NAACCR",,,,,TRUE,TRUE,TRUE
@@ -399,26 +396,32 @@
 "dateCaseReportLoaded",2112,2688,2695,"left"," ","date",8,"Date Case Report Loaded",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin","NPCR",1997,,,,TRUE,TRUE,TRUE
 "dateTumorRecordAvailbl",2113,2696,2703,"left"," ","date",8,"Date Tumor Record Availbl",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin","NPCR",1997,,,,TRUE,TRUE,TRUE
 "icdO3ConversionFlag",2116,2704,2704,"left"," ","digits",1,"ICD-O-3 Conversion Flag",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin","SEER/CoC",2001,9,,,TRUE,TRUE,TRUE
+"schemaIdVersionCurrent",2117,,,"left"," ","text",5,"Schema ID Version Current",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin",,,,,,TRUE,TRUE,TRUE
+"schemaIdVersionOriginal",2118,,,"left"," ","text",5,"Schema ID Version Original",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin",,,,,,TRUE,TRUE,TRUE
 "seerCodingSysCurrent",2120,2617,2617,"left"," ","mixed",1,"SEER Coding Sys--Current",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin","NAACCR",,,,,TRUE,TRUE,TRUE
 "seerCodingSysOriginal",2130,2618,2618,"left"," ","mixed",1,"SEER Coding Sys--Original",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin","NAACCR",,,,,TRUE,TRUE,TRUE
 "cocCodingSysCurrent",2140,2619,2620,"right","0","digits",2,"CoC Coding Sys--Current",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin","CoC",,,,,TRUE,TRUE,TRUE
 "cocCodingSysOriginal",2150,2621,2622,"right","0","digits",2,"CoC Coding Sys--Original",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin","CoC",,,,,TRUE,TRUE,TRUE
 "cocAccreditedFlag",2152,2624,2624,"left"," ","digits",1,"CoC Accredited Flag",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin","NPCR",2018,18,,,TRUE,TRUE,TRUE
 "rqrsNcdbSubmissionFlag",2155,2623,2623,"left"," ","digits",1,"RQRS NCDB Submission Flag",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin","CoC",2018,18,,,TRUE,TRUE,TRUE
+"ajccApiVersionCurrent",2156,,,"left"," ","text",8,"AJCC API Version Current",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin",,,,,,TRUE,TRUE,TRUE
+"ajccApiVersionOriginal",2157,,,"left"," ","text",8,"AJCC API Version Original",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin",,,,,,TRUE,TRUE,TRUE
+"ajccCancerSurvApiVersionCurrent",2158,,,"left"," ","text",13,"AJCC Cancer Surveillance API Version Current",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin",,,,,,TRUE,TRUE,TRUE
+"ajccCancerSurvApiVersionOriginal",2159,,,"left"," ","text",13,"AJCC Cancer Surveillance API Version Original",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin",,,,,,TRUE,TRUE,TRUE
 "vendorName",2170,2625,2634,"left"," ","text",10,"Vendor Name",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin","NAACCR",2011,,,,TRUE,TRUE,TRUE
 "seerTypeOfFollowUp",2180,2635,2635,"left"," ","digits",1,"SEER Type of Follow-Up",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin","SEER",1995,4,,,TRUE,TRUE,TRUE
 "seerRecordNumber",2190,2636,2637,"right","0","digits",2,"SEER Record Number",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin","SEER",1995,4,,,TRUE,TRUE,TRUE
 "diagnosticProc7387",2200,2638,2639,"left"," ","text",2,"Diagnostic Proc 73-87",,FALSE,"Tumor","Edit Overrides/Conversion History/System Admin","SEER",1995,5,,,TRUE,TRUE,TRUE
-"reserved14",2210,22195,24194,"left"," ","text",2000,"Reserved 14",,FALSE,"Tumor","Text-Miscellaneous",,2011,,,,FALSE,FALSE,TRUE
 "stateRequestorItems",2220,3049,4048,"left"," ","text",1000,"State/Requestor Items",,FALSE,"Tumor","Special Use","Varies",2011,,,,TRUE,TRUE,TRUE
 "nameLast",2230,4049,4088,"left"," ","text",40,"Name--Last",,FALSE,"Patient","Patient-Confidential","CoC",2011,,,,FALSE,TRUE,TRUE
+"nameBirthSurname",2232,,,"left"," ","text",40,"Name--Birth Surname",,FALSE,"Patient","Patient-Confidential",,,,,,FALSE,TRUE,TRUE
 "nameFirst",2240,4089,4128,"left"," ","text",40,"Name--First",,FALSE,"Patient","Patient-Confidential","CoC",,,,,FALSE,TRUE,TRUE
 "nameMiddle",2250,4129,4168,"left"," ","text",40,"Name--Middle",,FALSE,"Patient","Patient-Confidential","CoC",,,,,FALSE,TRUE,TRUE
 "namePrefix",2260,4169,4171,"left"," ","text",3,"Name--Prefix",,FALSE,"Patient","Patient-Confidential","NAACCR",2011,,,,FALSE,TRUE,TRUE
 "nameSuffix",2270,4172,4174,"left"," ","text",3,"Name--Suffix",,FALSE,"Patient","Patient-Confidential","NAACCR",2011,,,,FALSE,TRUE,TRUE
 "nameAlias",2280,4175,4214,"left"," ","text",40,"Name--Alias",,FALSE,"Patient","Patient-Confidential","NAACCR",,,,,FALSE,TRUE,TRUE
 "nameSpouseParent",2290,4255,4314,"left"," ","text",60,"Name--Spouse/Parent",,FALSE,"Tumor","Patient-Confidential","NAACCR",2011,,,,FALSE,TRUE,TRUE
-"medicalRecordNumber",2300,4315,4325,"right"," ","text",11,"Medical Record Number",,FALSE,"Tumor","Patient-Confidential","CoC",,,,,FALSE,TRUE,TRUE
+"medicalRecordNumber",2300,4315,4325,"right"," ","text",15,"Medical Record Number",,FALSE,"Tumor","Patient-Confidential","CoC",,,,,FALSE,TRUE,TRUE
 "militaryRecordNoSuffix",2310,4326,4327,"right","0","digits",2,"Military Record No Suffix",,FALSE,"Tumor","Patient-Confidential","CoC",,,,,FALSE,TRUE,TRUE
 "medicareBeneficiaryIdentifier",2315,4337,4347,"left"," ","text",11,"Medicare Beneficiary Identifier",,FALSE,"Patient","Patient-Confidential","NAACCR",2018,18,,,FALSE,TRUE,TRUE
 "socialSecurityNumber",2320,4328,4336,"left"," ","digits",9,"Social Security Number",,FALSE,"Patient","Patient-Confidential","CoC",,,,,FALSE,TRUE,TRUE
@@ -434,14 +437,12 @@
 "followUpContactNost",2392,4664,4723,"left"," ","text",60,"Follow-Up Contact--No&St",,FALSE,"Tumor","Patient-Confidential","SEER",1997,,,,FALSE,TRUE,TRUE
 "followUpContactSuppl",2393,4724,4783,"left"," ","text",60,"Follow-Up Contact--Suppl",,FALSE,"Tumor","Patient-Confidential","SEER",2003,10,,,FALSE,TRUE,TRUE
 "followUpContactName",2394,4604,4663,"left"," ","text",60,"Follow-Up Contact--Name",,FALSE,"Tumor","Patient-Confidential","SEER",1997,,,,FALSE,TRUE,TRUE
-"reserved15",2400,1739,1739,"left"," ","text",1,"Reserved 15",,FALSE,"Tumor","Stage/Prognostic Factors",,2011,,,,TRUE,TRUE,TRUE
 "institutionReferredFrom",2410,4935,4944,"right","0","text",10,"Institution Referred From",,FALSE,"Tumor","Hospital-Confidential","CoC",,,,,FALSE,TRUE,TRUE
 "npiInstReferredFrom",2415,4925,4934,"left"," ","digits",10,"NPI--Inst Referred From",,FALSE,"Tumor","Hospital-Confidential","CMS",2007,,,,FALSE,TRUE,TRUE
 "institutionReferredTo",2420,4955,4964,"right","0","text",10,"Institution Referred To",,FALSE,"Tumor","Hospital-Confidential","CoC",,,,,FALSE,TRUE,TRUE
 "npiInstReferredTo",2425,4945,4954,"left"," ","digits",10,"NPI--Inst Referred To",,FALSE,"Tumor","Hospital-Confidential","CMS",2007,,,,FALSE,TRUE,TRUE
 "followingRegistry",2440,4915,4924,"right","0","digits",10,"Following Registry",,FALSE,"Tumor","Hospital-Confidential","CoC",,,,,FALSE,TRUE,TRUE
 "npiFollowingRegistry",2445,4905,4914,"left"," ","digits",10,"NPI--Following Registry",,FALSE,"Tumor","Hospital-Confidential","CMS",2007,,,,FALSE,TRUE,TRUE
-"reserved16",2450,138,149,"left"," ","text",12,"Reserved 16",,FALSE,"Tumor","Demographic",,2011,,,,TRUE,TRUE,TRUE
 "physicianManaging",2460,5025,5032,"left"," ","text",8,"Physician--Managing",,FALSE,"Tumor","Other-Confidential","NAACCR",,,,,FALSE,TRUE,TRUE
 "npiPhysicianManaging",2465,5015,5024,"left"," ","digits",10,"NPI--Physician--Managing",,FALSE,"Tumor","Other-Confidential","CMS",2007,,,,FALSE,TRUE,TRUE
 "physicianFollowUp",2470,5043,5050,"left"," ","text",8,"Physician--Follow-Up",,FALSE,"Tumor","Other-Confidential","CoC",,,,,FALSE,TRUE,TRUE
@@ -453,7 +454,6 @@
 "physician4",2500,5097,5104,"left"," ","text",8,"Physician 4",,FALSE,"Tumor","Other-Confidential","CoC",,,,,FALSE,TRUE,TRUE
 "npiPhysician4",2505,5087,5096,"left"," ","digits",10,"NPI--Physician 4",,FALSE,"Tumor","Other-Confidential","CMS",2007,,,,FALSE,TRUE,TRUE
 "ehrReporting",2508,5105,6104,"left"," ","text",1000,"EHR Reporting",,FALSE,"Tumor","Other-Confidential","NAACCR",2018,18,,,FALSE,TRUE,TRUE
-"reserved12",2510,6105,6154,"left"," ","text",50,"Reserved 12",,FALSE,"Tumor","Other-Confidential",,2011,,,,FALSE,TRUE,TRUE
 "textDxProcPe",2520,6935,7934,"left"," ","text",1000,"Text--DX Proc--PE",,TRUE,"Tumor","Text-Diagnosis","NPCR",,,,,FALSE,FALSE,TRUE
 "textDxProcXRayScan",2530,7935,8934,"left"," ","text",1000,"Text--DX Proc--X-ray/Scan",,TRUE,"Tumor","Text-Diagnosis","NPCR",,,,,FALSE,FALSE,TRUE
 "textDxProcScopes",2540,8935,9934,"left"," ","text",1000,"Text--DX Proc--Scopes",,TRUE,"Tumor","Text-Diagnosis","NPCR",,,,,FALSE,FALSE,TRUE
@@ -659,7 +659,7 @@
 "extranodalExtensionPath",3833,1923,1923,"left"," ","digits",1,"Extranodal Extension Path (non-Head and Neck)",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "extravascularMatrixPatterns",3834,1876,1876,"left"," ","digits",1,"Extravascular Matrix Patterns",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "fibrosisScore",3835,1862,1862,"left"," ","digits",1,"Fibrosis Score",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
-"figoStage",3836,1816,1817,"left"," ","digits",2,"FIGO Stage",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
+"figoStage",3836,1816,1817,"left"," ","text",5,"FIGO Stage",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "gestationalTrophoblasticPxIndex",3837,1924,1925,"left"," ","text",2,"Gestational Trophoblastic Prognostic Scoring Index",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "gleasonPatternsClinical",3838,1927,1928,"left"," ","text",2,"Gleason Patterns Clinical",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "gleasonPatternsPathological",3839,1929,1930,"left"," ","text",2,"Gleason Patterns Pathological",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
@@ -668,7 +668,7 @@
 "gleasonTertiaryPattern",3842,1935,1936,"left"," ","text",2,"Gleason Tertiary Pattern",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "gradeClinical",3843,1286,1286,"left"," ","text",1,"Grade Clinical",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "gradePathological",3844,1287,1287,"left"," ","text",1,"Grade Pathological",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
-"gradePostTherapy",3845,1288,1288,"left"," ","text",1,"Grade Post Therapy",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
+"gradePostTherapy",3845,1288,1288,"left"," ","text",1,"Grade Post Therapy Path (yp)",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "hcgPostOrchiectomyLabValue",3846,1975,1981,"right"," ","text",7,"hCG Post-Orchiectomy Lab Value",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "hcgPostOrchiectomyRange",3847,1982,1982,"left"," ","digits",1,"hCG Post-Orchiectomy Range",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "hcgPreOrchiectomyLabValue",3848,1967,1973,"right"," ","text",7,"hCG Pre-Orchiectomy Lab Value",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
@@ -692,7 +692,7 @@
 "kras",3866,1800,1800,"left"," ","digits",1,"KRAS",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "ldhPostOrchiectomyRange",3867,1984,1984,"left"," ","digits",1,"LDH Post-Orchiectomy Range",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "ldhPreOrchiectomyRange",3868,1983,1983,"left"," ","digits",1,"LDH Pre-Orchiectomy Range",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
-"ldhPretreatmentLevel",3869,1916,1916,"left"," ","digits",1,"LDH Pretreatment Level",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",,,,,TRUE,TRUE,TRUE
+"ldhPretreatmentLevel",3869,1916,1916,"left"," ","digits",1,"LDH Level",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",,,,,TRUE,TRUE,TRUE
 "ldhUpperLimitsOfNormal",3870,1895,1897,"left"," ","text",3,"LDH Upper Limits of Normal",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "lnAssessMethodFemoralInguinal",3871,1992,1992,"left"," ","digits",1,"LN Assessment Method Femoral-Inguinal",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "lnAssessMethodParaaortic",3872,1987,1987,"left"," ","digits",1,"LN Assessment Method Para-Aortic",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
@@ -741,7 +741,7 @@
 "progesteroneRecepTotalAllredScor",3916,1787,1788,"left"," ","text",2,"Progesterone Receptor Total Allred Score",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "primarySclerosingCholangitis",3917,1831,1831,"left"," ","digits",1,"Primary Sclerosing Cholangitis",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "profoundImmuneSuppression",3918,1907,1907,"left"," ","digits",1,"Profound Immune Suppression",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
-"prostatePathologicalExtension",3919,1941,1943,"left"," ","text",3,"Prostate Pathological Extension",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
+"prostatePathologicalExtension",3919,1941,1943,"left"," ","text",3,"EOD Prostate Pathologic Extension",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "psaLabValue",3920,1944,1948,"right"," ","text",5,"PSA (Prostatic Specific Antigen) Lab Value",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "residualTumVolPostCytoreduction",3921,1920,1921,"left"," ","digits",2,"Residual Tumor Volume Post Cytoreduction",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "responseToNeoadjuvantTherapy",3922,1751,1751,"left"," ","digits",1,"Response to Neoadjuvant Therapy",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
@@ -754,12 +754,21 @@
 "separateTumorNodules",3929,1866,1866,"left"," ","digits",1,"Separate Tumor Nodules",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "serumAlbuminPretreatmentLevel",3930,1917,1917,"left"," ","digits",1,"Serum Albumin Pretreatment Level",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "serumBeta2MicroglobulinPretxLvl",3931,1918,1918,"left"," ","digits",1,"Serum Beta-2 Microglobulin Pretreatment Level",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
-"ldhPretreatmentLabValue",3932,1898,1904,"right"," ","text",7,"LDH Pretreatment Lab Value",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
+"ldhPretreatmentLabValue",3932,1898,1904,"right"," ","text",7,"LDH Lab Value",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "thrombocytopenia",3933,1914,1914,"left"," ","digits",1,"Thrombocytopenia",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",,,,,TRUE,TRUE,TRUE
 "tumorDeposits",3934,1803,1804,"left"," ","text",2,"Tumor Deposits",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "tumorGrowthPattern",3935,1832,1832,"left"," ","digits",1,"Tumor Growth Pattern",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "ulceration",3936,1905,1905,"left"," ","digits",1,"Ulceration",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
 "visceralParietalPleuralInvasion",3937,1867,1867,"left"," ","digits",1,"Visceral and Parietal Pleural Invasion",,FALSE,"Tumor","Stage/Prognostic Factors","NAACCR",2018,18,,,TRUE,TRUE,TRUE
+"alkRearrangement",3938,,,"left"," ","text",1,"ALK Rearrangement",,FALSE,"Tumor","Stage/Prognostic Factors",,,,,,TRUE,TRUE,TRUE
+"egfrMutationalAnalysis",3939,,,"left"," ","text",1,"EGFR Mutational Analysis",,FALSE,"Tumor","Stage/Prognostic Factors",,,,,,TRUE,TRUE,TRUE
+"brafMutationalAnalysis",3940,,,"left"," ","text",1,"BRAF Mutational Analysis",,FALSE,"Tumor","Stage/Prognostic Factors",,,,,,TRUE,TRUE,TRUE
+"nrasMutationalAnalysis",3941,,,"left"," ","text",1,"NRAS Mutational Analysis",,FALSE,"Tumor","Stage/Prognostic Factors",,,,,,TRUE,TRUE,TRUE
+"ca199PretxLabValue",3942,,,"left"," ","text",6,"CA 19-9 PreTX Lab Value",,FALSE,"Tumor","Stage/Prognostic Factors",,,,,,TRUE,TRUE,TRUE
+"ncdbSarsCov2Test",3943,,,"left"," ","digits",1,"NCDB--SARSCoV2--Test",,FALSE,"Patient","Special Use",,,,,,TRUE,TRUE,TRUE
+"ncdbSarsCov2Pos",3944,,,"left"," ","digits",1,"NCDB--SARSCoV2--Pos",,FALSE,"Patient","Special Use",,,,,,TRUE,TRUE,TRUE
+"ncdbSarsCov2PosDate",3945,,,"left"," ","date",8,"NCDB--SARSCoV2--Pos Date",,FALSE,"Patient","Special Use",,,,,,TRUE,TRUE,TRUE
+"ncdbCovid19TxImpact",3946,,,"left"," ","digits",1,"NCDB--COVID19--Tx Impact",,FALSE,"Tumor","Special Use",,,,,,TRUE,TRUE,TRUE
 "pathReportingFacId1",7010,6155,6179,"left"," ","text",25,"Path Reporting Fac ID 1",,FALSE,"Tumor","Pathology","HL7",2010,12,,,FALSE,FALSE,TRUE
 "pathReportingFacId2",7011,6261,6285,"left"," ","text",25,"Path Reporting Fac ID 2",,FALSE,"Tumor","Pathology","HL7",,,,,FALSE,FALSE,TRUE
 "pathReportingFacId3",7012,6367,6391,"left"," ","text",25,"Path Reporting Fac ID 3",,FALSE,"Tumor","Pathology","HL7",2010,12,,,FALSE,FALSE,TRUE

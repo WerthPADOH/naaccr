@@ -175,7 +175,7 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
       return(as.character(x))
     }
   }
-  width <- field_def[["end_col"]] - field_def[["start_col"]] + 1L
+  width <- field_def[["width"]]
   codes <- switch(as.character(field_def[["type"]]),
     factor = naaccr_unfactor(x, field),
     sentineled_integer = naaccr_unsentinel(x, flag, field, width, "integer"),
@@ -191,28 +191,30 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
     as.character(x)
   )
   codes <- as.character(codes)
-  too_wide <- stri_width(codes) > width
-  if (any(too_wide, na.rm = TRUE)) {
-    codes[too_wide] <- ""
-    warning(
-      sum(too_wide), " values of '", field,
-      "' field were too wide and set to blanks"
-    )
+  if (!is.na(width)) {
+    too_wide <- stri_width(codes) > width
+    if (any(too_wide, na.rm = TRUE)) {
+      codes[too_wide] <- ""
+      warning(
+        sum(too_wide), " values of '", field,
+        "' field were too wide and set to blanks"
+      )
+    }
+    is_missing <- is.na(codes) | !nzchar(trimws(codes))
+    if (!is.na(field_def[["alignment"]])) {
+      pad_side <- switch(as.character(field_def[["alignment"]]),
+        left = "right",
+        right = "left"
+      )
+      codes[!is_missing] <- stri_pad(
+        str = codes[!is_missing],
+        width = width,
+        side = pad_side,
+        pad = field_def[["padding"]]
+      )
+    }
+    codes[is_missing] <- stri_dup(" ", width)
   }
-  is_missing <- is.na(codes) | !nzchar(trimws(codes))
-  if (!is.na(field_def[["alignment"]])) {
-    pad_side <- switch(as.character(field_def[["alignment"]]),
-      left = "right",
-      right = "left"
-    )
-    codes[!is_missing] <- stri_pad(
-      str = codes[!is_missing],
-      width = width,
-      side = pad_side,
-      pad = field_def[["padding"]]
-    )
-  }
-  codes[is_missing] <- stri_dup(" ", width)
   codes
 }
 
@@ -275,7 +277,7 @@ encode_records <- function(records, format) {
 #' @noRd
 prepare_writing_format <- function(format, fields) {
   type <- NULL # Avoid unmatched variable name warning in R Check
-  fmt <- format[
+  format[
     list(name = fields),
     on = "name",
     nomatch = 0L
@@ -283,12 +285,6 @@ prepare_writing_format <- function(format, fields) {
     ,
     type := as.character(type)
   ]
-  set(
-    fmt,
-    j = "width",
-    value = fmt[["end_col"]] - fmt[["start_col"]] + 1L
-  )
-  fmt
 }
 
 

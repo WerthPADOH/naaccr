@@ -185,7 +185,7 @@ test_that("write_naaccr_xml handles custom fields without column info", {
     name = "blah",
     item = 9999,
     start_col = NA,
-    end_col = NA,
+    width = NA,
     type = "integer",
     alignment = "left",
     padding = "0",
