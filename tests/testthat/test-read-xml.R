@@ -24,3 +24,18 @@ test_that("Same results for plain records from XML and fixed-width files", {
     records_plain_fwf[, names(records_plain)]
   )
 })
+
+test_that("read_naaccr_xml works with XML data kept in a character vector", {
+  xml_lines <- readLines("../data/synthetic-naaccr-18-incidence.xml")
+  xml_blob <- paste0(xml_lines, collapse = "\n")
+
+  plain_from_char <- read_naaccr_xml_plain(xml_lines, as_text = TRUE)
+  expect_identical(records_plain, plain_from_char)
+  plain_from_blob <- read_naaccr_xml_plain(xml_blob, as_text = TRUE)
+  expect_identical(records_plain, plain_from_blob)
+
+  processed_from_char <- read_naaccr_xml(xml_lines, as_text = TRUE)
+  expect_identical(records_processed, processed_from_char)
+  processed_from_blob <- read_naaccr_xml(xml_blob, as_text = TRUE)
+  expect_identical(records_processed, processed_from_blob)
+})

@@ -316,9 +316,11 @@ read_naaccr_xml_plain <- function(input,
                                   keep_fields = NULL,
                                   as_text = FALSE,
                                   encoding = getOption("encoding")) {
-  tree <- xmlInternalTreeParse(
-    file = input, ignoreBlanks = FALSE, asText = as_text, encoding = encoding
-  )
+  if (inherits(input, "connection")) {
+    input <- readLines(input, encoding = encoding)
+    as_text <- TRUE
+  }
+  tree <- xmlInternalTreeParse(input, ignoreBlanks = FALSE, asText = as_text)
   on.exit(free(tree), add = TRUE)
   registry_nodes <- getNodeSet(tree, "//ns:NaaccrData", namespaces = "ns")
   registry_tables <- lapply(
