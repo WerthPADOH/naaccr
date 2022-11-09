@@ -409,10 +409,28 @@ choose_naaccr_format <- function(version = NULL, format = NULL, keep_fields = NU
     stop("Specify 'version' or 'format', not both")
   }
   if (!is.null(version)) {
-    key_data <- list(version = as.integer(version))
-    fmt <- naaccr_format[key_data, on = "version"]
+    version <- formatC(version, format = "d")
+    fmt <- switch (version,
+      "12" = naaccr_format_12,
+      "13" = naaccr_format_13,
+      "14" = naaccr_format_14,
+      "15" = naaccr_format_15,
+      "16" = naaccr_format_16,
+      "18" = naaccr_format_18,
+      "21" = naaccr_format_21,
+      "22" = naaccr_format_22,
+      "23" = naaccr_format_23,
+      NULL
+    )
+    if (is.null(fmt)) {
+      valid_versions <- formatC(unique(naaccr_format[["version"]]), format = "d")
+      stop(
+        "version must be a valid NAACCR format version number from: ",
+        paste0(valid_versions, collapse = ", ")
+      )
+    }
   } else {
-    fmt <- format
+    fmt <- as.record_format(format)
   }
   if (!is.null(keep_fields)) {
     fmt <- fmt[list(name = as.character(keep_fields)), on = "name"]
