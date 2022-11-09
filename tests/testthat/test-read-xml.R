@@ -7,7 +7,7 @@ context("Read XML")
 
 
 records_plain <- read_naaccr_xml_plain("../data/synthetic-naaccr-18-incidence.xml")
-records_processed <- read_naaccr_xml("../data/synthetic-naaccr-18-incidence.xml")
+records_processed <- read_naaccr_xml("../data/synthetic-naaccr-18-incidence.xml", version = 18)
 records_plain_fwf <- read_naaccr_plain("../data/synthetic-naaccr-18-incidence.txt", version = 18)
 records_processed_fwf <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt", version = 18)
 
