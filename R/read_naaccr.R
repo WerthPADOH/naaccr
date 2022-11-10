@@ -316,11 +316,14 @@ make_registry_table <- function(registry, keep_fields) {
 }
 
 
-#' @importFrom XML xmlInternalTreeParse free getNodeSet
+#' @importFrom XML xmlInternalTreeParse free getNodeSet xmlAttrs
+#' @importFrom stringi stri_detect_regex stri_extract_first_regex
 #' @import data.table
 #' @rdname read_naaccr
 #' @export
 read_naaccr_xml_plain <- function(input,
+                                  version = NULL,
+                                  format = NULL,
                                   keep_fields = NULL,
                                   as_text = FALSE,
                                   encoding = getOption("encoding")) {
@@ -335,10 +338,52 @@ read_naaccr_xml_plain <- function(input,
     registry_nodes, make_registry_table, keep_fields = keep_fields
   )
   records <- rbindlist(registry_tables, use.names = TRUE, fill = TRUE)
-  if (!is.null(keep_fields)) {
-    # Preserve order of keep_fields
-    kept <- match(names(records), keep_fields)
-    records <- records[, keep_fields[sort(kept)], with = FALSE]
+  # NAACCR XML files must include the standard dictionary used.
+  # If the records don't already have a "naaccrRecordVersion" field, set it
+  # based on what the user chooses for `version` or `format`.
+  # If neither is given, use what the file says.
+  use_ver_num <- is.null(version) && is.null(format)
+  ver_num <- NULL
+  if (use_ver_num) {
+    top_attrs <- xmlAttrs(registry_nodes[[1L]])
+    base_dict <- top_attrs[["baseDictionaryUri"]]
+    dict_pattern <- "^http://naaccr.org/naaccrxml/naaccr-dictionary-(\\d{3}).xml$"
+    ver_num <- stri_match_first_regex(base_dict, dict_pattern)[[2L]]
+    if (is.na(ver_num) || !(ver_num %in% names(naaccr_formats))) {
+      warning(paste('The base dictionary specified is not recognized:', base_dict))
+      ver_num <- max(names(naaccr_formats))
+    }
+    fmt <- choose_naaccr_format(version = ver_num, keep_fields = keep_fields)
+  } else if (!is.null(version)) {
+    fmt <- choose_naaccr_format(version = version, keep_fields = keep_fields)
+    ver_num <- formatC(as.integer(version), format = "d")
+  } else if (!is.null(format)) {
+    # See if the format is equivalent to an official one
+    for (official_num in rev(names(naaccr_formats))) {
+      official <- naaccr_formats[[official_num]]
+      same_values <- isTRUE(all.equal(fmt, official, check.attributes = FALSE))
+      same_names <- identical(names(fmt), names(official))
+      if (same_values && same_names) {
+        format <- official
+        ver_num <- official_num
+        break
+      }
+    }
+    fmt <- choose_naaccr_format(format = format, keep_fields = keep_fields)
+  } else{
+    fmt <- choose_naaccr_format(version, format, keep_fields = keep_fields)
+  }
+  if (is.null(keep_fields)) {
+    keep_fields <- fmt[["name"]]
+  }
+  missing_fields <- setdiff(keep_fields, names(records))
+  if (length(missing_fields) > 0L) {
+    set(records, j = missing_fields, value = "")
+  }
+  setcolorder(records, keep_fields)
+  if (!is.null(ver_num) && "naaccrRecordVersion" %in% keep_fields) {
+    need_ver_num <- which(!nzchar(records[["naaccrRecordVersion"]]))
+    set(records, i = need_ver_num, j = "naaccrRecordVersion", value = ver_num)
   }
   setDF(records)
   records
@@ -361,6 +406,14 @@ read_naaccr_xml <- function(input,
     as_text = as_text,
     encoding = encoding
   )
+  ver_nums <- unique(records[["naaccrRecordVersion"]])
+  ver_nums <- ver_nums[!is.na(ver_nums)]
+  if (is.null(version) && is.null(format) && length(ver_nums) > 0L) {
+    if (length(ver_nums) > 1L) {
+      warning("Multiple NAACCR versions specified in records. Using most recent.")
+    }
+    version <- max(ver_nums)
+  }
   as.naaccr_record(
     x = records,
     keep_unknown = keep_unknown,

@@ -412,6 +412,14 @@ write_naaccr_xml <- function(records,
     con <- file(con, "w", encoding = encoding)
     on.exit(try(close(con)), add = TRUE)
   }
+  ver_nums <- unique(records[["naaccrRecordVersion"]])
+  ver_nums <- ver_nums[!is.na(ver_nums)]
+  if (is.null(version) && is.null(format) && length(ver_nums) > 0L) {
+    if (length(ver_nums) > 1L) {
+      warning("Multiple NAACCR versions specified in records. Using most recent.")
+    }
+    version <- max(ver_nums)
+  }
   write_format <- choose_naaccr_format(version = version, format = format)
   write_format <- prepare_writing_format(write_format, names(records))
   # Determine XML namespace from given format or version
@@ -429,8 +437,9 @@ write_naaccr_xml <- function(records,
       }
     }
     if (!is.null(version)) {
-      base_dictionary <- sprintf(
-        "http://naaccr.org/naaccrxml/naaccr-dictionary-%2d0.xml", version
+      if (nchar(version) == 2L) version <- paste0(version, "0")
+      base_dictionary <- paste0(
+        "http://naaccr.org/naaccrxml/naaccr-dictionary-", version, ".xml"
       )
     }
   }
