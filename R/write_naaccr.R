@@ -239,7 +239,7 @@ encode_records <- function(records, format) {
       )
     }
   }
-  is_sentinel <- startsWith(format[["type"]], "sentineled")
+  is_sentinel <- format[["type"]] %in% c("sentineled_integer", "sentineled_numeric")
   sent_cols <- format[["name"]][is_sentinel]
   flag_cols <- paste0(sent_cols, "Flag")
   non_sent_cols <- format[["name"]][!is_sentinel]
