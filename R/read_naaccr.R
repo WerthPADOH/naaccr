@@ -87,6 +87,10 @@ split_fields <- function(record_lines,
 #' This is useful if the values will be passed to other software that expects
 #' the plain NAACCR values.
 #'
+#' For \code{read_naaccr_plain} and \code{read_naaccr}, if the \code{version}
+#' and \code{format} arguments are left \code{NULL}, the default format is
+#' version 18. This was the last format to be used for fixed-width files.
+#'
 #' @param input Either a string with a file name (containing no \code{\\n}
 #'   character), a \code{\link[base]{connection}} object, or the text records
 #'   themselves as a character vector.
@@ -162,6 +166,10 @@ read_naaccr_plain <- function(input,
       if (isOpen(input)) close(input),
       add = TRUE
     )
+  }
+  # The default format version is 18, the last one that supported fixed-width
+  if (is.null(version) && is.null(format)) {
+    format <- naaccr_format_18
   }
   format <- choose_naaccr_format(
     version = version, format = format, keep_fields = keep_fields

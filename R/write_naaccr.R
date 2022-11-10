@@ -306,7 +306,11 @@ prepare_writing_format <- function(format, fields) {
 #' @export
 write_naaccr <- function(records, con, version = NULL, format = NULL, encoding = "UTF-8") {
   records <- if (is.data.table(records)) copy(records) else as.data.table(records)
-  write_format <- choose_naaccr_format(version = version, format = format)
+  write_format <- if (is.null(version) && is.null(format)) {
+    naaccr_format_18
+  } else {
+    choose_naaccr_format(version = version, format = format)
+  }
   write_format <- prepare_writing_format(write_format, names(records))
   setorderv(write_format, "start_col")
   line_length <- max(write_format[["end_col"]])
