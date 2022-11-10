@@ -413,8 +413,8 @@ write_naaccr_xml <- function(records,
   # Determine XML namespace from given format or version
   if (is.null(base_dictionary)) {
     if (!is.null(format)) {
-      for (v in sort(unique(naaccr_format[["version"]]), decreasing = TRUE)) {
-        vfmt <- as.record_format(naaccr_format[list(version = v), on = "version"])
+      for (v in sort(names(naaccr_formats), decreasing = TRUE)) {
+        vfmt <- naaccr_formats[[v]]
         setDT(vfmt)
         format <- as.data.table(format)
         same_fmt <- setequal(vfmt[["item"]], format[["item"]])

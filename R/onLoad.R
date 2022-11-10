@@ -4,10 +4,19 @@
 #' @importFrom utils assignInMyNamespace
 #' @noRd
 .onLoad <- function(libname, pkgname) {
-  ver_fmts <- sprintf("naaccr_format_%2d", unique(naaccr_format[["version"]]))
-  pkg_ns <- topenv()
-  for (name in ver_fmts) {
-    fmt <- get(name, envir = pkg_ns)
-    assignInMyNamespace(name, as.record_format(fmt))
+  new_formats <- vector("list", length(naaccr_formats))
+  names(new_formats) <- names(naaccr_formats)
+  ver_fmts <- names(naaccr_formats)
+  format_names <- paste0("naaccr_format_", ver_fmts)
+  format_names[nchar(ver_fmts) != 2L] <- NA
+  for (ii in seq_along(ver_fmts)) {
+    ver_num <- ver_fmts[[ii]]
+    fmt <- naaccr_formats[[ver_num]]
+    fmt <- as.record_format(fmt)
+    new_formats[[ver_num]] <- fmt
+    if (!is.na(format_names[ii])) {
+      assignInMyNamespace(format_names[ii], fmt)
+    }
   }
+  assignInMyNamespace("naaccr_formats", new_formats)
 }

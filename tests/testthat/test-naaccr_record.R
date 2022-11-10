@@ -343,3 +343,14 @@ test_that("read_naaccr reads empty files into a 0-row tabel with all columns", {
   expect_is(processed[["secondaryDiagnosis1"]] ,"character")
   expect_is(processed[["latitude"]], "numeric")
 })
+
+test_that("The standard formats can be fetched by two- or three-digit names", {
+  two_digit <- grep("^\\d{2}$", names(naaccr_formats), value = TRUE)
+  for (td in two_digit) {
+    three_digit <- paste0(td, "0")
+    expect_identical(
+      naaccr_formats[[td]], naaccr_formats[[three_digit]],
+      info = sprintf('naaccr_formats "%s" versus "%s"', td, three_digit)
+    )
+  }
+})

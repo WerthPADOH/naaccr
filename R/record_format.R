@@ -358,44 +358,50 @@ rbind.record_format <- function(..., stringsAsFactors = FALSE) {
 
 #' Field definitions from all NAACCR format versions
 #'
-#' A \code{data.table} object defining the fields for each version of NAACCR's
-#' fixed-width record file format.
+#' Each \code{naaccr_format_XX} object is a \code{data.table} defining the
+#' fields for each version of NAACCR's record file format.
+#' \code{naaccr_formats} is a list of these record formats, with each name
+#' being the two- or three-digit code for the format.
 #'
 #' @description See \code{\link{record_format}}.
 #'
-#' @rdname naaccr_format
+#' @rdname naaccr_formats
+#' @export
+"naaccr_formats"
+
+#' @rdname naaccr_formats
 #' @export
 "naaccr_format_12"
 
-#' @rdname naaccr_format
+#' @rdname naaccr_formats
 #' @export
 "naaccr_format_13"
 
-#' @rdname naaccr_format
+#' @rdname naaccr_formats
 #' @export
 "naaccr_format_14"
 
-#' @rdname naaccr_format
+#' @rdname naaccr_formats
 #' @export
 "naaccr_format_15"
 
-#' @rdname naaccr_format
+#' @rdname naaccr_formats
 #' @export
 "naaccr_format_16"
 
-#' @rdname naaccr_format
+#' @rdname naaccr_formats
 #' @export
 "naaccr_format_18"
 
-#' @rdname naaccr_format
+#' @rdname naaccr_formats
 #' @export
 "naaccr_format_21"
 
-#' @rdname naaccr_format
+#' @rdname naaccr_formats
 #' @export
 "naaccr_format_22"
 
-#' @rdname naaccr_format
+#' @rdname naaccr_formats
 #' @export
 "naaccr_format_23"
 
@@ -404,26 +410,15 @@ rbind.record_format <- function(..., stringsAsFactors = FALSE) {
 #' @noRd
 choose_naaccr_format <- function(version = NULL, format = NULL, keep_fields = NULL) {
   if (is.null(version) && is.null(format)) {
-    version <- max(naaccr_format[["version"]])
+    version <- max(names(naaccr_formats))
   } else if (!is.null(version) && !is.null(format)) {
     stop("Specify 'version' or 'format', not both")
   }
   if (!is.null(version)) {
-    version <- formatC(version, format = "d")
-    fmt <- switch (version,
-      "12" = naaccr_format_12,
-      "13" = naaccr_format_13,
-      "14" = naaccr_format_14,
-      "15" = naaccr_format_15,
-      "16" = naaccr_format_16,
-      "18" = naaccr_format_18,
-      "21" = naaccr_format_21,
-      "22" = naaccr_format_22,
-      "23" = naaccr_format_23,
-      NULL
-    )
+    version <- formatC(as.integer(version), format = "d")
+    fmt <- naaccr_formats[[version]]
     if (is.null(fmt)) {
-      valid_versions <- formatC(unique(naaccr_format[["version"]]), format = "d")
+      valid_versions <- names(naaccr_formats)
       stop(
         "version must be a valid NAACCR format version number from: ",
         paste0(valid_versions, collapse = ", ")

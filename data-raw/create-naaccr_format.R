@@ -178,14 +178,22 @@ if (nrow(overlapping)) {
 
 # Create a format data set for each version
 format_env <- new.env()
+naaccr_formats <- list()
 for (number in unique(naaccr_format[["version"]])) {
   sub_format <- naaccr_format[
     version == number,
     list(name, item, start_col, end_col, type, alignment, padding, parent, name_literal, width)
   ]
-  format_name <- sprintf("naaccr_format_%2d", number)
+  ver_string <- formatC(number, format = "d")
+  format_name <- paste0("naaccr_format_", ver_string)
   format_env[[format_name]] <- sub_format
+  naaccr_formats[[ver_string]] <- sub_format
+  if (nchar(ver_string) == 2) {
+    ver_alias <- paste0(number, "0")
+    naaccr_formats[[ver_alias]] <- sub_format
+  }
 }
+format_env[["naaccr_formats"]] <- naaccr_formats
 
 for (column in names(sub_format)) {
   if (is.factor(sub_format[[column]])) {
@@ -197,7 +205,6 @@ for (column in names(sub_format)) {
   }
 }
 
-save(naaccr_format, file = "data-raw/sys-data/naaccr_format.RData")
 save(
   list  = ls(envir = format_env),
   envir = format_env,
