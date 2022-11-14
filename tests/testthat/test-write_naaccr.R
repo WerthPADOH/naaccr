@@ -121,10 +121,11 @@ get_ids <- function(node) {
 }
 
 
-test_that("write_naaccr_xml includes all and only items in format and records", {
+test_that("write_naaccr_xml includes items iff they're in the format, records, and non-missing", {
   records <- naaccr_record(
     ageAtDiagnosis = 65,
     patientIdNumber = 999,
+    dateOfDiagnosis = "",
     recordType = "A",
     foo = "bar"
   )
@@ -149,13 +150,34 @@ test_that("write_naaccr_xml puts items under correct parent node", {
   tree <- xmlParse(xml_text, asText = TRUE)
 
   naaccr_ids <- xpathSApply(tree, "//x:NaaccrData/x:Item", get_ids, namespaces = "x")
-  expect_identical(sort(naaccr_ids), sort(item_tiers[["NaaccrData"]]))
+  expect_true(all(naaccr_ids %in% item_tiers[["NaaccrData"]]))
 
   patient_ids <- xpathSApply(tree, "//x:Patient/x:Item", get_ids, namespaces = "x")
-  expect_setequal(sort(patient_ids), sort(item_tiers[["Patient"]]))
+  expect_true(all(patient_ids %in% item_tiers[["Patient"]]))
 
   tumor_ids <- xpathSApply(tree, "//x:Tumor/x:Item", get_ids, namespaces = "x")
-  expect_setequal(sort(tumor_ids), sort(item_tiers[["Tumor"]]))
+  expect_true(all(tumor_ids %in% item_tiers[["Tumor"]]))
+})
+
+test_that("write_naaccr_xml removes leading and trailing white space", {
+  records <- naaccr_record(
+    ageAtDiagnosis = c(" 65", " 3 ", "100"),
+    dateOfDiagnosis = c("2015    ", "201502  ", "20150530"),
+    textRemarks = c(" left", "right ", " both ")
+  )
+  expected_xml_values <- data.frame(
+    ageAtDiagnosis = c("065", "003", "100"),
+    dateOfDiagnosis = c("2015", "201502", "20150530"),
+    textRemarks = c("left", "right", "both"),
+    stringsAsFactors = FALSE
+  )
+  xml_text <- write_naaccr_xml_to_vector(records, version = 18)
+  tree <- xmlParse(xml_text, asText = TRUE)
+  for (column in names(records)) {
+    xpath <- paste0('//x:Tumor/x:Item[@naaccrId="', column, '"]')
+    xml_values <- xpathSApply(tree, xpath, xmlValue, namespaces = "x")
+    expect_identical(xml_values, expected_xml_values[[column]], label = column)
+  }
 })
 
 test_that("write_naaccr_xml handles custom fields without column info", {
@@ -163,7 +185,7 @@ test_that("write_naaccr_xml handles custom fields without column info", {
     name = "blah",
     item = 9999,
     start_col = NA,
-    end_col = NA,
+    width = NA,
     type = "integer",
     alignment = "left",
     padding = "0",
@@ -172,4 +194,22 @@ test_that("write_naaccr_xml handles custom fields without column info", {
   )
   recs <- data.frame(blah = 1:4)
   expect_silent(write_naaccr_xml_to_vector(recs, format = rf))
+})
+
+test_that("Special characters are escaped in XML output", {
+  records <- naaccr_record(
+    textRemarks = c("<", ">", "&", "'", '"', "a>b&cd\"e<fg'h", "untouched")
+  )
+  xml_text <- write_naaccr_xml_to_vector(records, version = 18)
+  result <- unlist(stri_extract_all_regex(
+    xml_text, '(?<=<Item naaccrId="textRemarks">).*?(?=</Item>)',
+    omit_no_match = TRUE
+  ))
+  expect_identical(
+    result,
+    c(
+      "&lt;", "&gt;", "&amp;", "&apos;", "&quot;",
+      "a&gt;b&amp;cd&quot;e&lt;fg&apos;h", "untouched"
+    )
+  )
 })

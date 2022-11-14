@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"0","lymphocytosis",FALSE,"Lymphocytosis"
+"1","lymphocytosis and adenopathy",FALSE,"Lymphocytosis and Adenopathy"
+"2","lymphocytosis and organomegaly",FALSE,"Lymphocytosis and Organomegaly"
+"3","lymphocytosis and anemia",FALSE,"Lymphocytosis and Anemia"
+"4","lymphocytosis and thrombocytopenia",FALSE,"Lymphocytosis and Thrombocytopenia"
+"8","not applicable",TRUE,"Does not apply, primary site not bone marrow (C421)"
+"9","unknown",TRUE,"Unknown"

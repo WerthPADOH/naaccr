@@ -56,13 +56,13 @@ type_converters <- rbindlist(list(
 #' @param name Item name appropriate for a \code{data.frame} column name.
 #' @param item NAACCR item number.
 #' @param start_col First column of the field in a fixed-width record.
-#' @param end_col Last column of the field in a fixed-width record.
+#' @param end_col *Deprecated: Use the \code{width} parameter instead.*
+#'   Last column of the field in a fixed-width record.
 #' @param type Name of the column class.
 #' @param alignment Alignment of the field in fixed-width files. Either
 #'   \code{"left"} (default) or \code{"right"}.
 #' @param padding Single-character strings to use for padding in fixed-width
 #'   files.
-#' @param name_literal (Optional) Item name in plain language.
 #' @param parent Name of the parent node to include this field under when
 #'   writing to an XML file.
 #'   Values can be \code{"NaaccrData"}, \code{"Patient"}, \code{"Tumor"}, or
@@ -82,6 +82,8 @@ type_converters <- rbindlist(list(
 #'   The value can also be the name of a function to retrieve with
 #'   \code{\link[methods:methodUtilities]{getFunction}}.
 #'   See Details.
+#' @param name_literal (Optional) Item name in plain language.
+#' @param width (Optional) Item width in characters.
 #' @param x Object to be coerced to a \code{record_format}, usually a
 #'   \code{data.frame} or \code{list}.
 #' @param ... Other arguments passed to \code{record_format}.
@@ -103,7 +105,7 @@ type_converters <- rbindlist(list(
 #'     \item{\code{end_col}}{
 #'       (\code{integer}) Last column of the field in a fixed-width text file.
 #'       If \code{NA}, the field will not be read from or written to fixed-width
-#'       files. They will included in XML files.
+#'       files. This is the norm for fields only found in XML formats.
 #'     }
 #'     \item{\code{type}}{
 #'       (\code{factor}) R class for the column vector.
@@ -116,9 +118,6 @@ type_converters <- rbindlist(list(
 #'       (\code{character}) String used for padding field values in a
 #'       fixed-width text file.
 #'     }
-#'     \item{\code{name_literal}}{
-#'       (\code{character}) Field name in plain language.
-#'     }
 #'     \item{\code{parent}}{
 #'       (\code{factor}) Parent XML node for the field.
 #'     }
@@ -129,6 +128,13 @@ type_converters <- rbindlist(list(
 #'     \item{\code{unknown_finder}}{
 #'       (\code{list} of \code{function} objects) Function to detect codes
 #'       meaning the actual values are missing or unknown for the field.
+#'     }
+#'     \item{\code{name_literal}}{
+#'       (\code{character}) Field name in plain language.
+#'     }
+#'     \item{\code{width}}{
+#'       (\code{integer}) Character width of the field values.
+#'       Mostly meant for reading and writing flat files.
 #'     }
 #'   }
 #'
@@ -249,7 +255,11 @@ record_format <- function(name,
                           parent = "Tumor",
                           cleaner = list(NULL),
                           unknown_finder = list(NULL),
-                          name_literal = NA_character_) {
+                          name_literal = NA_character_,
+                          width = NA_integer_) {
+  if (!identical(end_col, NA_integer_) && identical(width, NA_integer_)) {
+    warning("end_col is deprecated. Use the width paramter instead.")
+  }
   if (is.function(cleaner)) {
     cleaner <- list(cleaner)
   } else if (is.atomic(cleaner)) {
@@ -271,6 +281,7 @@ record_format <- function(name,
     cleaner <- cleaner[0L]
     unknown_finder <- unknown_finder[0L]
     name_literal <- name_literal[0L]
+    width <- width[0L]
   }
   padding   <- as.character(padding)
   padding_width <- nchar(padding)
@@ -294,8 +305,15 @@ record_format <- function(name,
     parent = factor(parent, parent_nodes),
     cleaner = as.list(cleaner),
     unknown_finder = as.list(unknown_finder),
-    name_literal = as.character(name_literal)
+    name_literal = as.character(name_literal),
+    width = as.integer(width)
   )
+  inferred_ends <- fmt[["start_col"]] + fmt[["width"]] - 1L
+  if (any(fmt[["end_col"]] != inferred_ends, na.rm = TRUE)) {
+    warning("Some end_col values have been replaced using start_col and width.")
+  }
+  # Replace mismatched values and NA
+  fmt[["end_col"]] <- inferred_ends
   if (anyNA(fmt[["alignment"]])) {
     stop("'alignment' must only contain values of \"left\" or \"right\"")
   }
@@ -320,8 +338,11 @@ as.record_format <- function(x, ...) {
   }
   xlist <- as.list(x)
   xlist <- utils::modifyList(xlist, list(...), keep.null = TRUE)
+  if (all(c("width", "end_col") %in% names(xlist))) {
+    xlist[["end_col"]] <- NULL
+  }
   call_args <- args(record_format)
-  arg_names <- names(as.list(call_args))
+  arg_names <- intersect(names(xlist), names(as.list(call_args)))
   arg_names <- arg_names[nzchar(arg_names)]
   do.call(record_format, xlist[arg_names])
 }
@@ -329,56 +350,82 @@ as.record_format <- function(x, ...) {
 
 #' @noRd
 rbind.record_format <- function(..., stringsAsFactors = FALSE) {
-  combined <- rbindlist(list(...))
+  formats <- lapply(list(...), as.record_format)
+  combined <- rbindlist(formats)
   as.record_format(combined)
 }
 
 
 #' Field definitions from all NAACCR format versions
 #'
-#' A \code{data.table} object defining the fields for each version of NAACCR's
-#' fixed-width record file format.
+#' Each \code{naaccr_format_XX} object is a \code{data.table} defining the
+#' fields for each version of NAACCR's record file format.
+#' \code{naaccr_formats} is a list of these record formats, with each name
+#' being the two- or three-digit code for the format.
 #'
 #' @description See \code{\link{record_format}}.
 #'
-#' @rdname naaccr_format
+#' @rdname naaccr_formats
+#' @export
+"naaccr_formats"
+
+#' @rdname naaccr_formats
 #' @export
 "naaccr_format_12"
 
-#' @rdname naaccr_format
+#' @rdname naaccr_formats
 #' @export
 "naaccr_format_13"
 
-#' @rdname naaccr_format
+#' @rdname naaccr_formats
 #' @export
 "naaccr_format_14"
 
-#' @rdname naaccr_format
+#' @rdname naaccr_formats
 #' @export
 "naaccr_format_15"
 
-#' @rdname naaccr_format
+#' @rdname naaccr_formats
 #' @export
 "naaccr_format_16"
 
-#' @rdname naaccr_format
+#' @rdname naaccr_formats
 #' @export
 "naaccr_format_18"
+
+#' @rdname naaccr_formats
+#' @export
+"naaccr_format_21"
+
+#' @rdname naaccr_formats
+#' @export
+"naaccr_format_22"
+
+#' @rdname naaccr_formats
+#' @export
+"naaccr_format_23"
 
 
 #' Internal function for other functions to resolve format
 #' @noRd
 choose_naaccr_format <- function(version = NULL, format = NULL, keep_fields = NULL) {
   if (is.null(version) && is.null(format)) {
-    version <- max(naaccr_format[["version"]])
+    version <- max(names(naaccr_formats))
   } else if (!is.null(version) && !is.null(format)) {
     stop("Specify 'version' or 'format', not both")
   }
   if (!is.null(version)) {
-    key_data <- list(version = as.integer(version))
-    fmt <- naaccr_format[key_data, on = "version"]
+    version <- formatC(as.integer(version), format = "d")
+    fmt <- naaccr_formats[[version]]
+    if (is.null(fmt)) {
+      valid_versions <- names(naaccr_formats)
+      stop(
+        "version must be a valid NAACCR format version number from: ",
+        paste0(valid_versions, collapse = ", ")
+      )
+    }
   } else {
-    fmt <- format
+    fmt <- as.record_format(format)
   }
   if (!is.null(keep_fields)) {
     fmt <- fmt[list(name = as.character(keep_fields)), on = "name"]

@@ -175,7 +175,7 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
       return(as.character(x))
     }
   }
-  width <- field_def[["end_col"]] - field_def[["start_col"]] + 1L
+  width <- field_def[["width"]]
   codes <- switch(as.character(field_def[["type"]]),
     factor = naaccr_unfactor(x, field),
     sentineled_integer = naaccr_unsentinel(x, flag, field, width, "integer"),
@@ -191,28 +191,30 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
     as.character(x)
   )
   codes <- as.character(codes)
-  too_wide <- stri_width(codes) > width
-  if (any(too_wide, na.rm = TRUE)) {
-    codes[too_wide] <- ""
-    warning(
-      sum(too_wide), " values of '", field,
-      "' field were too wide and set to blanks"
-    )
+  if (!is.na(width)) {
+    too_wide <- stri_width(codes) > width
+    if (any(too_wide, na.rm = TRUE)) {
+      codes[too_wide] <- ""
+      warning(
+        sum(too_wide), " values of '", field,
+        "' field were too wide and set to blanks"
+      )
+    }
+    is_missing <- is.na(codes) | !nzchar(trimws(codes))
+    if (!is.na(field_def[["alignment"]])) {
+      pad_side <- switch(as.character(field_def[["alignment"]]),
+        left = "right",
+        right = "left"
+      )
+      codes[!is_missing] <- stri_pad(
+        str = codes[!is_missing],
+        width = width,
+        side = pad_side,
+        pad = field_def[["padding"]]
+      )
+    }
+    codes[is_missing] <- stri_dup(" ", width)
   }
-  is_missing <- is.na(codes) | !nzchar(trimws(codes))
-  if (!is.na(field_def[["alignment"]])) {
-    pad_side <- switch(as.character(field_def[["alignment"]]),
-      left = "right",
-      right = "left"
-    )
-    codes[!is_missing] <- stri_pad(
-      str = codes[!is_missing],
-      width = width,
-      side = pad_side,
-      pad = field_def[["padding"]]
-    )
-  }
-  codes[is_missing] <- stri_dup(" ", width)
   codes
 }
 
@@ -237,7 +239,7 @@ encode_records <- function(records, format) {
       )
     }
   }
-  is_sentinel <- startsWith(format[["type"]], "sentineled")
+  is_sentinel <- format[["type"]] %in% c("sentineled_integer", "sentineled_numeric")
   sent_cols <- format[["name"]][is_sentinel]
   flag_cols <- paste0(sent_cols, "Flag")
   non_sent_cols <- format[["name"]][!is_sentinel]
@@ -275,7 +277,7 @@ encode_records <- function(records, format) {
 #' @noRd
 prepare_writing_format <- function(format, fields) {
   type <- NULL # Avoid unmatched variable name warning in R Check
-  fmt <- format[
+  format[
     list(name = fields),
     on = "name",
     nomatch = 0L
@@ -283,12 +285,6 @@ prepare_writing_format <- function(format, fields) {
     ,
     type := as.character(type)
   ]
-  set(
-    fmt,
-    j = "width",
-    value = fmt[["end_col"]] - fmt[["start_col"]] + 1L
-  )
-  fmt
 }
 
 
@@ -310,7 +306,11 @@ prepare_writing_format <- function(format, fields) {
 #' @export
 write_naaccr <- function(records, con, version = NULL, format = NULL, encoding = "UTF-8") {
   records <- if (is.data.table(records)) copy(records) else as.data.table(records)
-  write_format <- choose_naaccr_format(version = version, format = format)
+  write_format <- if (is.null(version) && is.null(format)) {
+    naaccr_format_18
+  } else {
+    choose_naaccr_format(version = version, format = format)
+  }
   write_format <- prepare_writing_format(write_format, names(records))
   setorderv(write_format, "start_col")
   line_length <- max(write_format[["end_col"]])
@@ -375,10 +375,13 @@ compose_items_xml <- function(dataset) {
   vapply(
     X = node_list,
     FUN = function(values) {
-      stri_join(
-        '<Item naaccrId="', names(dataset), '">', values, "</Item>",
+      non_blank <- !stri_isempty(stri_trim_both(values)) & !is.na(values)
+      nodes_text <- stri_join(
+        '<Item naaccrId="', names(dataset)[non_blank], '">', values[non_blank], "</Item>",
         collapse = ""
       )
+      if (length(nodes_text) == 0L) nodes_text <- ""
+      nodes_text
     },
     FUN.VALUE = character(1L)
   )
@@ -409,13 +412,21 @@ write_naaccr_xml <- function(records,
     con <- file(con, "w", encoding = encoding)
     on.exit(try(close(con)), add = TRUE)
   }
+  ver_nums <- unique(records[["naaccrRecordVersion"]])
+  ver_nums <- ver_nums[!is.na(ver_nums)]
+  if (is.null(version) && is.null(format) && length(ver_nums) > 0L) {
+    if (length(ver_nums) > 1L) {
+      warning("Multiple NAACCR versions specified in records. Using most recent.")
+    }
+    version <- max(ver_nums)
+  }
   write_format <- choose_naaccr_format(version = version, format = format)
   write_format <- prepare_writing_format(write_format, names(records))
   # Determine XML namespace from given format or version
   if (is.null(base_dictionary)) {
     if (!is.null(format)) {
-      for (v in sort(unique(naaccr_format[["version"]]), decreasing = TRUE)) {
-        vfmt <- as.record_format(naaccr_format[list(version = v), on = "version"])
+      for (v in sort(names(naaccr_formats), decreasing = TRUE)) {
+        vfmt <- naaccr_formats[[v]]
         setDT(vfmt)
         format <- as.data.table(format)
         same_fmt <- setequal(vfmt[["item"]], format[["item"]])
@@ -426,13 +437,23 @@ write_naaccr_xml <- function(records,
       }
     }
     if (!is.null(version)) {
-      base_dictionary <- sprintf(
-        "http://naaccr.org/naaccrxml/naaccr-dictionary-%2d0.xml", version
+      if (nchar(version) == 2L) version <- paste0(version, "0")
+      base_dictionary <- paste0(
+        "http://naaccr.org/naaccrxml/naaccr-dictionary-", version, ".xml"
       )
     }
   }
   records <- if (is.data.table(records)) copy(records) else as.data.table(records)
   records <- encode_records(records, write_format)
+  for (ii in seq_along(records)) {
+    cleaned <- stri_trim_both(records[[ii]])
+    cleaned <- stri_replace_all_fixed(cleaned, "&", "&amp;")
+    cleaned <- stri_replace_all_fixed(
+      cleaned, c("<", ">", '"', "'"), c("&lt;", "&gt;", "&quot;", "&apos;"),
+      vectorize_all = FALSE
+    )
+    set(records, j = ii, value = cleaned)
+  }
   tiered_items <- split(write_format[["name"]], write_format[["parent"]])
   time_gen <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S")
   time_gen <- paste0(substr(time_gen, 1, 22), ":", substr(time_gen, 23, 24))

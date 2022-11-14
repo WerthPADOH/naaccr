@@ -87,6 +87,10 @@ split_fields <- function(record_lines,
 #' This is useful if the values will be passed to other software that expects
 #' the plain NAACCR values.
 #'
+#' For \code{read_naaccr_plain} and \code{read_naaccr}, if the \code{version}
+#' and \code{format} arguments are left \code{NULL}, the default format is
+#' version 18. This was the last format to be used for fixed-width files.
+#'
 #' @param input Either a string with a file name (containing no \code{\\n}
 #'   character), a \code{\link[base]{connection}} object, or the text records
 #'   themselves as a character vector.
@@ -109,11 +113,13 @@ split_fields <- function(record_lines,
 #' @inheritParams naaccr_record
 #' @return
 #'   For \code{read_naaccr}, a \code{data.frame} of the records.
-#'   The columns included depend on the NAACCR record format version.
+#'   The columns included depend on the NAACCR \code{\link{record_format}} version.
 #'   Columns are atomic vectors; there are too many to describe them all.
 #'
-#'   For \code{read_naaccr_plain}, a \code{data.frame} with the columns
-#'   specified by \code{start_cols}, \code{end_cols}, and \code{col_names}.
+#'   For \code{read_naaccr_plain}, a \code{data.frame} based on the
+#'   \code{record_format} specified by either the \code{version} or
+#'   \code{format} argument.
+#'   The names of the columns will be those in the format's \code{name} column.
 #'   All columns are character vectors.
 #' @note
 #'   Some of the parameter text was shamelessly copied from the
@@ -161,15 +167,19 @@ read_naaccr_plain <- function(input,
       add = TRUE
     )
   }
+  # The default format version is 18, the last one that supported fixed-width
+  if (is.null(version) && is.null(format)) {
+    format <- naaccr_format_18
+  }
   format <- choose_naaccr_format(
     version = version, format = format, keep_fields = keep_fields
   )
   unread_fields <- !is.finite(format[["start_col"]]) |
-    !is.finite(format[["end_col"]])
+    !is.finite(format[["width"]])
   unread_format <- format[unread_fields]
   read_format <- format[!unread_fields]
   if (nrow(read_format) == 0L) {
-    stop("No fields in the format have a finite start or end column")
+    stop("No fields in the format have a finite start column and width")
   }
   # Read all record types as the longest type, padding and then truncating
   # Break the reading into chunks because of the typically large files.
@@ -184,6 +194,7 @@ read_naaccr_plain <- function(input,
   }
   index <- 0L
   rows_read <- 0L
+  end_cols <- read_format[["start_col"]] + read_format[["width"]] - 1L
   while (rows_read < nrows) {
     chunk_size <- min(buffersize, nrows - rows_read)
     record_lines <- readLines(input, n = chunk_size, encoding = encoding)
@@ -193,7 +204,7 @@ read_naaccr_plain <- function(input,
     rows_read <- rows_read + length(record_lines)
     index <- index + 1L
     line_lengths <- stringi::stri_width(record_lines)
-    record_width <- max(read_format[["end_col"]], na.rm = TRUE)
+    record_width <- max(end_cols, na.rm = TRUE)
     record_lines <- stringi::stri_pad_right(
       record_lines,
       width = record_width - line_lengths
@@ -202,7 +213,7 @@ read_naaccr_plain <- function(input,
     chunks[[index]] <- split_fields(
       record_lines = record_lines,
       start_cols   = read_format[["start_col"]],
-      end_cols     = read_format[["end_col"]],
+      end_cols     = end_cols,
       col_names    = read_format[["name"]]
     )
     if (index >= length(chunks)) {
@@ -305,27 +316,74 @@ make_registry_table <- function(registry, keep_fields) {
 }
 
 
-#' @importFrom XML xmlInternalTreeParse free getNodeSet
+#' @importFrom XML xmlInternalTreeParse free getNodeSet xmlAttrs
+#' @importFrom stringi stri_detect_regex stri_extract_first_regex
 #' @import data.table
 #' @rdname read_naaccr
 #' @export
 read_naaccr_xml_plain <- function(input,
+                                  version = NULL,
+                                  format = NULL,
                                   keep_fields = NULL,
                                   as_text = FALSE,
                                   encoding = getOption("encoding")) {
-  tree <- xmlInternalTreeParse(
-    file = input, ignoreBlanks = FALSE, asText = as_text, encoding = encoding
-  )
+  if (inherits(input, "connection")) {
+    input <- readLines(input, encoding = encoding)
+    as_text <- TRUE
+  }
+  tree <- xmlInternalTreeParse(input, ignoreBlanks = FALSE, asText = as_text)
   on.exit(free(tree), add = TRUE)
   registry_nodes <- getNodeSet(tree, "//ns:NaaccrData", namespaces = "ns")
   registry_tables <- lapply(
     registry_nodes, make_registry_table, keep_fields = keep_fields
   )
   records <- rbindlist(registry_tables, use.names = TRUE, fill = TRUE)
-  if (!is.null(keep_fields)) {
-    # Preserve order of keep_fields
-    kept <- match(names(records), keep_fields)
-    records <- records[, keep_fields[sort(kept)], with = FALSE]
+  # NAACCR XML files must include the standard dictionary used.
+  # If the records don't already have a "naaccrRecordVersion" field, set it
+  # based on what the user chooses for `version` or `format`.
+  # If neither is given, use what the file says.
+  use_ver_num <- is.null(version) && is.null(format)
+  ver_num <- NULL
+  if (use_ver_num) {
+    top_attrs <- xmlAttrs(registry_nodes[[1L]])
+    base_dict <- top_attrs[["baseDictionaryUri"]]
+    dict_pattern <- "^http://naaccr.org/naaccrxml/naaccr-dictionary-(\\d{3}).xml$"
+    ver_num <- stri_match_first_regex(base_dict, dict_pattern)[[2L]]
+    if (is.na(ver_num) || !(ver_num %in% names(naaccr_formats))) {
+      warning(paste('The base dictionary specified is not recognized:', base_dict))
+      ver_num <- max(names(naaccr_formats))
+    }
+    fmt <- choose_naaccr_format(version = ver_num, keep_fields = keep_fields)
+  } else if (!is.null(version)) {
+    fmt <- choose_naaccr_format(version = version, keep_fields = keep_fields)
+    ver_num <- formatC(as.integer(version), format = "d")
+  } else if (!is.null(format)) {
+    # See if the format is equivalent to an official one
+    for (official_num in rev(names(naaccr_formats))) {
+      official <- naaccr_formats[[official_num]]
+      same_values <- isTRUE(all.equal(fmt, official, check.attributes = FALSE))
+      same_names <- identical(names(fmt), names(official))
+      if (same_values && same_names) {
+        format <- official
+        ver_num <- official_num
+        break
+      }
+    }
+    fmt <- choose_naaccr_format(format = format, keep_fields = keep_fields)
+  } else{
+    fmt <- choose_naaccr_format(version, format, keep_fields = keep_fields)
+  }
+  if (is.null(keep_fields)) {
+    keep_fields <- fmt[["name"]]
+  }
+  missing_fields <- setdiff(keep_fields, names(records))
+  if (length(missing_fields) > 0L) {
+    set(records, j = missing_fields, value = "")
+  }
+  setcolorder(records, keep_fields)
+  if (!is.null(ver_num) && "naaccrRecordVersion" %in% keep_fields) {
+    need_ver_num <- which(!nzchar(records[["naaccrRecordVersion"]]))
+    set(records, i = need_ver_num, j = "naaccrRecordVersion", value = ver_num)
   }
   setDF(records)
   records
@@ -348,6 +406,14 @@ read_naaccr_xml <- function(input,
     as_text = as_text,
     encoding = encoding
   )
+  ver_nums <- unique(records[["naaccrRecordVersion"]])
+  ver_nums <- ver_nums[!is.na(ver_nums)]
+  if (is.null(version) && is.null(format) && length(ver_nums) > 0L) {
+    if (length(ver_nums) > 1L) {
+      warning("Multiple NAACCR versions specified in records. Using most recent.")
+    }
+    version <- max(ver_nums)
+  }
   as.naaccr_record(
     x = records,
     keep_unknown = keep_unknown,

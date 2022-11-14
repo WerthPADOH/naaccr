@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"00","none",FALSE,"Patient did not receive TME"
+"10","incomplete",FALSE,"Incomplete"
+"20","nearly complete",FALSE,"Nearly complete"
+"30","complete",FALSE,"Complete"
+"40","performed, NOS",FALSE,"TME performed not specified on pathology report as incomplete, nearly complete, or complete; TME performed, but pathology report not available Physician statement that TME performed, no mention of incomplete, nearly complete, or complete status"
+"99","unknown",TRUE,"Unknown if TME performed"
+"","site not rectum",TRUE,"Site not rectum (C20.9)"
