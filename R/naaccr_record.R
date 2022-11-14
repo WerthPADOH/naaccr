@@ -17,7 +17,8 @@
 #'   and \code{format} are \code{NULL} (default), the most recent NAACCR format
 #'   will be used.
 #' @param format A \code{\link{record_format}} object for parsing the records.
-#' @return A \code{data.frame} with columns named using the NAACCR XML scheme.
+#' @return A \code{naaccr_record} with columns named using the NAACCR XML scheme.
+#'   It inherits from \code{data.frame}.
 #' @export
 naaccr_record <- function(...,
                           keep_unknown = FALSE,
