@@ -1,5 +1,27 @@
 # Change log
 
+## 2.0.0
+
+-   New functions
+    -   `read_naaccr_xml_plain` and `read_naaccr_xml` for reading files in
+        NAACCR's XML formats
+-   New data
+    -   `naaccr_formats`, a named list containing `record_format` objects for
+        the official NAACCR formats
+    -   `naaccr_format_21`, `naaccr_format_22`, and `naaccr_format_23` for the
+        NAACCR XML formats, versions 21, 22 and 23
+-   Possible breaking changes
+    -   New columns in `record_format`
+        -   `"parent"`: the field's parent XML node
+        -   `"width"`: field's length in characters
+        -   `"cleaner"`: function used to clean/standardize data when reading
+        -   `"unknown_finder"`: function to replace values with `NA` when reading
+    -   Deprecated columns in `record_format`
+        -   `"end_col"`: not used for XML files, and inferred from `"start_col"`
+            and `"width"` for fixed-width files
+    -   Package data now compressed using the `"xz"` method, which requires
+        R version 2 or higher
+
 ## 1.0.0
 
 -   Added `field_levels` and `field_levels_all` lists, which make it easy to see

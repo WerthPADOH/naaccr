@@ -1,0 +1,3 @@
+"code","label","means_missing","description"
+"0","may contact",FALSE,"Patient may be contacted for research purposes"
+"1","no contact",FALSE,"Patient may NOT be contacted for research purposes, per notification from patient, family member, or provider"

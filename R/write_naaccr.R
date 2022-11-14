@@ -66,6 +66,8 @@ naaccr_unsentinel <- function(value,
 #' @import stringi
 #' @noRd
 format_decimal <- function(x, width) {
+  x <- as.numeric(x)
+  if (is.na(width)) width <- NULL
   expanded <- formatC(x, width = width, format = "f")
   non_finite <- !is.finite(x)
   if (any(non_finite & !is.na(x))) {
@@ -86,6 +88,8 @@ format_decimal <- function(x, width) {
 #' @import stringi
 #' @noRd
 format_integer <- function(x, width) {
+  x <- as.integer(x)
+  if (is.na(width)) width <- NULL
   expanded <- formatC(x, width = width, format = "d")
   non_finite <- !is.finite(x)
   if (any(non_finite & !is.na(x))) {
@@ -171,7 +175,7 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
       return(as.character(x))
     }
   }
-  width <- field_def[["end_col"]] - field_def[["start_col"]] + 1L
+  width <- field_def[["width"]]
   codes <- switch(as.character(field_def[["type"]]),
     factor = naaccr_unfactor(x, field),
     sentineled_integer = naaccr_unsentinel(x, flag, field, width, "integer"),
@@ -187,28 +191,30 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
     as.character(x)
   )
   codes <- as.character(codes)
-  too_wide <- stri_width(codes) > width
-  if (any(too_wide, na.rm = TRUE)) {
-    codes[too_wide] <- ""
-    warning(
-      sum(too_wide), " values of '", field,
-      "' field were too wide and set to blanks"
-    )
+  if (!is.na(width)) {
+    too_wide <- stri_width(codes) > width
+    if (any(too_wide, na.rm = TRUE)) {
+      codes[too_wide] <- ""
+      warning(
+        sum(too_wide), " values of '", field,
+        "' field were too wide and set to blanks"
+      )
+    }
+    is_missing <- is.na(codes) | !nzchar(trimws(codes))
+    if (!is.na(field_def[["alignment"]])) {
+      pad_side <- switch(as.character(field_def[["alignment"]]),
+        left = "right",
+        right = "left"
+      )
+      codes[!is_missing] <- stri_pad(
+        str = codes[!is_missing],
+        width = width,
+        side = pad_side,
+        pad = field_def[["padding"]]
+      )
+    }
+    codes[is_missing] <- stri_dup(" ", width)
   }
-  is_missing <- is.na(codes) | !nzchar(trimws(codes))
-  if (!is.na(field_def[["alignment"]])) {
-    pad_side <- switch(as.character(field_def[["alignment"]]),
-      left = "right",
-      right = "left"
-    )
-    codes[!is_missing] <- stri_pad(
-      str = codes[!is_missing],
-      width = width,
-      side = pad_side,
-      pad = field_def[["padding"]]
-    )
-  }
-  codes[is_missing] <- stri_dup(" ", width)
   codes
 }
 
@@ -219,7 +225,7 @@ encode_records <- function(records, format) {
   # Combine the "reportable" and "only tumor" fields back into sequence number
   for (ii in seq_len(ncol(sequence_number_columns))) {
     number_name <- sequence_number_columns[["number", ii]]
-    if (number_name %in% format[["name"]]) {
+    if (number_name %in% format[["name"]] && number_name %in% names(records)) {
       only_name <- sequence_number_columns[["only", ii]]
       only_tumor <- which(records[[only_name]])
       set(x = records, i = only_tumor, j = number_name, value = 0L)
@@ -233,7 +239,7 @@ encode_records <- function(records, format) {
       )
     }
   }
-  is_sentinel <- startsWith(format[["type"]], "sentineled")
+  is_sentinel <- format[["type"]] %in% c("sentineled_integer", "sentineled_numeric")
   sent_cols <- format[["name"]][is_sentinel]
   flag_cols <- paste0(sent_cols, "Flag")
   non_sent_cols <- format[["name"]][!is_sentinel]
@@ -271,7 +277,7 @@ encode_records <- function(records, format) {
 #' @noRd
 prepare_writing_format <- function(format, fields) {
   type <- NULL # Avoid unmatched variable name warning in R Check
-  fmt <- format[
+  format[
     list(name = fields),
     on = "name",
     nomatch = 0L
@@ -279,16 +285,7 @@ prepare_writing_format <- function(format, fields) {
     ,
     type := as.character(type)
   ]
-  set(
-    fmt,
-    j = "width",
-    value = fmt[["end_col"]] - fmt[["start_col"]] + 1L
-  )
-  fmt
 }
-
-
-#' Arrange the format for writing
 
 
 #' Write records in NAACCR format
@@ -304,11 +301,16 @@ prepare_writing_format <- function(format, fields) {
 #'   and \code{format} are \code{NULL} (the default), the most recent version is
 #'   used.
 #' @param format A \code{\link{record_format}} object for writing the records.
+#' @param encoding String specifying the character encoding for the output file.
 #' @import stringi
 #' @export
-write_naaccr <- function(records, con, version = NULL, format = NULL) {
+write_naaccr <- function(records, con, version = NULL, format = NULL, encoding = "UTF-8") {
   records <- if (is.data.table(records)) copy(records) else as.data.table(records)
-  write_format <- choose_naaccr_format(version = version, format = format)
+  write_format <- if (is.null(version) && is.null(format)) {
+    naaccr_format_18
+  } else {
+    choose_naaccr_format(version = version, format = format)
+  }
   write_format <- prepare_writing_format(write_format, names(records))
   setorderv(write_format, "start_col")
   line_length <- max(write_format[["end_col"]])
@@ -320,4 +322,184 @@ write_naaccr <- function(records, con, version = NULL, format = NULL) {
   text_values <- data.table::transpose(records[, write_format[["name"]], with = FALSE])
   stri_sub_all(text_lines, from = starts, to = ends) <- text_values
   writeLines(text_lines, con)
+}
+
+
+#' @noRd
+select_first_cautiously <- function(x, warning_name = NULL) {
+  ux <- unique(x[!is.na(x)])
+  if (length(ux) == 0L) return(NULL)
+  if (length(ux) > 1L) {
+    if (!is.null(warning_name)) {
+      warning_name <- paste0(" for ", warning_name)
+    }
+    warning("Multiple values found", warning_name, "; using just the first")
+    ux <- ux[1]
+  }
+  ux
+}
+
+
+#' XML-ize a dataset of NAACCR fields, with one node per row
+#' @importFrom XML newXMLNode
+#' @noRd
+group_values <- function(dataset, node_name) {
+  items <- vapply(
+    X = names(dataset),
+    FUN = function(field) {
+      lapply(
+        X = dataset[[field]],
+        FUN = newXMLNode,
+        name = "Item",
+        attrs = c(naaccrId = field)
+      )
+    },
+    FUN.VALUE = vector("list", nrow(dataset))
+  )
+  if (!is.matrix(items)) {
+    items <- matrix(items, nrow = nrow(dataset))
+  }
+  out <- vector("list", nrow(dataset))
+  for (ii in seq_along(out)) {
+    out[[ii]] <- newXMLNode(node_name, .children = items[ii, , drop = TRUE])
+  }
+  out
+}
+
+
+#' @import stringi
+#' @import data.table
+#' @noRd
+compose_items_xml <- function(dataset) {
+  node_list <- data.table::transpose(dataset)
+  vapply(
+    X = node_list,
+    FUN = function(values) {
+      non_blank <- !stri_isempty(stri_trim_both(values)) & !is.na(values)
+      nodes_text <- stri_join(
+        '<Item naaccrId="', names(dataset)[non_blank], '">', values[non_blank], "</Item>",
+        collapse = ""
+      )
+      if (length(nodes_text) == 0L) nodes_text <- ""
+      nodes_text
+    },
+    FUN.VALUE = character(1L)
+  )
+}
+
+
+#' Write records to a NAACCR-formatted XML file
+#' @inheritParams write_naaccr
+#' @param base_dictionary URI for the dictionary defining the NAACCR data items.
+#'   If this is \code{NULL} and either \code{version} is not \code{NULL} or
+#'   \code{format} is one of the standard NAACCR formats, then the URI from
+#'   NAACCR's website for that version's dictionary will be used.
+#' @param user_dictionary URI for the dictionary defining the user-specified
+#'   data items.  If \code{NULL} (default), it won't be included in the XML.
+#' @return Invisibly returns the
+#'   \code{\link[=XMLInternalDocument-class]{XMLInternalDocument}} object which
+#'   was written to \code{con}.
+#' @import data.table
+#' @export
+write_naaccr_xml <- function(records,
+                             con,
+                             version = NULL,
+                             format = NULL,
+                             base_dictionary = NULL,
+                             user_dictionary = NULL,
+                             encoding = "UTF-8") {
+  if (is.character(con)) {
+    con <- file(con, "w", encoding = encoding)
+    on.exit(try(close(con)), add = TRUE)
+  }
+  ver_nums <- unique(records[["naaccrRecordVersion"]])
+  ver_nums <- ver_nums[!is.na(ver_nums)]
+  if (is.null(version) && is.null(format) && length(ver_nums) > 0L) {
+    if (length(ver_nums) > 1L) {
+      warning("Multiple NAACCR versions specified in records. Using most recent.")
+    }
+    version <- max(ver_nums)
+  }
+  write_format <- choose_naaccr_format(version = version, format = format)
+  write_format <- prepare_writing_format(write_format, names(records))
+  # Determine XML namespace from given format or version
+  if (is.null(base_dictionary)) {
+    if (!is.null(format)) {
+      for (v in sort(names(naaccr_formats), decreasing = TRUE)) {
+        vfmt <- naaccr_formats[[v]]
+        setDT(vfmt)
+        format <- as.data.table(format)
+        same_fmt <- setequal(vfmt[["item"]], format[["item"]])
+        if (isTRUE(same_fmt)) {
+          version <- v
+          break()
+        }
+      }
+    }
+    if (!is.null(version)) {
+      if (nchar(version) == 2L) version <- paste0(version, "0")
+      base_dictionary <- paste0(
+        "http://naaccr.org/naaccrxml/naaccr-dictionary-", version, ".xml"
+      )
+    }
+  }
+  records <- if (is.data.table(records)) copy(records) else as.data.table(records)
+  records <- encode_records(records, write_format)
+  for (ii in seq_along(records)) {
+    cleaned <- stri_trim_both(records[[ii]])
+    cleaned <- stri_replace_all_fixed(cleaned, "&", "&amp;")
+    cleaned <- stri_replace_all_fixed(
+      cleaned, c("<", ">", '"', "'"), c("&lt;", "&gt;", "&quot;", "&apos;"),
+      vectorize_all = FALSE
+    )
+    set(records, j = ii, value = cleaned)
+  }
+  tiered_items <- split(write_format[["name"]], write_format[["parent"]])
+  time_gen <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S")
+  time_gen <- paste0(substr(time_gen, 1, 22), ":", substr(time_gen, 23, 24))
+  naaccr_data_tag <- paste0(
+    "<NaaccrData xmlns = \"http://naaccr.org/naaccrxml\"",
+    " baseDictionaryUri = \"", base_dictionary, "\"",
+    " userDictionaryUri = \"", user_dictionary, "\"",
+    " specificationVersion = \"1.4\"",
+    " timeGenerated = \"", time_gen, "\">"
+  )
+  if (length(tiered_items[["NaaccrData"]])) {
+    naaccr_data <- unique(records[, tiered_items[["NaaccrData"]], with = FALSE])
+    naaccr_data_items <- compose_items_xml(naaccr_data)
+  } else {
+    naaccr_data_items <- NULL
+  }
+  writeLines(c(naaccr_data_tag, naaccr_data_items), con)
+  if (!("patientIdNumber" %in% names(records))) {
+    set(records, j = "patientIdNumber", value = seq_len(nrow(records)))
+  }
+  patient_vars <- union("patientIdNumber", tiered_items[["Patient"]])
+  patients <- unique(records[, patient_vars, with = FALSE])
+  patient_items <- NULL
+  if (length(tiered_items[["Patient"]])) {
+    patients[
+      ,
+      patient_items := compose_items_xml(.SD),
+      .SDcols = tiered_items[["Patient"]]
+    ]
+  } else {
+    set(patients, j = "patient_items", value = "")
+  }
+  records[
+    patients,
+    on = patient_vars,
+    {
+      if (length(tiered_items[["Tumor"]])) {
+        tumor_items <- compose_items_xml(.SD[, tiered_items[["Tumor"]], with = FALSE])
+        tumors <- stri_join("<Tumor>", tumor_items, "</Tumor>")
+      } else {
+        tumors <- NULL
+      }
+      writeLines(c("<Patient>", patient_items, tumors, "</Patient>"), con = con)
+    },
+    by = .EACHI,
+  ]
+  writeLines("</NaaccrData>", con = con)
+  NULL
 }

@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"0","low-grade",FALSE,"Low-grade appendiceal mucinous neoplasm LAMN"
+"1","high-grade",FALSE,"High-grade appendiceal mucinous neoplasm HAMN"
+"2","mucinous",FALSE,"Mucinous/Mucus/Mucoid adenocarcinoma/carcinoma"
+"3","colloid",FALSE,"Acinar adenocarcinoma, mucinous variant; Colloid adenocarcinoma; Colloid carcinoma; Gelatinous adenocarcinoma; Gelatinous carcinoma; Other terminology used for 8480"
+"7","not appendiceal",TRUE,"Histology is NOT 8480"

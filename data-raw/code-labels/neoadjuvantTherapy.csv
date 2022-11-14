@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"0","not given",FALSE,"No neoadjuvant therapy; No treatment before surgery; Surgical resection not part of first course of treatment plan; Autopsy only"
+"1","completed",FALSE,"Neoadjuvant therapy completed according to treatment plan and guidelines"
+"2","not completed",FALSE,"Neoadjuvant therapy started, but not completed OR unknown if completed"
+"3","insufficient",FALSE,"Limited systemic exposure when the intent was not neoadjuvant; treatment did not meet the definition of neoadjuvant therapy"
+"9","unknown",TRUE,"Not documented in medical record; Response to neoadjuvant therapy not assessed or unknown if assessed"

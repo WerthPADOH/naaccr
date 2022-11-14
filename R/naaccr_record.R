@@ -17,7 +17,8 @@
 #'   and \code{format} are \code{NULL} (default), the most recent NAACCR format
 #'   will be used.
 #' @param format A \code{\link{record_format}} object for parsing the records.
-#' @return A \code{data.frame} with columns named using the NAACCR XML scheme.
+#' @return A \code{naaccr_record} with columns named using the NAACCR XML scheme.
+#'   It inherits from \code{data.frame}.
 #' @export
 naaccr_record <- function(...,
                           keep_unknown = FALSE,
@@ -111,7 +112,7 @@ as.naaccr_record.data.frame <- function(x,
   count_items <- all_items[list(type = "count"), on = "type", nomatch = 0L]
   for (ii in seq_len(nrow(count_items))) {
     column <- count_items[["name"]][ii]
-    width <- count_items[["end_col"]][ii] - count_items[["start_col"]][ii] + 1L
+    width <- count_items[["width"]][ii]
     set(x = record, j = column, value = clean_count(record[[column]], width))
   }
   coded_fields <- intersect(all_items[["name"]], field_code_scheme[["name"]])

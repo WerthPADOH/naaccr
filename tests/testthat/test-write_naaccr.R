@@ -1,5 +1,6 @@
 library(testthat)
 library(naaccr)
+library(XML)
 
 
 context("write_naaccr")
@@ -104,4 +105,111 @@ test_that("write_naaccr can handle custom formats", {
   for (column in names(recs_2)) {
     expect_equivalent(recs_2[[column]], recs[[column]])
   }
+})
+
+
+write_naaccr_xml_to_vector <- function(records, version = NULL, format = NULL) {
+  tc <- textConnection(NULL, open = "w")
+  on.exit(close(tc), add = TRUE)
+  write_naaccr_xml(records, tc, version = version, format = format)
+  textConnectionValue(tc)
+}
+
+
+get_ids <- function(node) {
+  xmlAttrs(node)[["naaccrId"]]
+}
+
+
+test_that("write_naaccr_xml includes items iff they're in the format, records, and non-missing", {
+  records <- naaccr_record(
+    ageAtDiagnosis = 65,
+    patientIdNumber = 999,
+    dateOfDiagnosis = "",
+    recordType = "A",
+    foo = "bar"
+  )
+
+  xml_text <- write_naaccr_xml_to_vector(records, version = 18)
+  tree <- xmlParse(xml_text, asText = TRUE)
+  ids <- xpathSApply(tree, "//x:Item", get_ids, namespaces = "x")
+  expect_setequal(ids, c("ageAtDiagnosis", "patientIdNumber", "recordType"))
+
+  subfmt <- naaccr_format_18[name == "patientIdNumber"]
+  xml_text <- write_naaccr_xml_to_vector(records, format = subfmt)
+  tree <- xmlParse(xml_text, asText = TRUE)
+  ids <- xpathSApply(tree, "//x:Item", get_ids, namespaces = "x")
+  expect_setequal(ids, "patientIdNumber")
+})
+
+test_that("write_naaccr_xml puts items under correct parent node", {
+  records <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt", version = 18)
+  subfmt <- naaccr_format_18[name %in% names(records)]
+  item_tiers <- split(subfmt[["name"]], subfmt[["parent"]])
+  xml_text <- write_naaccr_xml_to_vector(records, format = subfmt)
+  tree <- xmlParse(xml_text, asText = TRUE)
+
+  naaccr_ids <- xpathSApply(tree, "//x:NaaccrData/x:Item", get_ids, namespaces = "x")
+  expect_true(all(naaccr_ids %in% item_tiers[["NaaccrData"]]))
+
+  patient_ids <- xpathSApply(tree, "//x:Patient/x:Item", get_ids, namespaces = "x")
+  expect_true(all(patient_ids %in% item_tiers[["Patient"]]))
+
+  tumor_ids <- xpathSApply(tree, "//x:Tumor/x:Item", get_ids, namespaces = "x")
+  expect_true(all(tumor_ids %in% item_tiers[["Tumor"]]))
+})
+
+test_that("write_naaccr_xml removes leading and trailing white space", {
+  records <- naaccr_record(
+    ageAtDiagnosis = c(" 65", " 3 ", "100"),
+    dateOfDiagnosis = c("2015    ", "201502  ", "20150530"),
+    textRemarks = c(" left", "right ", " both ")
+  )
+  expected_xml_values <- data.frame(
+    ageAtDiagnosis = c("065", "003", "100"),
+    dateOfDiagnosis = c("2015", "201502", "20150530"),
+    textRemarks = c("left", "right", "both"),
+    stringsAsFactors = FALSE
+  )
+  xml_text <- write_naaccr_xml_to_vector(records, version = 18)
+  tree <- xmlParse(xml_text, asText = TRUE)
+  for (column in names(records)) {
+    xpath <- paste0('//x:Tumor/x:Item[@naaccrId="', column, '"]')
+    xml_values <- xpathSApply(tree, xpath, xmlValue, namespaces = "x")
+    expect_identical(xml_values, expected_xml_values[[column]], label = column)
+  }
+})
+
+test_that("write_naaccr_xml handles custom fields without column info", {
+  rf <- record_format(
+    name = "blah",
+    item = 9999,
+    start_col = NA,
+    width = NA,
+    type = "integer",
+    alignment = "left",
+    padding = "0",
+    name_literal = "blah blah",
+    parent = "Patient"
+  )
+  recs <- data.frame(blah = 1:4)
+  expect_silent(write_naaccr_xml_to_vector(recs, format = rf))
+})
+
+test_that("Special characters are escaped in XML output", {
+  records <- naaccr_record(
+    textRemarks = c("<", ">", "&", "'", '"', "a>b&cd\"e<fg'h", "untouched")
+  )
+  xml_text <- write_naaccr_xml_to_vector(records, version = 18)
+  result <- unlist(stri_extract_all_regex(
+    xml_text, '(?<=<Item naaccrId="textRemarks">).*?(?=</Item>)',
+    omit_no_match = TRUE
+  ))
+  expect_identical(
+    result,
+    c(
+      "&lt;", "&gt;", "&amp;", "&apos;", "&quot;",
+      "a&gt;b&amp;cd&quot;e&lt;fg&apos;h", "untouched"
+    )
+  )
 })

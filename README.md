@@ -46,18 +46,12 @@ library(naaccr)
 
 records <- read_naaccr(record_file, version = 18)
 records[1:5, c("maritalStatusAtDx", "race1", "race2", "race3")]
-#>   maritalStatusAtDx race1                      race2
-#> 1         separated white no further race documented
-#> 2          divorced white no further race documented
-#> 3           married white no further race documented
-#> 4           married white no further race documented
-#> 5         separated white no further race documented
-#>                        race3
-#> 1 no further race documented
-#> 2 no further race documented
-#> 3 no further race documented
-#> 4 no further race documented
-#> 5 no further race documented
+#>   maritalStatusAtDx race1                      race2                      race3
+#> 1         separated white no further race documented no further race documented
+#> 2          divorced white no further race documented no further race documented
+#> 3           married white no further race documented no further race documented
+#> 4           married white no further race documented no further race documented
+#> 5         separated white no further race documented no further race documented
 ```
 
 By default, `read_naaccr` reads all fields defined in a format. For
@@ -135,7 +129,7 @@ category codes.
 ``` r
 naaccr_factor(c("01", "31", "65"), "primaryPayerAtDx")
 #> [1] not insured Medicaid    TRICARE    
-#> 16 Levels: not insured self-pay ... Indian/Public Health Service
+#> 16 Levels: not insured self-pay insurance, NOS ... Indian/Public Health Service
 ```
 
 Some fields have multiple codes explaining why an actual value isn’t
@@ -161,8 +155,7 @@ naaccr_record(sex = c("1", "9"), race1 = c("01", "99"), keep_unknown = TRUE)
 
 Some fields contain primarily continuous or count data but also use
 special codes. One name for this type of code is a “sentinel value.” The
-`split_sentineled` function splits these fields in
-two.
+`split_sentineled` function splits these fields in two.
 
 ``` r
 rnp <- split_sentineled(c(10, 20, 90, 95, 99, NA), "regionalNodesPositive")
@@ -190,19 +183,20 @@ dep_list <- paste0("- `", dep_names, "`", collapse = "\n")
 
 To build the `naaccr` package, you’ll need the following R packages:
 
-  - `data.table`
-  - `devtools`
-  - `httr`
-  - `ISOcodes`
-  - `jsonlite`
-  - `magrittr`
-  - `rmarkdown`
-  - `roxygen2`
-  - `rvest`
-  - `stringi`
-  - `testthat`
-  - `utils`
-  - `xml2`
+- `data.table`
+- `devtools`
+- `httr`
+- `ISOcodes`
+- `jsonlite`
+- `magrittr`
+- `rmarkdown`
+- `roxygen2`
+- `rvest`
+- `stringi`
+- `testthat`
+- `utils`
+- `XML`
+- `xml2`
 
 To document, build, and test the package, run the `build.R` script with
 the package’s root as the working directory.
@@ -215,7 +209,7 @@ First, know this project fills two roles:
 2.  Collecting the data needed to process NAACCR files in plain-text and
     machine-readable formats.
 
-<!-- end list -->
+<!-- -->
 
     naaccr/
     ├ R/                  # R files to create the package objects

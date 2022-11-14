@@ -9,3 +9,6 @@
 man/*
 data-raw/code-labels/iso_country.csv
 external/format-sources/version-*.json
+external/format-sources/flat-version-*.json
+external/format-sources/xml-version-*.json
+external/format-sources/*.pdf

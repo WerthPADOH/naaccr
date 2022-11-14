@@ -30,7 +30,10 @@ sys_objects <- new.env()
 for (sdf in sys_data_files) {
   load(sdf, envir = sys_objects)
 }
-save(list = names(sys_objects), envir = sys_objects, file = "R/sysdata.rda", version = 2)
+save(
+  list = names(sys_objects), envir = sys_objects, file = "R/sysdata.rda",
+  version = 2, compress = "xz"
+)
 
 # Tests ------------------------------------------------------------------------
 results <- devtools::test()
@@ -41,7 +44,9 @@ if (any(results_df[["failed"]] > 0 | results_df[["error"]] > 0)) {
 
 # Build ------------------------------------------------------------------------
 devtools::document()
+old_opts <- options(width = 80)
 rmarkdown::render("README.Rmd")
+options(old_opts)
 description <- readLines("DESCRIPTION")
 description <- description[!startsWith(tolower(description), "roxygen")]
 writeLines(description, "DESCRIPTION")
