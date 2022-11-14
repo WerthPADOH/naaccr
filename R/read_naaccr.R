@@ -1,12 +1,12 @@
 #' Create a connection specified in one of several ways
 #' @param input Either a string with a file name (containing no \code{\\n}
-#'   character), a \code{\link[base]{connection}} object, or the
+#'   character), a \code{\link[base:connections]{connection}} object, or the
 #'   text records themselves as a character vector.
 #' @param encoding String giving the input's encoding. See the 'Encoding'
 #'   section of \code{\link[base]{file}} in the \pkg{base} package.
 #' @return An open \code{connection} object
 #' @seealso
-#'   \code{\link[base]{connection}},
+#'   \code{\link[base]{connections}},
 #'   \code{\link[base]{textConnection}}
 #' @noRd
 as.connection <- function(input, encoding) {
@@ -92,7 +92,7 @@ split_fields <- function(record_lines,
 #' version 18. This was the last format to be used for fixed-width files.
 #'
 #' @param input Either a string with a file name (containing no \code{\\n}
-#'   character), a \code{\link[base]{connection}} object, or the text records
+#'   character), a \code{\link[base:connections]{connection}} object, or the text records
 #'   themselves as a character vector.
 #' @param keep_fields Character vector of XML field names to keep in the
 #'   dataset. If \code{NULL} (default), all columns are kept.
@@ -102,7 +102,7 @@ split_fields <- function(record_lines,
 #'   \code{Inf} (the default) means "all records."
 #' @param buffersize Maximum number of lines to read at one time.
 #' @param encoding String giving the input's encoding. See the 'Encoding'
-#'   section of \code{\link[base]{file}} in the \pkg{base} package.
+#'   section of \code{\link[base:connections]{file}} in the \pkg{base} package.
 #'   For \code{read_naaccr_xml} and \code{read_naaccr_xml_plain}, this is a
 #'   \emph{backup} encoding. If the XML document includes an encoding
 #'   specification, that will be used. Otherwise, \code{encoding} will be used.

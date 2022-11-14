@@ -328,7 +328,6 @@ record_format <- function(name,
 }
 
 
-#' @inheritParams record_format
 #' @rdname record_format
 #' @importFrom utils modifyList
 #' @export
