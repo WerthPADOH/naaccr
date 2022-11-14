@@ -44,7 +44,9 @@ if (any(results_df[["failed"]] > 0 | results_df[["error"]] > 0)) {
 
 # Build ------------------------------------------------------------------------
 devtools::document()
+old_opts <- options(width = 80)
 rmarkdown::render("README.Rmd")
+options(old_opts)
 description <- readLines("DESCRIPTION")
 description <- description[!startsWith(tolower(description), "roxygen")]
 writeLines(description, "DESCRIPTION")
