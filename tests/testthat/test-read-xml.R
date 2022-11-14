@@ -18,11 +18,8 @@ test_that("read_naaccr_xml_plain correctly reads just character values", {
 })
 
 test_that("Same results for plain records from XML and fixed-width files", {
-  expect_true(all(names(records_plain) %in% names(records_plain_fwf)))
-  expect_identical(
-    records_plain,
-    records_plain_fwf[, names(records_plain)]
-  )
+  expect_identical(names(records_plain), names(records_plain_fwf))
+  expect_identical(records_plain, records_plain_fwf)
 })
 
 test_that("read_naaccr_xml works with XML data kept in a character vector", {
