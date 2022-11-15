@@ -103,7 +103,8 @@ type_converters <- rbindlist(list(
 #'       files. They will included in XML files.
 #'     }
 #'     \item{\code{end_col}}{
-#'       (\code{integer}) Last column of the field in a fixed-width text file.
+#'       (\code{integer}) (*Deprecated: Use \code{width} instead.*)
+#'       Last column of the field in a fixed-width text file.
 #'       If \code{NA}, the field will not be read from or written to fixed-width
 #'       files. This is the norm for fields only found in XML formats.
 #'     }
@@ -119,11 +120,14 @@ type_converters <- rbindlist(list(
 #'       fixed-width text file.
 #'     }
 #'     \item{\code{parent}}{
-#'       (\code{factor}) Parent XML node for the field.
+#'       (\code{factor}) Parent XML node for the field. One of
+#'       \code{"NaaccrData"}, \code{"Patient"}, or \code{"Tumor"}.
 #'     }
 #'     \item{\code{cleaner}}{
 #'       (\code{list} of \code{function} objects) Function to prepare the
 #'       field's values for analysis.
+#'       Values of \code{NULL} will use the standard cleaner functions for the
+#'       \code{type} (see below).
 #'     }
 #'     \item{\code{unknown_finder}}{
 #'       (\code{list} of \code{function} objects) Function to detect codes
@@ -236,11 +240,13 @@ type_converters <- rbindlist(list(
 #'
 #' @examples
 #'   my_fields <- record_format(
-#'     name      = c("foo", "bar"),
-#'     item      = c(2163, 1180),
-#'     start_col = c(975, 1381),
-#'     end_col   = c(975, 1435),
-#'     type      = c("numeric", "facility")
+#'     name      = c("foo", "bar", "baz"),
+#'     item      = c(2163, 1180, 1181),
+#'     start_col = c(975, 1381, NA),
+#'     width     = c(1, 55, 4),
+#'     type      = c("numeric", "facility", "character"),
+#'     parent    = c("Patient", "Tumor", "Tumor"),
+#'     cleaner   = list(NULL, NULL, trimws)
 #'   )
 #'   my_format <- rbind(naaccr_format_16, my_fields)
 #' @import data.table
