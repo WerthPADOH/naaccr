@@ -1,5 +1,9 @@
 # Change log
 
+## 2.0.2
+
+-   Fix a bug with `read_naaccr_xml_plain` when a `record_format` is provided
+
 ## 2.0.0
 
 -   New functions
