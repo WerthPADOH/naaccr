@@ -361,8 +361,8 @@ read_naaccr_xml_plain <- function(input,
     # See if the format is equivalent to an official one
     for (official_num in rev(names(naaccr_formats))) {
       official <- naaccr_formats[[official_num]]
-      same_values <- isTRUE(all.equal(fmt, official, check.attributes = FALSE))
-      same_names <- identical(names(fmt), names(official))
+      same_values <- isTRUE(all.equal(format, official, check.attributes = FALSE))
+      same_names <- identical(names(format), names(official))
       if (same_values && same_names) {
         format <- official
         ver_num <- official_num

@@ -12,6 +12,20 @@ records_plain_fwf <- read_naaccr_plain("../data/synthetic-naaccr-18-incidence.tx
 records_processed_fwf <- read_naaccr("../data/synthetic-naaccr-18-incidence.txt", version = 18)
 
 
+test_that("read_naaccr_xml* works when formats are given", {
+  plain <- read_naaccr_xml_plain(
+    "../data/synthetic-naaccr-18-incidence.xml",
+    format = naaccr_format_18
+  )
+  processed <- read_naaccr_xml(
+    "../data/synthetic-naaccr-18-incidence.xml",
+    format = naaccr_format_18
+  )
+  expect_is(plain, "data.frame")
+  expect_is(processed, "naaccr_record")
+})
+
+
 test_that("read_naaccr_xml_plain correctly reads just character values", {
   expect_true(all(vapply(records_plain, is.character, logical(1))))
   expect_false(any(vapply(records_plain, anyNA, logical(1))))
