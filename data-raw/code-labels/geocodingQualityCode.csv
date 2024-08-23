@@ -1,0 +1,5 @@
+"code","label","means_missing","description"
+"M","match",FALSE,"Geocoding was competed and the address matched"
+"I","interactive",FALSE,"Geocoding was completed and the address matched after manual review in MI GeoCorrect Tool"
+"R","review",FALSE,"Geocoding was completed and the address needs to be manually reviewed before using below county-level"
+"F","fail",FALSE,"Geocoding was completed and the address needs to manually reviewed and modified and geocoded again"

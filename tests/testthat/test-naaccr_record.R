@@ -344,6 +344,28 @@ test_that("read_naaccr reads empty files into a 0-row tabel with all columns", {
   expect_is(processed[["latitude"]], "numeric")
 })
 
+test_that("All the supported NAACCR formats are exported as record_format objects", {
+  supported <- c(
+    "naaccr_format_12",
+    "naaccr_format_13",
+    "naaccr_format_14",
+    "naaccr_format_15",
+    "naaccr_format_16",
+    "naaccr_format_18",
+    "naaccr_format_21",
+    "naaccr_format_22",
+    "naaccr_format_23",
+    "naaccr_format_24"
+  )
+  exported <- getNamespaceExports("naaccr")
+  exported_fmts <- intersect(supported, exported)
+  expect_setequal(exported_fmts, supported)
+  for (fmt_name in exported_fmts) {
+    fmt <- getFromNamespace(fmt_name, ns = "naaccr")
+    expect_s3_class(fmt, "record_format")
+  }
+})
+
 test_that("The standard formats can be fetched by two- or three-digit names", {
   two_digit <- grep("^\\d{2}$", names(naaccr_formats), value = TRUE)
   for (td in two_digit) {

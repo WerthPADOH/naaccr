@@ -17,6 +17,7 @@ birthplace,place
 birthplaceCountry,iso_country
 birthplaceState,state
 brainMolecularMarkers,brainMolecularMarkers
+brainPrimaryTumorLocation,brainPrimaryTumorLocation
 ca125PretreatmentInterpretation,pretreatment_interpretation
 casefindingSource,casefindingSource
 ceaPretreatmentInterpretation,ceaPretreatmentInterpretation
@@ -53,6 +54,7 @@ derivedSs1977,seer_summary_stage
 derivedSs1977Flag,derived_stage_flag
 derivedSs2000,seer_summary_stage
 derivedSs2000Flag,derived_stage_flag
+derivedSummaryGrade2018,summaryGrade2018
 derivedSummaryStage2018,seer_summary_stage_2018
 diagnosticConfirmation,diagnosticConfirmation
 esophagusAndEgjTumorEpicenter,esophagusAndEgjTumorEpicenter
@@ -65,6 +67,7 @@ followUpContactState,state
 followUpSource,followUpSource
 followUpSourceCentral,followUpSourceCentral
 followupContactCountry,iso_country
+geocodingQualityCode,geocodingQualityCode
 gisCoordinateQuality,gisCoordinateQuality
 gleasonPatternsClinical,gleason_patterns
 gleasonPatternsPathological,gleason_patterns
@@ -197,6 +200,7 @@ rxHospHormone,rx_summary_hormone
 rxHospOther,rx_summary_other
 rxHospPalliativeProc,rx_summary_palliative
 rxHospRadiation,rxHospRadiation
+rxHospReconBreast,rxReconBreast
 rxHospScopeRegLnSur,rx_summary_lymph_surgery
 rxHospSurgApp2010,rxHospSurgApp2010
 rxHospSurgOthRegDis,rx_summary_other_regional_distant
@@ -208,6 +212,7 @@ rxSummOther,rx_summary_other
 rxSummPalliativeProc,rx_summary_palliative
 rxSummRadToCns,rxSummRadToCns
 rxSummRadiation,rxSummRadiation
+rxSummReconBreast,rxReconBreast
 rxSummScopeRegLnSur,rx_summary_lymph_surgery
 rxSummSurgOthRegDis,rx_summary_other_regional_distant
 rxSummSurgRadSeq,rxSummSurgRadSeq
