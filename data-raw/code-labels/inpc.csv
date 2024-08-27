@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"0","unfavorable",FALSE,"Unfavorable"
+"1","favorable",FALSE,"Favorable"
+"7","test ordered, results unknown",TRUE,"Test ordered, results not in chart"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",TRUE,"Not documented in medical record; Cannot be determined by pathologist; INPC not assessed or unknown if assessed; INPC assessed only at post neoadjuvant surgical resection"

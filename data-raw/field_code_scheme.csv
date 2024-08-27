@@ -16,6 +16,7 @@ bilirubinPretxUnitOfMeasure,bilirubinPretxUnitOfMeasure
 birthplace,place
 birthplaceCountry,iso_country
 birthplaceState,state
+brafMutationalAnalysis,brafMutationalAnalysis
 brainMolecularMarkers,brainMolecularMarkers
 brainPrimaryTumorLocation,brainPrimaryTumorLocation
 ca125PretreatmentInterpretation,pretreatment_interpretation
@@ -32,6 +33,8 @@ censusTrCertainty2000,census_tract_certainty
 censusTrCertainty2010,census_tract_certainty
 censusTrPovertyIndictr,censusTrPovertyIndictr
 censusTractCertainty2020,census_tract_certainty
+chromosome16qLossHeterozygosity,chromosome16qLossHeterozygosity
+chromosome1qStatus,chromosome1qStatus
 chromosome3Status,chromosome3Status
 chromosome8qStatus,chromosome8qStatus
 classOfCase,classOfCase
@@ -58,6 +61,7 @@ derivedSummaryGrade2018,summaryGrade2018
 derivedSummaryStage2018,seer_summary_stage_2018
 diagnosticConfirmation,diagnosticConfirmation
 esophagusAndEgjTumorEpicenter,esophagusAndEgjTumorEpicenter
+ewsr1Fli1Fusion,ewsr1Fli1Fusion
 extranodalExtensionClin,extranodal_extension
 extranodalExtensionHeadNeckClin,extranodal_extension
 extranodalExtensionPath,extranodalExtensionPath
@@ -67,6 +71,7 @@ followUpContactState,state
 followUpSource,followUpSource
 followUpSourceCentral,followUpSourceCentral
 followupContactCountry,iso_country
+foxo1GeneRearrangements,foxo1GeneRearrangements
 geocodingQualityCode,geocodingQualityCode
 gisCoordinateQuality,gisCoordinateQuality
 gleasonPatternsClinical,gleason_patterns
@@ -87,8 +92,11 @@ icdO3ConversionFlag,icdO3ConversionFlag
 icdRevisionComorbid,icdRevisionComorbid
 icdRevisionNumber,icdRevisionNumber
 industrySource,industrySource
+inpc,inpc
+inrgss,inrgss
 invasionBeyondCapsule,invasionBeyondCapsule
 ipsilateralAdrenalGlandInvolve,ipsilateralAdrenalGlandInvolve
+irssStageForEye2,irssStageForEye2
 jak2,jak2
 kitGeneImmunohistochemistry,kitGeneImmunohistochemistry
 kras,kras
@@ -126,6 +134,7 @@ nextFollowUpSource,nextFollowUpSource
 neoadjuvantTherapy,neoadjuvantTherapy
 neoadjuvTherapyClinicalResponse,neoadjuvTherapyClinicalResponse
 nhiaDerivedHispOrigin,spanishHispanicOrigin
+nMycAmplification,nMycAmplification
 noPatientContactFlag,noPatientContactFlag
 occupationSource,occupationSource
 oncotypeDxRiskLevelDcis,oncotypeDxRiskLevelDcis
@@ -160,9 +169,11 @@ placeOfDeath,place
 placeOfDeathCountry,iso_country
 placeOfDeathState,state
 pleuralEffusion,pleuralEffusion
+pretextClinicalStaging,pretextClinicalStaging
 primaryPayerAtDx,primaryPayerAtDx
 profoundImmuneSuppression,profoundImmuneSuppression
 prostatePathologicalExtension,prostatePathologicalExtension
+ptld,ptld
 qualityOfSurvival,qualityOfSurvival
 race1,race
 race2,race

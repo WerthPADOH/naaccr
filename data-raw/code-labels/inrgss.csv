@@ -1,0 +1,7 @@
+"code","label","means_missing","description"
+"1","L1",FALSE,"Localized tumor that does not involve any vital structures; Tumor confined within one body compartment; No evidence of image-defined risk factors; Intraspinal tumor extension that does not fulfil the criteria for an IDRF is consistent with stage (L1)"
+"2","L2",FALSE,"Locoregional tumor with evidence of image-defined risk factors; Tumor ipsilaterally contiguous within body compartments; Non-contiguous disease would be coded as M"
+"3","M",FALSE,"Distant metastatic disease; Noncontiguous disease; Distant lymph node involvement"
+"4","MS",FALSE,"For patients less than 18 months only metastatic disease confined to bone marrow, skin, liver"
+"8","not applicable",TRUE,"Information not collected for this case"
+"9","unknown",TRUE,"Not documented in medical record; International Neuroblastoma Risk Group Staging System not assessed; Death certificate only"

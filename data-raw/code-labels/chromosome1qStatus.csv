@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"0","negative",FALSE,"Chromosome 1q gain/GOH not identified/not present/negative"
+"1","positive",FALSE,"Chromosome 1q gain/GOH identified/present/positive"
+"7","test ordered, results unknown",TRUE,"Test ordered, results not in chart"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",TRUE,"Not documented in medical record; Cannot be determined by pathologist; Not assessed or unknown if assessed"

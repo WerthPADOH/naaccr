@@ -1,0 +1,8 @@
+"sentinel","label"
+"XXXXX.1","100000+"
+"XXXXX.2","low,"
+"XXXXX.3","normal"
+"XXXXX.4","high"
+"XXXXX.7","test ordered, results unknown"
+"XXXXX.8","not applicable"
+"XXXXX.9","unknown"
