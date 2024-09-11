@@ -121,15 +121,20 @@ format_date <- function(x) {
 #' This function is meant to be used in naaccr_encode. All other functions in
 #' this package should use naaccr_encode instead.
 #' @param x POSIXct vector
+#' @inheritParams write_naaccr
+#' @importFrom stringi stri_replace_last_regex
 #' @noRd
-format_datetime <- function(x) {
+format_datetime_hl7 <- function(x) {
   original <- attr(x, "original")
+  if (is.character(x)) {
+    x <- naaccr_datetime(x)
+  } else if (!inherits(x, "Date")) {
+    x <- as.POSIXct(x)
+  }
   expanded <- format(x, format = "%Y%m%d%H%M%S")
   is_na <- is.na(x)
-  expanded[is_na] <- if (!is.null(original)) {
-    original[is_na]
-  } else {
-    "              "
+  if (!is.null(original)) {
+    expanded[is_na] <- original[is_na]
   }
   expanded[is.na(expanded)] <- "              "
   # Account for when zeros are added in naaccr_datetime
@@ -141,6 +146,31 @@ format_datetime <- function(x) {
     )
     expanded[ends_blanks][zero_swapped] <- original[ends_blanks][zero_swapped]
   }
+  expanded
+}
+
+
+#' This function is meant to be used in naaccr_encode. All other functions in
+#' this package should use naaccr_encode instead.
+#' @param x POSIXct vector
+#' @inheritParams write_naaccr
+#' @importFrom stringi stri_replace_last_regex
+#' @noRd
+format_datetime_iso <- function(x) {
+  original <- attr(x, "original")
+  if (is.character(x)) {
+    x <- naaccr_datetime(x)
+  } else if (!inherits(x, "Date")) {
+    x <- as.POSIXct(x)
+  }
+  expanded <- format(x, format = "%Y-%m-%dT%H:%M:%S%z")
+  # R doesn't put colons in formatted time zone offsets, but NAACCR requires it
+  expanded <- stri_replace_last_regex(expanded, "([+-]\\d{2})(\\d{2})$", "$1:$2")
+  is_na <- is.na(x)
+  if (!is.null(original)) {
+    expanded[is_na] <- original[is_na]
+  }
+  expanded[is.na(expanded)] <- ""
   expanded
 }
 
@@ -176,20 +206,25 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
     }
   }
   width <- field_def[["width"]]
-  codes <- switch(as.character(field_def[["type"]]),
-    factor = naaccr_unfactor(x, field),
-    sentineled_integer = naaccr_unsentinel(x, flag, field, width, "integer"),
-    sentineled_numeric = naaccr_unsentinel(x, flag, field, width, "numeric"),
-    Date = format_date(x),
-    datetime = format_datetime(x),
-    numeric = format_decimal(x, width),
-    count = format_integer(x, width),
-    integer = format_integer(x, width),
-    boolean01 = ifelse(x, "1", "0"),
-    boolean12 = ifelse(x, "2", "1"),
-    override = ifelse(x, "1", ""),
-    as.character(x)
-  )
+  if (field_def[["type"]] == "datetime" && width == 14L) {
+    codes <- format_datetime_hl7(x)
+  } else if (field_def[["type"]] == "datetime" && width == 25L) {
+    codes <- format_datetime_iso(x)
+  } else {
+    codes <- switch(as.character(field_def[["type"]]),
+      factor = naaccr_unfactor(x, field),
+      sentineled_integer = naaccr_unsentinel(x, flag, field, width, type = "integer"),
+      sentineled_numeric = naaccr_unsentinel(x, flag, field, width, type = "numeric"),
+      Date = format_date(x),
+      numeric = format_decimal(x, width),
+      count = format_integer(x, width),
+      integer = format_integer(x, width),
+      boolean01 = ifelse(x, "1", "0"),
+      boolean12 = ifelse(x, "2", "1"),
+      override = ifelse(x, "1", ""),
+      as.character(x)
+    )
+  }
   codes <- as.character(codes)
   if (!is.na(width)) {
     too_wide <- stri_width(codes) > width

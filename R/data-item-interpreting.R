@@ -93,8 +93,12 @@ naaccr_date <- function(date) {
 
 
 #' Parse NAACCR-formatted datetimes
-#' @param datetime Character vector of datetimes in NAACCR format
-#'   (\code{"YYYYMMDDHHMMSS"}).
+#' @param datetime Character vector of datetimes in HL7 OBR-7 format
+#'   (\code{"YYYYMMDDHHMMSS"}) or the ISO 8601 format for datetimes accurate to
+#'   the second (\code{YYYY-MM-DDThh:mm:ss+zz:zz}).
+#'   Values containing a hyphen (\code{"-"}) will be assumed to follow ISO 8601,
+#'   and other values will be assumed to follow HL7 OBR-7.
+#' @inheritParams base::as.POSIXct
 #' @return A \code{POSIXct} vector. Any incomplete or invalid datetimes are
 #'   converted to \code{NA}. The original strings can be retrieved with the
 #'   \code{\link{naaccr_encode}} function.
@@ -103,9 +107,11 @@ naaccr_date <- function(date) {
 #'   d <- naaccr_datetime(input)
 #'   d
 #'   naaccr_encode(d, "pathDateSpecCollect1")
-#' @import stringi
+#' @importFrom stringi stri_pad_right
+#' @importFrom stringi stri_detect_fixed
+#' @importFrom stringi stri_replace_last_regex
 #' @export
-naaccr_datetime <- function(datetime) {
+naaccr_datetime <- function(datetime, tz = "") {
   if (!is.character(datetime) && !is.factor(datetime)) {
     out <- as.POSIXct(datetime)
     names(out) <- names(datetime)
@@ -115,10 +121,25 @@ naaccr_datetime <- function(datetime) {
     }
     return(out)
   }
-  original <- stri_pad_right(datetime, width = 14L, pad = " ")
-  out <- trimws(datetime)
-  out <- stri_pad_right(out, width = 14L, pad = "0")
-  out <- as.POSIXct(out, format = "%Y%m%d%H%M%S")
+  out <- rep_len(as.POSIXct(NA, tz = tz), length(datetime))
+  original <- datetime
+  datetime <- trimws(datetime)
+  iso <- stri_detect_fixed(datetime, "-")
+  iso[is.na(iso)] <- FALSE
+  # ISO datetimes
+  # The zeros in the default time are intentional.
+  # If a datetime is missing year, month, or day, it should fail.
+  default_iso <- "0000-00-00T00:00:00+00:00"
+  missing_iso <- stri_sub(default_iso, from = stri_length(datetime[iso]) + 1)
+  datetime[iso] <- stri_join(datetime[iso], missing_iso)
+  # NAACCR uses a colon in time zone offsets, but R does not
+  datetime[iso] <- stri_replace_last_regex(
+    datetime[iso], "(?<=[+-]\\d{2}):(?=\\d{2}$)", ""
+  )
+  out[iso] <- as.POSIXct(datetime[iso], format = "%Y-%m-%dT%H:%M:%S%z", tz = tz)
+  # HL7 datetimes
+  datetime[!iso] <- stri_pad_right(datetime[!iso], width = 14L, pad = "0")
+  out[!iso] <- as.POSIXct(datetime[!iso], format = "%Y%m%d%H%M%S", tz = tz)
   attr(out, "original") <- original
   out
 }
