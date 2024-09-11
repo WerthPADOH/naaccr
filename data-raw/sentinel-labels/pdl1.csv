@@ -1,0 +1,7 @@
+"sentinel","label"
+"XXX.2","PD-L1 absent, TPS negative"
+"XXX.3","PD-L1 present, TPS low"
+"XXX.4","PD-L1 present, TPS high"
+"XXX.7","test ordered, results unknown"
+"XXX.8","not applicable"
+"XXX.9","unknown"

@@ -1,0 +1,7 @@
+"code","label","means_missing","description"
+"1","1",FALSE,"Stage 1, Pretext 1; One section involved; three adjoining sections are tumor free"
+"2","2",FALSE,"Stage 2, Pretext 2; One or two sections involved; two adjoining sections are tumor free"
+"3","3",FALSE,"Stage 3, Pretext 3; Two or three sections involved; one adjoining section is tumor free"
+"4","4",FALSE,"Stage 4, Pretext 4; Four sections involved"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",TRUE,"Not documented in medical record; Cannot be determined by pathologist; Not assessed or unknown if assessed"

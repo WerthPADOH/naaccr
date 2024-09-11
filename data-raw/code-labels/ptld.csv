@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"0","unknown",TRUE,"PTLD not documented on the pathology report or in the medical record; Patient has NO history, or history UNKNOWN, of solid organ transplant, allogeneic bone marrow transplantation, or an umbilical cord blood transplant"
+"1","monomorphic",FALSE,"Monomorphic PTLD; PTLD WITH a specified histology (lymphoma, plasmacytoma, plasma cell myeloma)"
+"2","Hodgkin like",FALSE,"Classic Hodgkin lymphoma-PTLD type; PTLD, Hodgkin like"
+"4","not specified",FALSE,"PTLD not specified as monomorphic or Hodgkin lymphoma-PTLD type WITH a specified histology (lymphoma, plasmacytoma, plasma cell myeloma); Includes Burkitt type PTLD"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"

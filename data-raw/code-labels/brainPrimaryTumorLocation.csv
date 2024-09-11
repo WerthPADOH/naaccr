@@ -1,4 +1,5 @@
 "code","label","means_missing","description"
 "1","pons",FALSE,"Pons"
 "2","not pons",FALSE,"Subsite other than pons"
+"8","unknown",TRUE,"Information not collected for this case"
 "9","brain stem, NOS",FALSE,"Unknown subsite of brain stem"

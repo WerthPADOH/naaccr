@@ -13,6 +13,11 @@
     ver_num <- ver_fmts[[ii]]
     fmt <- naaccr_formats[[ver_num]]
     fmt <- as.record_format(fmt)
+    short_num <- ver_num
+    if (nchar(short_num) > 2L) {
+      short_num <- substr(short_num, 1, 2)
+    }
+    attr(fmt, "version") <- short_num
     new_formats[[ver_num]] <- fmt
     if (!is.na(format_names[ii])) {
       assignInMyNamespace(format_names[ii], fmt)

@@ -28,7 +28,7 @@ test_that("write_naaccr gives a warning for overly wide values", {
 test_that("write_naaccr weaves sentineled values and flags", {
   literals <- c("  ", "10", "95", "97", "98", "88", "90", "99")
   records <- split_sentineled(literals, "regionalNodesPositive")
-  output <- write_naaccr_to_vector(records)
+  output <- write_naaccr_to_vector(records, version = 21)
   regionalNodesPositive <- substr(output, 998, 999)
   expect_identical(regionalNodesPositive, literals)
 })

@@ -1,5 +1,26 @@
 # Change log
 
+## 3.0.0
+
+-   !!Breaking change!!
+    -   `naaccr_endcode` no longer pads values with blanks to the full width of
+        their fields.
+        If the standard padding character is not a blank (e.g., `"0"`), then
+        the values will still be padded.
+        For example, `naaccr_encode("New York", field = "addrAtDxCity")` returns
+        `"New York"`, and `naaccr_encode(1, field = "ageAtDiagnosis")` returns
+        `"001"`.
+    - `naaccr_encode` will still set overly-wide values to blanks with a warning.
+      It is a helper function for writing records to a file, and even XML file
+      readers may break if values are wider than expected.
+-   New things
+    -   NAACCR format versions 24 and 25 have been added.
+    -   `naaccr_datetime` now accepts values in ISO-8501 format (with timezones!).
+    -   New function `parse_geocoding_quality_codes` to break the dense
+        "geocodingQualityCodeDetail" field into its 14 data components.
+-   Fixes
+    -   Fixed factor label for `serumBeta2MicroglobulinPretxLvl` value of `"0"`.
+
 ## 2.0.2
 
 -   Fix a bug with `read_naaccr_xml_plain` when a `record_format` is provided

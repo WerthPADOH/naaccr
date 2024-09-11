@@ -41,6 +41,7 @@ numberOfPositiveParaAorticNodes,number_of_positive_nodes
 numberOfPositivePelvicNodes,number_of_positive_nodes
 oncotypeDxRecurrenceScoreDcis,oncotypeDxRecurrenceScoreDcis
 oncotypeDxRecurrenceScoreInvasiv,oncotypeDxRecurrenceScoreInvasiv
+pdl1,pdl1
 percentNecrosisPostNeoadjuvant,percentNecrosisPostNeoadjuvant
 phase1DosePerFraction,dose_per_fraction
 phase1NumberOfFractions,number_of_fractions
@@ -71,3 +72,4 @@ tumorDeposits,tumorDeposits
 tumorSizeClinical,tumor_size
 tumorSizePathologic,tumor_size
 tumorSizeSummary,tumor_size
+whiteBloodCellCount,whiteBloodCellCount
