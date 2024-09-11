@@ -31,7 +31,7 @@ naaccr_unfactor <- function(x, field) {
 naaccr_unsentinel <- function(value,
                               flag,
                               field,
-                              width,
+                              width = NULL,
                               type = c("integer", "numeric")) {
   type <- match.arg(type)
   if (length(field) != 1L || !is.character(field)) {
@@ -45,7 +45,7 @@ naaccr_unsentinel <- function(value,
   is_flagged <- if (is.null(flag)) rep(FALSE, length(value)) else !is.na(flag)
   out <- rep_len(NA_character_, length(value))
   out[!is_flagged] <- switch(type,
-    integer = format_integer(as.integer(value)[!is_flagged], width),
+    integer = format_integer(as.integer(value)[!is_flagged]),
     numeric = format_decimal(as.numeric(value)[!is_flagged], width)
   )
   sents <- sentinels[
@@ -67,7 +67,6 @@ naaccr_unsentinel <- function(value,
 #' @noRd
 format_decimal <- function(x, width) {
   x <- as.numeric(x)
-  if (is.na(width)) width <- NULL
   expanded <- formatC(x, width = width, format = "f")
   non_finite <- !is.finite(x)
   if (any(non_finite & !is.na(x))) {
@@ -84,18 +83,16 @@ format_decimal <- function(x, width) {
 #' This function is meant to be used in naaccr_encode. All other functions in
 #' this package should use naaccr_encode instead.
 #' @param x Integer vector
-#' @param width Integer giving the field width
 #' @import stringi
 #' @noRd
-format_integer <- function(x, width) {
+format_integer <- function(x) {
   x <- as.integer(x)
-  if (is.na(width)) width <- NULL
-  expanded <- formatC(x, width = width, format = "d")
+  expanded <- formatC(x, format = "d")
   non_finite <- !is.finite(x)
   if (any(non_finite & !is.na(x))) {
     warning("Setting non-finite values to missing")
   }
-  expanded[non_finite] <- NA_character_
+  expanded[non_finite] <- ""
   trimws(expanded)
 }
 
@@ -108,13 +105,11 @@ format_date <- function(x) {
   original <- attr(x, "original")
   expanded <- format(x, format = "%Y%m%d")
   is_na <- is.na(x)
-  expanded[is_na] <- if (!is.null(original)) {
-    original[is_na]
-  } else {
-    "        "
+  if (!is.null(original)) {
+    expanded[is_na] <- original[is_na]
   }
-  expanded[is.na(expanded)] <- "        "
-  expanded
+  expanded[is.na(expanded)] <- ""
+  trimws(expanded)
 }
 
 
@@ -136,7 +131,7 @@ format_datetime_hl7 <- function(x) {
   if (!is.null(original)) {
     expanded[is_na] <- original[is_na]
   }
-  expanded[is.na(expanded)] <- "              "
+  expanded[is.na(expanded)] <- ""
   # Account for when zeros are added in naaccr_datetime
   if (!is.null(original)) {
     ends_blanks <- which(endsWith(original, " "))
@@ -146,7 +141,7 @@ format_datetime_hl7 <- function(x) {
     )
     expanded[ends_blanks][zero_swapped] <- original[ends_blanks][zero_swapped]
   }
-  expanded
+  trimws(expanded)
 }
 
 
@@ -171,7 +166,7 @@ format_datetime_iso <- function(x) {
     expanded[is_na] <- original[is_na]
   }
   expanded[is.na(expanded)] <- ""
-  expanded
+  trimws(expanded)
 }
 
 
@@ -213,12 +208,12 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
   } else {
     codes <- switch(as.character(field_def[["type"]]),
       factor = naaccr_unfactor(x, field),
-      sentineled_integer = naaccr_unsentinel(x, flag, field, width, type = "integer"),
+      sentineled_integer = naaccr_unsentinel(x, flag, field, type = "integer"),
       sentineled_numeric = naaccr_unsentinel(x, flag, field, width, type = "numeric"),
       Date = format_date(x),
       numeric = format_decimal(x, width),
-      count = format_integer(x, width),
-      integer = format_integer(x, width),
+      count = format_integer(x),
+      integer = format_integer(x),
       boolean01 = ifelse(x, "1", "0"),
       boolean12 = ifelse(x, "2", "1"),
       override = ifelse(x, "1", ""),
@@ -226,6 +221,25 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
     )
   }
   codes <- as.character(codes)
+  # Blank padding is only for fixed-width, so that will be handled by that
+  # writing function.
+  # But non-blank padding is required for any format.
+  if (field_def[["padding"]] != " ") {
+    non_blank <- trimws(codes) != "" & !is.na(codes)
+    if (field_def[["alignment"]] == "left") {
+      codes[non_blank] <- stri_pad_right(
+        codes[non_blank],
+        width = width,
+        pad = field_def[["padding"]]
+      )
+    } else if (field_def[["alignment"]] == "right") {
+      codes[non_blank] <- stri_pad_left(
+        codes[non_blank],
+        width = width,
+        pad = field_def[["padding"]]
+      )
+    }
+  }
   if (!is.na(width)) {
     too_wide <- stri_width(codes) > width
     if (any(too_wide, na.rm = TRUE)) {
@@ -235,21 +249,8 @@ naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) 
         "' field were too wide and set to blanks"
       )
     }
-    is_missing <- is.na(codes) | !nzchar(trimws(codes))
-    if (!is.na(field_def[["alignment"]])) {
-      pad_side <- switch(as.character(field_def[["alignment"]]),
-        left = "right",
-        right = "left"
-      )
-      codes[!is_missing] <- stri_pad(
-        str = codes[!is_missing],
-        width = width,
-        side = pad_side,
-        pad = field_def[["padding"]]
-      )
-    }
-    codes[is_missing] <- stri_dup(" ", width)
   }
+  codes[is.na(codes) | !nzchar(trimws(codes))] <- ""
   codes
 }
 
@@ -338,6 +339,7 @@ prepare_writing_format <- function(format, fields) {
 #' @param format A \code{\link{record_format}} object for writing the records.
 #' @param encoding String specifying the character encoding for the output file.
 #' @import stringi
+#' @import data.table
 #' @export
 write_naaccr <- function(records, con, version = NULL, format = NULL, encoding = "UTF-8") {
   records <- if (is.data.table(records)) copy(records) else as.data.table(records)
@@ -349,7 +351,43 @@ write_naaccr <- function(records, con, version = NULL, format = NULL, encoding =
   write_format <- prepare_writing_format(write_format, names(records))
   setorderv(write_format, "start_col")
   line_length <- max(write_format[["end_col"]])
-  records <- encode_records(records, write_format)
+  if (is.null(attr(write_format, "version")) && !is.null(version)) {
+    if (is.numeric(version)) {
+      version <- formatC(version, format = "d")
+    } else {
+      version <- as.character(version)
+    }
+    attr(write_format, "version") <- version
+  }
+  records <- encode_records(records, write_format, version = version)
+  # Pad to field width
+  name <- NULL # Avoid unmatched variable name warning in R Check
+  width <- NULL
+  alignment <- NULL
+  padding <- NULL
+  fmt_with_width <- write_format[
+    !is.na(width),
+    list(name, width, alignment, padding)
+  ]
+  for (ii in seq_len(nrow(fmt_with_width))) {
+    fname <- fmt_with_width[["name"]][ii]
+    values <- records[[fname]]
+    fwidth <- fmt_with_width[["width"]][ii]
+    falign <- fmt_with_width[["alignment"]][ii]
+    fpad <- fmt_with_width[["padding"]][ii]
+    # Missing values shouldn't be padded with anything other than blanks,
+    # because it would make them non-missing (e.g., "000" for missing age is bad)
+    is_na <- trimws(values) == "" & !is.na(values)
+    values[is_na] <- stri_dup(" ", fwidth)
+    if (falign == "left") {
+      values[!is_na] <- stri_pad_right(values[!is_na], width = fwidth, pad = fpad)
+    } else if (falign == "right") {
+      values[!is_na] <- stri_pad_left(values[!is_na], width = fwidth, pad = fpad)
+    } else {
+      stop("Field ", fname, ' has invalid alignment value in format: "', falign, '"')
+    }
+    set(records, j = fname, value = values)
+  }
   blank_line <- stri_pad_left("", width = line_length, pad = " ")
   text_lines <- rep(blank_line, nrow(records))
   starts <- write_format[, "start_col", with = FALSE]
