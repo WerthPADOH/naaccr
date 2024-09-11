@@ -365,7 +365,7 @@ write_naaccr <- function(records, con, version = NULL, format = NULL, encoding =
     }
     attr(write_format, "version") <- version
   }
-  records <- encode_records(records, write_format, version = version)
+  records <- encode_records(records, write_format)
   # Pad to field width
   name <- NULL # Avoid unmatched variable name warning in R Check
   width <- NULL
