@@ -419,33 +419,6 @@ select_first_cautiously <- function(x, warning_name = NULL) {
 }
 
 
-#' XML-ize a dataset of NAACCR fields, with one node per row
-#' @importFrom XML newXMLNode
-#' @noRd
-group_values <- function(dataset, node_name) {
-  items <- vapply(
-    X = names(dataset),
-    FUN = function(field) {
-      lapply(
-        X = dataset[[field]],
-        FUN = newXMLNode,
-        name = "Item",
-        attrs = c(naaccrId = field)
-      )
-    },
-    FUN.VALUE = vector("list", nrow(dataset))
-  )
-  if (!is.matrix(items)) {
-    items <- matrix(items, nrow = nrow(dataset))
-  }
-  out <- vector("list", nrow(dataset))
-  for (ii in seq_along(out)) {
-    out[[ii]] <- newXMLNode(node_name, .children = items[ii, , drop = TRUE])
-  }
-  out
-}
-
-
 #' @import stringi
 #' @import data.table
 #' @noRd
@@ -475,9 +448,6 @@ compose_items_xml <- function(dataset) {
 #'   NAACCR's website for that version's dictionary will be used.
 #' @param user_dictionary URI for the dictionary defining the user-specified
 #'   data items.  If \code{NULL} (default), it won't be included in the XML.
-#' @return Invisibly returns the
-#'   \code{\link[=XMLInternalDocument-class]{XMLInternalDocument}} object which
-#'   was written to \code{con}.
 #' @import data.table
 #' @export
 write_naaccr_xml <- function(records,
