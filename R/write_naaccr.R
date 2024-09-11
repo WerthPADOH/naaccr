@@ -448,9 +448,6 @@ compose_items_xml <- function(dataset) {
 #'   NAACCR's website for that version's dictionary will be used.
 #' @param user_dictionary URI for the dictionary defining the user-specified
 #'   data items.  If \code{NULL} (default), it won't be included in the XML.
-#' @return Invisibly returns the
-#'   \code{\link[=XMLInternalDocument-class]{XMLInternalDocument}} object which
-#'   was written to \code{con}.
 #' @import data.table
 #' @export
 write_naaccr_xml <- function(records,
