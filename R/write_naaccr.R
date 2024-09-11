@@ -419,33 +419,6 @@ select_first_cautiously <- function(x, warning_name = NULL) {
 }
 
 
-#' XML-ize a dataset of NAACCR fields, with one node per row
-#' @importFrom XML newXMLNode
-#' @noRd
-group_values <- function(dataset, node_name) {
-  items <- vapply(
-    X = names(dataset),
-    FUN = function(field) {
-      lapply(
-        X = dataset[[field]],
-        FUN = newXMLNode,
-        name = "Item",
-        attrs = c(naaccrId = field)
-      )
-    },
-    FUN.VALUE = vector("list", nrow(dataset))
-  )
-  if (!is.matrix(items)) {
-    items <- matrix(items, nrow = nrow(dataset))
-  }
-  out <- vector("list", nrow(dataset))
-  for (ii in seq_along(out)) {
-    out[[ii]] <- newXMLNode(node_name, .children = items[ii, , drop = TRUE])
-  }
-  out
-}
-
-
 #' @import stringi
 #' @import data.table
 #' @noRd
