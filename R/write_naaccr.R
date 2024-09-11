@@ -103,6 +103,11 @@ format_integer <- function(x) {
 #' @noRd
 format_date <- function(x) {
   original <- attr(x, "original")
+  if (is.character(x)) {
+    x <- naaccr_date(x)
+  } else if (!inherits(x, "Date")) {
+    x <- as.Date(x)
+  }
   expanded <- format(x, format = "%Y%m%d")
   is_na <- is.na(x)
   if (!is.null(original)) {
@@ -312,6 +317,7 @@ encode_records <- function(records, format) {
 
 #' @noRd
 prepare_writing_format <- function(format, fields) {
+  if (!is.data.table(format)) format <- as.data.table(format)
   type <- NULL # Avoid unmatched variable name warning in R Check
   format[
     list(name = fields),
