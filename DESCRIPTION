@@ -2,13 +2,44 @@ Package: naaccr
 Type: Package
 Title: Read Cancer Records in the NAACCR Format
 Version: 3.0.1
-Author: Nathan Werth [aut, cre],
-    Pennsylvania Department of Health [cph],
-    North American Association of Cancer Registries [cph],
-    World Health Organization [cph],
-    United States Centers for Disease Control and Prevention [ctb],
-    United States Bureau of the Census [ctb],
-    United States National Program of Cancer Registries [ctb]
+Authors@R: c(
+    person(
+        given = "Nathan",
+        family = "Werth",
+        role = c("aut", "cre"),
+        email = "nwerth@pa.gov"
+    ),
+    person(
+        given = "Pennsylvania Department of Health",
+        role = "cph",
+        comment = "<https://www.pa.gov/en/agencies/health.html>"
+    ),
+    person(
+        given = "North American Association of Cancer Registries",
+        role = "cph",
+        comment = "<https://www.naaccr.org>"
+    ),
+    person(
+        given = "World Health Organization",
+        role = "cph",
+        comment = "<https://www.who.int/>"
+    ),
+    person(
+        given = "United States Centers for Disease Control and Prevention",
+        role = "cph",
+        comment = "<https://wwwn.cdc.gov>"
+    ),
+    person(
+        given = "United States Bureau of the Census",
+        role = "cph",
+        comment = "<http://www.census.gov>"
+    ),
+    person(
+        given = "United States National Program of Cancer Registries",
+        role = "cph",
+        comment = "<https://www.cdc.gov/national-program-cancer-registries>"
+    )
+  )
 Maintainer: Nathan Werth <nwerth@pa.gov>
 Description: Functions for reading cancer record files which follow a format
     defined by the North American Association of Central Cancer Registries
