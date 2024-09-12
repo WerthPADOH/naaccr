@@ -129,7 +129,7 @@ split_fields <- function(record_lines,
 #'  North American Association of Central Cancer Registries (October 2018).
 #'  Standards for Cancer Registries Volume II: Data Standards and Data Dictionary.
 #'  Twenty first edition.
-#'  \url{http://datadictionary.naaccr.org/}.
+#'  \url{https://apps.naaccr.org/data-dictionary/}.
 #'
 #'  North American Association of Central Cancer Registries (April 2019).
 #'  NAACCR XML Data Exchange Standard. Version 1.4.

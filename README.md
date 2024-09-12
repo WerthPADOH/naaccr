@@ -1,9 +1,6 @@
 naaccr
 ================
 
-[![Build
-status](https://travis-ci.org/WerthPADOH/naaccr.svg?branch=master)](https://travis-ci.org/WerthPADOH/naaccr)
-
 ## Summary
 
 The `naaccr` R package enables researchers to easily read and begin
