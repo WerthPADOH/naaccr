@@ -11,33 +11,27 @@ Authors@R: c(
     ),
     person(
         given = "Pennsylvania Department of Health",
-        role = "cph",
-        comment = "<https://www.pa.gov/en/agencies/health.html>"
+        role = "cph"
     ),
     person(
         given = "North American Association of Cancer Registries",
-        role = "cph",
-        comment = "<https://www.naaccr.org>"
+        role = "cph"
     ),
     person(
         given = "World Health Organization",
-        role = "cph",
-        comment = "<https://www.who.int/>"
+        role = "cph"
     ),
     person(
         given = "United States Centers for Disease Control and Prevention",
-        role = "cph",
-        comment = "<https://wwwn.cdc.gov>"
+        role = "cph"
     ),
     person(
         given = "United States Bureau of the Census",
-        role = "cph",
-        comment = "<http://www.census.gov>"
+        role = "cph"
     ),
     person(
         given = "United States National Program of Cancer Registries",
-        role = "cph",
-        comment = "<https://www.cdc.gov/national-program-cancer-registries>"
+        role = "cph"
     )
   )
 Maintainer: Nathan Werth <nwerth@pa.gov>
