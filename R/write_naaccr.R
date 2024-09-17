@@ -132,21 +132,36 @@ format_datetime_hl7 <- function(x) {
     x <- as.POSIXct(x)
   }
   expanded <- format(x, format = "%Y%m%d%H%M%S")
-  is_na <- is.na(x)
   if (!is.null(original)) {
-    expanded[is_na] <- original[is_na]
-  }
-  expanded[is.na(expanded)] <- ""
-  # Account for when zeros are added in naaccr_datetime
-  if (!is.null(original)) {
-    ends_blanks <- which(endsWith(original, " "))
-    zeroed <- gsub(" ", "0", original[ends_blanks], fixed = TRUE)
-    zero_swapped <- which(
-      x[ends_blanks] == as.POSIXct(zeroed, format = "%Y%m%d%H%M%S")
+    original <- trimws(original)
+    expanded[is.na(expanded)] <- original[is.na(expanded)]
+    # If an incomplete datetime string was the input, return that when the
+    # POSIXct value hasn't been changed
+    was_vague <- which(
+      !is.na(original) &
+        !stri_detect_regex(original, "^(\\d{14}|\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}[+-]\\d{2}:\\d{2})$")
     )
-    expanded[ends_blanks][zero_swapped] <- original[ends_blanks][zero_swapped]
+    reread <- naaccr_datetime(original[was_vague], tz = attr(x, "tzone"))
+    same_value <- which(x[was_vague] == reread)
+    expanded[was_vague][same_value] <- original[was_vague][same_value]
+    # Convert any ISO strings to HL&
+    is_iso <- which(stri_length(expanded) > 4L & substr(expanded, 5, 5) == "-")
+    iso_str <- expanded[is_iso]
+    expanded[is_iso] <- stri_join(
+      substr(iso_str, 1, 4), substr(iso_str, 6, 7),
+      substr(iso_str, 9, 10), substr(iso_str, 12, 13),
+      substr(iso_str, 15, 16), substr(iso_str, 18, 19)
+    )
+    # Convert any ISO strings to HL7
+    iso_str <- which(stri_length(expanded) > 4L & substr(expanded, 5, 5) == "-")
+    expanded[iso_str] <- stri_join(
+      substr(expanded, 1, 4), substr(expanded, 6, 7), substr(expanded, 9, 10),
+      substr(expanded, 12, 13), substr(expanded, 15, 16), substr(expanded, 18, 19)
+    )
   }
-  trimws(expanded)
+  expanded <- trimws(expanded)
+  expanded[is.na(expanded)] <- ""
+  expanded
 }
 
 
@@ -166,12 +181,30 @@ format_datetime_iso <- function(x) {
   expanded <- format(x, format = "%Y-%m-%dT%H:%M:%S%z")
   # R doesn't put colons in formatted time zone offsets, but NAACCR requires it
   expanded <- stri_replace_last_regex(expanded, "([+-]\\d{2})(\\d{2})$", "$1:$2")
-  is_na <- is.na(x)
   if (!is.null(original)) {
-    expanded[is_na] <- original[is_na]
+    original <- trimws(original)
+    expanded[is.na(expanded)] <- original[is.na(expanded)]
+    # If an incomplete datetime string was the input, return that when the
+    # POSIXct value hasn't been changed
+    was_vague <- which(
+      !is.na(original) &
+        !stri_detect_regex(original, "^(\\d{14}|\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}[+-]\\d{2}:\\d{2})$")
+    )
+    reread <- naaccr_datetime(original[was_vague], tz = attr(x, "tzone"))
+    same_value <- which(x[was_vague] == reread)
+    expanded[was_vague][same_value] <- original[was_vague][same_value]
+    # Convert any HL7 strings to ISO
+    is_hl7 <- which(stri_detect_regex(expanded, "^\\d{5}"))
+    hl7_str <- expanded[is_hl7]
+    expanded[is_hl7] <- stri_join(
+      substr(hl7_str, 1, 4), "-", substr(hl7_str, 5, 6), "-",
+      substr(hl7_str, 7, 8), "T", substr(hl7_str, 9, 10), ":",
+      substr(hl7_str, 11, 12), ":", substr(hl7_str, 13, 14)
+    )
   }
+  expanded <- trimws(expanded)
   expanded[is.na(expanded)] <- ""
-  trimws(expanded)
+  expanded
 }
 
 
