@@ -70,4 +70,13 @@ test_that("Datetime columns are properly parsed and re-encoded", {
   replaced_expected_25 <- rep(input[["output_25"]], 2)
   replaced_expected_25[3] <- "2004-01-01T22:47:30+00:00"
   expect_equivalent(replaced_encoded_25, replaced_expected_25)
+  hl7_iso <- c("2020092013", "2020-09-20T13")
+  expect_equivalent(
+    naaccr_encode(naaccr_datetime(hl7_iso, tz = "UTC"), "pathDateSpecCollect1", version = 24),
+    c("2020092013", "2020092013")
+  )
+  expect_equivalent(
+    naaccr_encode(naaccr_datetime(hl7_iso, tz = "UTC"), "pathDateSpecCollect1", version = 25),
+    c("2020-09-20T13", "2020-09-20T13")
+  )
 })

@@ -122,7 +122,7 @@ format_date <- function(x) {
 #' this package should use naaccr_encode instead.
 #' @param x POSIXct vector
 #' @inheritParams write_naaccr
-#' @importFrom stringi stri_replace_last_regex
+#' @importFrom stringi stri_replace_last_regex stri_detect_regex stri_length stri_join
 #' @noRd
 format_datetime_hl7 <- function(x) {
   original <- attr(x, "original")
@@ -144,19 +144,13 @@ format_datetime_hl7 <- function(x) {
     reread <- naaccr_datetime(original[was_vague], tz = attr(x, "tzone"))
     same_value <- which(x[was_vague] == reread)
     expanded[was_vague][same_value] <- original[was_vague][same_value]
-    # Convert any ISO strings to HL&
+    # Convert any ISO strings to HL7
     is_iso <- which(stri_length(expanded) > 4L & substr(expanded, 5, 5) == "-")
     iso_str <- expanded[is_iso]
     expanded[is_iso] <- stri_join(
       substr(iso_str, 1, 4), substr(iso_str, 6, 7),
       substr(iso_str, 9, 10), substr(iso_str, 12, 13),
       substr(iso_str, 15, 16), substr(iso_str, 18, 19)
-    )
-    # Convert any ISO strings to HL7
-    iso_str <- which(stri_length(expanded) > 4L & substr(expanded, 5, 5) == "-")
-    expanded[iso_str] <- stri_join(
-      substr(expanded, 1, 4), substr(expanded, 6, 7), substr(expanded, 9, 10),
-      substr(expanded, 12, 13), substr(expanded, 15, 16), substr(expanded, 18, 19)
     )
   }
   expanded <- trimws(expanded)
@@ -169,7 +163,7 @@ format_datetime_hl7 <- function(x) {
 #' this package should use naaccr_encode instead.
 #' @param x POSIXct vector
 #' @inheritParams write_naaccr
-#' @importFrom stringi stri_replace_last_regex
+#' @importFrom stringi stri_replace_last_regex stri_detect_regex stri_join
 #' @noRd
 format_datetime_iso <- function(x) {
   original <- attr(x, "original")
@@ -201,6 +195,7 @@ format_datetime_iso <- function(x) {
       substr(hl7_str, 7, 8), "T", substr(hl7_str, 9, 10), ":",
       substr(hl7_str, 11, 12), ":", substr(hl7_str, 13, 14)
     )
+    expanded <- stri_replace_last_regex(expanded, "[T:+-]+$", "")
   }
   expanded <- trimws(expanded)
   expanded[is.na(expanded)] <- ""
