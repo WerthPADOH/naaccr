@@ -1,5 +1,12 @@
 # Change log
 
+## 3.1.0
+
+-   Fixes
+    -   `naaccr_encode` now outputs the correct date time format for partial
+        date time values. Previously, it simply copied whatever format the original
+        string used.
+
 ## 3.0.0
 
 -   !!Breaking change!!
