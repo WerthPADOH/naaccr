@@ -1,0 +1,5 @@
+"code","label","means_missing","description"
+"0","not identified",FALSE,"Not identified"
+"1","present",FALSE,"Present"
+"8","not applicable",TRUE,"Not applicable: information not collected for this case"
+"9","unknown",TRUE,"No surgical resection done; Surgical resection done and STAS not documented in the CAP Protocol or synoptic pathology report; STAS not assessed or unknown if assessed or cannot be determined"
