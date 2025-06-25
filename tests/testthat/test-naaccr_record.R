@@ -163,7 +163,7 @@ test_that("as.naaccr_record auto-cleans fields", {
     cancerStatus          = c("9", "2"),
     stringsAsFactors = FALSE
   )
-  processed <- as.naaccr_record(record)
+  processed <- as.naaccr_record(record, version = "25")
   for (column in names(record)) {
     test_label <- paste0("(", column, " is NA)")
     expect_true(
