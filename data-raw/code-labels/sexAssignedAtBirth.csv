@@ -1,0 +1,4 @@
+"code","label","means_missing","description"
+"1","male",FALSE,"Male"
+"2","female",FALSE,"Female"
+"9","unknown",TRUE,"Not stated/unknown"

@@ -418,6 +418,10 @@ rbind.record_format <- function(..., stringsAsFactors = FALSE) {
 #' @export
 "naaccr_format_25"
 
+#' @rdname naaccr_formats
+#' @export
+"naaccr_format_26"
+
 
 #' Internal function for other functions to resolve format
 #' @noRd

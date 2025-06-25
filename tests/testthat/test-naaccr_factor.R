@@ -134,7 +134,8 @@ test_that("unknown_to_na works on naaccr_record objects", {
     ageAtDiagnosis = c("001", "100"),
     psaLabValue = c("123.4", "XXX.1"),
     sex = c("2", "9"),
-    keep_unknown = TRUE
+    keep_unknown = TRUE,
+    version = "25"
   )
   r2 <- unknown_to_na(r)
   expect_identical(is.na(r2[["autopsy"]]), c(FALSE, TRUE))

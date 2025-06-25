@@ -4,3 +4,7 @@
 "3","mostly rural",FALSE,"Mosty rural-the percent of the population in an urban area > 0% and < 50%"
 "4","all rural",FALSE,"All rural-the percent of the population in an urban area = 0%"
 "9","unknown",TRUE,"Unknown or not applicable-census tract not available or tract population was zero at the last decadal census"
+"A","invalid",TRUE,"State, county, or tract are invalid"
+"B","county not reported",TRUE,"State and tract are valid, but county was not reported"
+"C","not found",TRUE,"State + county + tract combination was not found"
+"D","location unknown","TRUE","State, county, or tract are blank or unknown"

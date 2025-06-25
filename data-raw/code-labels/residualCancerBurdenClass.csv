@@ -1,0 +1,8 @@
+"code","label","means_missing","description"
+"0","RCB-0",FALSE,"RCB-0 (pCR)"
+"1","RCB-I",FALSE,"RCB-I"
+"2","RCB-II",FALSE,"RCB-II"
+"3","RCB-III",FALSE,"RCB-III"
+"7","procedure not done",TRUE,"Patient had neoadjuvant therapy, but no post neoadjuvant surgical resection; Patient did not have neoadjuvant therapy."
+"8","not applicable",TRUE,"Not applicable: information not collected for this case."
+"9","unknown",TRUE,"Post neoadjuvant surgery completed and RCB class not documented in CAP Protocol or synoptic pathology report"

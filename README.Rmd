@@ -126,7 +126,12 @@ a `keep_unknown` parameter.
 ```{r keepUnknown}
 naaccr_factor(c("1", "9"), field = "sex")
 naaccr_factor(c("1", "9"), field = "sex", keep_unknown = TRUE)
-naaccr_record(sex = c("1", "9"), race1 = c("01", "99"), keep_unknown = TRUE)
+naaccr_record(
+  sex = c("1", "9"),
+  race1 = c("01", "99"),
+  keep_unknown = TRUE,
+  version = "25"
+)
 ```
 
 #### Numeric with special missing

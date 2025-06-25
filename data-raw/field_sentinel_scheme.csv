@@ -58,6 +58,7 @@ psaLabValue,psaLabValue
 radRegionalDoseCgy,radRegionalDoseCgy
 regionalNodesExamined,regional_nodes_removed
 regionalNodesPositive,nodes_positive
+residualCancerBurdenRCB,residualCancerBurdenRCB
 rxHospRegLnRemoved,regional_nodes_removed
 rxSummRegLnExamined,regional_nodes_removed
 sarcomatoidFeatures,sarcomatoidFeatures

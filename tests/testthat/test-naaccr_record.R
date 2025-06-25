@@ -23,6 +23,30 @@ expected_column_names <- function(format_data) {
 }
 
 
+test_that("Package exports all the NAACCR format objects", {
+  format_numbers <- c(
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "18",
+    "21",
+    "22",
+    "23",
+    "24",
+    "25",
+    "26"
+  )
+  formats <- paste0("naaccr_format_", format_numbers)
+  exported <- getNamespaceExports("naaccr")
+  exported_formats <- grep("^naaccr_format_", exported, value = TRUE)
+  expect_setequal(formats, exported_formats)
+  three_digits <- paste0(format_numbers, "0")
+  expect_setequal(c(format_numbers, three_digits), names(naaccr_formats))
+})
+
+
 test_that("read_naaccr returns a 'naaccr_record', 'data.frame' object", {
   nr <- read_naaccr(
     "../data/synthetic-naaccr-18-incidence.txt",
@@ -163,7 +187,7 @@ test_that("as.naaccr_record auto-cleans fields", {
     cancerStatus          = c("9", "2"),
     stringsAsFactors = FALSE
   )
-  processed <- as.naaccr_record(record)
+  processed <- as.naaccr_record(record, version = "25")
   for (column in names(record)) {
     test_label <- paste0("(", column, " is NA)")
     expect_true(
