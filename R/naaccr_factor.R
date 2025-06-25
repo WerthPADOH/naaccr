@@ -17,7 +17,8 @@
 #'   r <- naaccr_record(
 #'     sex = c("1", "2", "9"),
 #'     kras = c("8", "9", "3"),
-#'     keep_unknown = TRUE
+#'     keep_unknown = TRUE,
+#'     version = "25"
 #'   )
 #'   r
 #'   unknown_to_na(r[["sex"]], field = "sex")

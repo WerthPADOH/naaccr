@@ -59,6 +59,9 @@ can improve time and memory efficiency.
 ``` r
 dim(records)
 #> [1]  20 867
+```
+
+``` r
 records_slim <- read_naaccr(
   input       = record_file,
   version     = 18,
@@ -139,10 +142,21 @@ parameter.
 naaccr_factor(c("1", "9"), field = "sex")
 #> [1] male <NA>
 #> 6 Levels: male female other transsexual, NOS ... transsexual, natal female
+```
+
+``` r
 naaccr_factor(c("1", "9"), field = "sex", keep_unknown = TRUE)
 #> [1] male    unknown
 #> 7 Levels: male female other transsexual, NOS ... unknown
-naaccr_record(sex = c("1", "9"), race1 = c("01", "99"), keep_unknown = TRUE)
+```
+
+``` r
+naaccr_record(
+  sex = c("1", "9"),
+  race1 = c("01", "99"),
+  keep_unknown = TRUE,
+  version = "25"
+)
 #>       sex   race1
 #> 1    male   white
 #> 2 unknown unknown
