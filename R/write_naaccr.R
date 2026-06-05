@@ -219,7 +219,7 @@ format_datetime_iso <- function(x) {
 #'   )
 #'   r
 #'   mapply(FUN = naaccr_encode, x = r, field = names(r))
-#' @import data.table
+#' @importClassesFrom data.table data.table
 #' @import stringi
 #' @export
 naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) {
@@ -373,7 +373,8 @@ prepare_writing_format <- function(format, fields) {
 #' @param format A \code{\link{record_format}} object for writing the records.
 #' @param encoding String specifying the character encoding for the output file.
 #' @import stringi
-#' @import data.table
+#' @importClassesFrom data.table data.table
+#' @importFrom data.table is.data.table as.data.table copy setorderv transpose
 #' @export
 write_naaccr <- function(records, con, version = NULL, format = NULL, encoding = "UTF-8") {
   records <- if (is.data.table(records)) copy(records) else as.data.table(records)
@@ -448,7 +449,7 @@ select_first_cautiously <- function(x, warning_name = NULL) {
 
 
 #' @import stringi
-#' @import data.table
+#' @importFrom data.table transpose
 #' @noRd
 compose_items_xml <- function(dataset) {
   node_list <- data.table::transpose(dataset)
@@ -476,7 +477,8 @@ compose_items_xml <- function(dataset) {
 #'   NAACCR's website for that version's dictionary will be used.
 #' @param user_dictionary URI for the dictionary defining the user-specified
 #'   data items.  If \code{NULL} (default), it won't be included in the XML.
-#' @import data.table
+#' @importClassesFrom data.table data.table
+#' @importFrom data.table setDT as.data.table is.data.table copy set ":=" .SD .EACHI
 #' @export
 write_naaccr_xml <- function(records,
                              con,

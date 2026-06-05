@@ -86,7 +86,8 @@ sequence_number_columns <- matrix(
 
 
 #' @rdname as.naaccr_record
-#' @import data.table
+#' @importClassesFrom data.table data.table
+#' @importFrom data.table .SD is.data.table as.data.table set setcolorder setDF
 #' @export
 as.naaccr_record.data.frame <- function(x,
                                         keep_unknown = FALSE,
@@ -183,7 +184,7 @@ as.naaccr_record.data.frame <- function(x,
   stopifnot(!anyDuplicated(possible_names))
   valid_names <- possible_names[possible_names %in% names(record)]
   setcolorder(record, valid_names)
-  record <- setDF(record)
+  setDF(record)
   class(record) <- c('naaccr_record', class(record))
   record
 }

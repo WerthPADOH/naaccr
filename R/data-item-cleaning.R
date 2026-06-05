@@ -111,7 +111,7 @@ clean_census_block <- function(block, keep_unknown = FALSE) {
 #' @return A character vector with leading and trailing whitespace removed.
 #'   If \code{keep_unknown} is \code{FALSE}, blanks and values representing
 #'   unknown Census Tracts are replaced with \code{NA}.
-#' @import data.table
+#' @importFrom data.table between
 #' @export
 clean_census_tract <- function(tract, keep_unknown = FALSE) {
   if (is.numeric(tract)) {
@@ -119,8 +119,8 @@ clean_census_tract <- function(tract, keep_unknown = FALSE) {
   }
   tract <- trimws(tract)
   if (!keep_unknown) {
-    is_tract <- data.table::between(tract, '000100', '949999')
-    is_bna   <- data.table::between(tract, '950100', '998999')
+    is_tract <- between(tract, '000100', '949999')
+    is_bna   <- between(tract, '950100', '998999')
     tract[!is_tract & !is_bna] <- NA_character_
   }
   tract

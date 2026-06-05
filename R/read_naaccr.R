@@ -43,7 +43,7 @@ as.connection <- function(input, encoding) {
 #'   \code{end_cols}, and \code{col_names}. All columns are character vectors.
 #' @noRd
 #' @import stringi
-#' @import data.table
+#' @importFrom data.table as.data.table setnames
 split_fields <- function(record_lines,
                          start_cols,
                          end_cols,
@@ -149,7 +149,8 @@ split_fields <- function(record_lines,
 #'   summary(recs[["sequenceNumberCentral"]])
 #'   summary(recs[["sequenceNumberCentralFlag"]])
 #' @import stringi
-#' @import data.table
+#' @importClassesFrom data.table data.table
+#' @importFrom data.table setDT setnames rbindlist set setcolorder setDF
 #' @rdname read_naaccr
 #' @export
 read_naaccr_plain <- function(input,
@@ -225,7 +226,7 @@ read_naaccr_plain <- function(input,
     setDT(records)
     setnames(records, format[["name"]])
   } else {
-    records <- data.table::rbindlist(chunks)
+    records <- rbindlist(chunks)
     if (nrow(unread_format) > 0L) {
       set(records, j = unread_format[["name"]], value = "")
     }
@@ -318,7 +319,7 @@ make_registry_table <- function(registry, keep_fields) {
 
 #' @importFrom XML xmlInternalTreeParse free getNodeSet xmlAttrs
 #' @importFrom stringi stri_detect_regex stri_extract_first_regex
-#' @import data.table
+#' @importFrom data.table rbindlist set setcolorder setDF
 #' @rdname read_naaccr
 #' @export
 read_naaccr_xml_plain <- function(input,
