@@ -175,9 +175,7 @@
 #'   }
 #' @importFrom stringi stri_length
 #' @importFrom stringi stri_sub
-#' @importFrom data.table setDF
-#' @importFrom data.table setDT
-#' @importFrom data.table set
+#' @importFrom data.table setDF setDT set
 #' @export
 parse_geocoding_quality_codes <- function(value) {
   value <- as.character(value)

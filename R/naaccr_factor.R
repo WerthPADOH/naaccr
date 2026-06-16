@@ -41,7 +41,8 @@ unknown_to_na.naaccr_record <- function(x, ...) {
   x
 }
 
-#' @import data.table
+#' @importClassesFrom data.table data.table
+#' @importFrom data.table data.table
 #' @rdname unknown_to_na
 #' @export
 unknown_to_na.factor <- function(x, field, ...) {
@@ -86,7 +87,8 @@ unknown_to_na.factor <- function(x, field, ...) {
 #'   # Default: NA for unknowns,
 #'   naaccr_factor(c("1", "8", "9"), "tumorGrowthPattern")
 #'   naaccr_factor(c("1", "8", "9"), "tumorGrowthPattern", keep_unknown = TRUE)
-#' @import data.table
+#' @importClassesFrom data.table data.table
+#' @importFrom data.table data.table
 #' @export
 naaccr_factor <- function(x, field, keep_unknown = FALSE, ...) {
   if (length(field) != 1L || !is.character(field)) {
@@ -210,7 +212,8 @@ split_sentineled.numeric <- function(x, field) {
 #'     }
 #'   }
 #' @seealso \code{\link{split_sentineled}}
-#' @import data.table
+#' @importClassesFrom data.table data.table
+#' @importFrom data.table data.table setDT setnames setcolorder setDF between ":="
 #' @export
 split_sequence_number <- function(x) {
   out <- split_sentineled(x, "sequenceNumberCentral")

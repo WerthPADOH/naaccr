@@ -63,7 +63,7 @@ naaccr_unsentinel <- function(value,
 #' this package should use naaccr_encode instead.
 #' @param x Numeric vector.
 #' @param width Integer giving the field width.
-#' @import stringi
+#' @importFrom stringi stri_sub
 #' @noRd
 format_decimal <- function(x, width) {
   x <- as.numeric(x)
@@ -83,7 +83,6 @@ format_decimal <- function(x, width) {
 #' This function is meant to be used in naaccr_encode. All other functions in
 #' this package should use naaccr_encode instead.
 #' @param x Integer vector
-#' @import stringi
 #' @noRd
 format_integer <- function(x) {
   x <- as.integer(x)
@@ -219,8 +218,8 @@ format_datetime_iso <- function(x) {
 #'   )
 #'   r
 #'   mapply(FUN = naaccr_encode, x = r, field = names(r))
-#' @import data.table
-#' @import stringi
+#' @importClassesFrom data.table data.table
+#' @importFrom stringi stri_pad_right stri_pad_left stri_width
 #' @export
 naaccr_encode <- function(x, field, flag = NULL, version = NULL, format = NULL) {
   format <- choose_naaccr_format(version = version, format = format)
@@ -372,8 +371,9 @@ prepare_writing_format <- function(format, fields) {
 #'   used.
 #' @param format A \code{\link{record_format}} object for writing the records.
 #' @param encoding String specifying the character encoding for the output file.
-#' @import stringi
-#' @import data.table
+#' @importFrom stringi stri_dup stri_pad_right stri_pad_left "stri_sub_all<-"
+#' @importClassesFrom data.table data.table
+#' @importFrom data.table is.data.table as.data.table copy setorderv transpose
 #' @export
 write_naaccr <- function(records, con, version = NULL, format = NULL, encoding = "UTF-8") {
   records <- if (is.data.table(records)) copy(records) else as.data.table(records)
@@ -426,7 +426,7 @@ write_naaccr <- function(records, con, version = NULL, format = NULL, encoding =
   text_lines <- rep(blank_line, nrow(records))
   starts <- write_format[, "start_col", with = FALSE]
   ends <- write_format[, "end_col", with = FALSE]
-  text_values <- data.table::transpose(records[, write_format[["name"]], with = FALSE])
+  text_values <- transpose(records[, write_format[["name"]], with = FALSE])
   stri_sub_all(text_lines, from = starts, to = ends) <- text_values
   writeLines(text_lines, con)
 }
@@ -447,8 +447,8 @@ select_first_cautiously <- function(x, warning_name = NULL) {
 }
 
 
-#' @import stringi
-#' @import data.table
+#' @importFrom stringi stri_isempty stri_trim_both
+#' @importFrom data.table transpose
 #' @noRd
 compose_items_xml <- function(dataset) {
   node_list <- data.table::transpose(dataset)
@@ -476,7 +476,9 @@ compose_items_xml <- function(dataset) {
 #'   NAACCR's website for that version's dictionary will be used.
 #' @param user_dictionary URI for the dictionary defining the user-specified
 #'   data items.  If \code{NULL} (default), it won't be included in the XML.
-#' @import data.table
+#' @importClassesFrom data.table data.table
+#' @importFrom data.table setDT as.data.table is.data.table copy set ":=" .SD .EACHI
+#' @importFrom stringi stri_trim_both stri_replace_all_fixed stri_join
 #' @export
 write_naaccr_xml <- function(records,
                              con,

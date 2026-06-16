@@ -249,7 +249,7 @@ type_converters <- rbindlist(list(
 #'     cleaner   = list(NULL, NULL, trimws)
 #'   )
 #'   my_format <- rbind(naaccr_format_16, my_fields)
-#' @import data.table
+#' @importFrom data.table data.table setattr
 #' @export
 record_format <- function(name,
                           item,
