@@ -133,7 +133,7 @@ clean_census_tract <- function(tract, keep_unknown = FALSE) {
 #' @return A character vector with leading and trailing whitespace removed.
 #'   If \code{keep_unknown} is \code{FALSE}, blanks and values representing
 #'   unknown counties are replaced with \code{NA}.
-#' @import stringi
+#' @importFrom stringi "stri_subset_regex<-"
 #' @export
 clean_county_fips <- function(county, keep_unknown = FALSE) {
   if (is.numeric(county)) {
@@ -233,6 +233,7 @@ clean_physician_id <- function(physician, keep_unknown = FALSE) {
 #' @return A character vector with leading and trailing whitespace removed.
 #'   If \code{keep_unknown} is \code{FALSE}, blanks and values representing
 #'   unknown numbers or patients without a number are replaced with \code{NA}.
+#' @importFrom stringi stri_replace_all_fixed
 #' @export
 clean_telephone <- function(number, keep_unknown = FALSE) {
   if (is.numeric(number)) {
@@ -260,7 +261,6 @@ clean_telephone <- function(number, keep_unknown = FALSE) {
 #' @return Integer vector of \code{count}.
 #'   If \code{keep_unknown} is \code{FALSE}, values representing unknown counts
 #'   are replaced with \code{NA}.
-#' @import stringi
 #' @export
 clean_count <- function(count, width, keep_unknown = FALSE) {
   count <- as.integer(count)

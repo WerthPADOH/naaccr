@@ -88,6 +88,7 @@ sequence_number_columns <- matrix(
 #' @rdname as.naaccr_record
 #' @importClassesFrom data.table data.table
 #' @importFrom data.table .SD is.data.table as.data.table set setcolorder setDF
+#' @importFrom stringi stri_subset_regex
 #' @export
 as.naaccr_record.data.frame <- function(x,
                                         keep_unknown = FALSE,

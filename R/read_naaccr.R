@@ -42,7 +42,7 @@ as.connection <- function(input, encoding) {
 #' @return A \code{data.frame} with the columns specified by \code{start_cols},
 #'   \code{end_cols}, and \code{col_names}. All columns are character vectors.
 #' @noRd
-#' @import stringi
+#' @importFrom stringi stri_sub_all stri_trim_both
 #' @importFrom data.table as.data.table setnames
 split_fields <- function(record_lines,
                          start_cols,
@@ -54,9 +54,9 @@ split_fields <- function(record_lines,
   if (!is.null(col_names) && length(start_cols) != length(col_names)) {
     stop("start_cols and end_cols must be the same length")
   }
-  item_matrix <- stringi::stri_sub_all(record_lines, start_cols, end_cols)
+  item_matrix <- stri_sub_all(record_lines, start_cols, end_cols)
   item_matrix <- do.call(rbind, item_matrix)
-  item_matrix[] <- stringi::stri_trim_both(item_matrix)
+  item_matrix[] <- stri_trim_both(item_matrix)
   item_matrix <- as.data.table(item_matrix)
   setnames(item_matrix, col_names)
   item_matrix
@@ -148,7 +148,7 @@ split_fields <- function(record_lines,
 #'   # Note sequenceNumberCentral has been split in two: a number and a flag
 #'   summary(recs[["sequenceNumberCentral"]])
 #'   summary(recs[["sequenceNumberCentralFlag"]])
-#' @import stringi
+#' @importFrom stringi stri_width stri_pad_right stri_sub
 #' @importClassesFrom data.table data.table
 #' @importFrom data.table setDT setnames rbindlist set setcolorder setDF
 #' @rdname read_naaccr
@@ -204,13 +204,13 @@ read_naaccr_plain <- function(input,
     }
     rows_read <- rows_read + length(record_lines)
     index <- index + 1L
-    line_lengths <- stringi::stri_width(record_lines)
+    line_lengths <- stri_width(record_lines)
     record_width <- max(end_cols, na.rm = TRUE)
-    record_lines <- stringi::stri_pad_right(
+    record_lines <- stri_pad_right(
       record_lines,
       width = record_width - line_lengths
     )
-    record_lines <- stringi::stri_sub(record_lines, 1L, record_width)
+    record_lines <- stri_sub(record_lines, 1L, record_width)
     chunks[[index]] <- split_fields(
       record_lines = record_lines,
       start_cols   = read_format[["start_col"]],
@@ -272,7 +272,7 @@ read_naaccr <- function(input,
 #' Gather all <Item> nodes under a <NaaccrData>, <Patient>, or <Tumor>.
 #' These will be combined with other node-items in a single table.
 #' @importFrom XML getNodeSet xmlGetAttr xmlValue
-#' @import stringi
+#' @importFrom stringi stri_trim_both
 #' @noRd
 items_to_row <- function(parent_node, keep_fields) {
   items <- getNodeSet(parent_node, "ns:Item", namespaces = "ns")
@@ -282,7 +282,7 @@ items_to_row <- function(parent_node, keep_fields) {
     items <- items[ids %in% keep_fields]
   }
   values <- vapply(items, xmlValue, character(1))
-  values <- stringi::stri_trim_both(values)
+  values <- stri_trim_both(values)
   out <- as.list(values)
   names(out) <- names(items)
   out
@@ -321,6 +321,7 @@ make_registry_table <- function(registry, keep_fields) {
 #' @importFrom stringi stri_detect_regex stri_extract_first_regex
 #' @importFrom data.table rbindlist set setcolorder setDF
 #' @rdname read_naaccr
+#' @importFrom stringi stri_match_first_regex
 #' @export
 read_naaccr_xml_plain <- function(input,
                                   version = NULL,

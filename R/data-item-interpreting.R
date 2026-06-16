@@ -73,7 +73,7 @@ naaccr_override <- function(flag) {
 #'   d <- naaccr_date(input)
 #'   d
 #'   naaccr_encode(d, "dateOfDiagnosis")
-#' @import stringi
+#' @importFrom stringi stri_pad_right
 #' @export
 naaccr_date <- function(date) {
   if (!is.character(date) && !is.factor(date)) {
