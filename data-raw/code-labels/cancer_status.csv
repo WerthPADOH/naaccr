@@ -1,0 +1,5 @@
+"code","label","means_missing","description"
+"1","no evidence of disease",FALSE,"No evidence of disease (NED)"
+"2","evidence of disease",FALSE,"Evidence of disease"
+"8","first course treatment in progress",FALSE,"First course treatment in progress"
+"9","unknown",TRUE,"Unknown, indeterminate whether this tumor is present; not stated in patient record"

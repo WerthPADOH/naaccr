@@ -1,0 +1,5 @@
+"code","label","means_missing","description"
+"A","above",FALSE,"Entirely above anterior peritoneal reflection"
+"B","below",FALSE,"Entirely below anterior peritoneal reflection"
+"S","straddles",FALSE,"Straddles anterior peritoneal reflection"
+"9","unknown",TRUE,"Unknown; not specified"

@@ -36,7 +36,8 @@ test_that("Package exports all the NAACCR format objects", {
     "23",
     "24",
     "25",
-    "26"
+    "26",
+    "27"
   )
   formats <- paste0("naaccr_format_", format_numbers)
   exported <- getNamespaceExports("naaccr")

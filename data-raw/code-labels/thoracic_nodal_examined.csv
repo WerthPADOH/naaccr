@@ -1,0 +1,6 @@
+"code","label","means_missing","description"
+"0","not examined",FALSE,"Surgical resection performed, lymph node station not examined"
+"1","examined",FALSE,"Surgical resection performed, lymph node station examined"
+"7","resection not performed",FALSE,"No surgical resection of primary site performed"
+"8","not applicable",TRUE,"Not applicable: Information not collected for this case"
+"9","unknown",TRUE,"Not documented in the medical record; surgery performed, no documentation of lymph node station assessed/examined; unknown if surgery performed; unknown if nodal station assessed/examined"
